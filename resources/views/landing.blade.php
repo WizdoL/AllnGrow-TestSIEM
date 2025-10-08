@@ -29,10 +29,12 @@
 
       <button class="hamburger" aria-label="Toggle menu">☰</button>
 
-      <button class="get-started-btn">
+      <button onclick="window.location.href='/login'" class="get-started-btn">
         Get Started
         <img src="images/arrowLeft.png" alt="" width="16" height="14" />
       </button>
+      
+    
     </div>
   </header>
 
