@@ -10,6 +10,7 @@ body {
   line-height: 1.6;
   color: #333;
   background-color: #ffffff;
+  overflow-x: hidden;
 }
 
 img {
@@ -42,12 +43,15 @@ img {
 .logo {
   width: 214px;
   height: 70px;
+  margin-left: -135px;
+  
 }
 
 .nav-menu {
   display: none;
   gap: 38px;
   align-items: center;
+  margin-left: 600px;
 }
 
 .nav-item {
@@ -102,12 +106,12 @@ img {
 .hero-section {
   position: relative;
   width: 100%;
-  height: 670px;
+  height: 850px;
   display: flex;
   align-items: center;
   overflow: hidden;
-  margin-left: 125px;
 
+  background: linear-gradient(305deg, #a9c4e966 100%, #c6d14e66 50%, #5ea04866 50%);
 }
 
 .hero-bg-image {
@@ -116,8 +120,9 @@ img {
   top: 0;
   width: 502px;
   height: 442px;
-  margin-top: 103px;
-  margin-right: 122px;
+  margin-top: 150px;
+  margin-right: 70px;
+  /* margin-right: 122px; */
 }
 
 .hero-overlay-image {
@@ -140,14 +145,15 @@ img {
 }
 
 .hero-welcome {
-  font-size: 20px;
+  font-size: 10px;
   font-family: Poppins;
   font-weight: 600;
   line-height: 32px;
   text-transform: uppercase;
-  color: #5fa149;
+  color: #000000;
   margin-bottom: 10px;
   margin-left: 50px;
+  margin-top: -50px;
 }
 
 .hero-title {
@@ -156,8 +162,8 @@ img {
   font-weight: 700;
   line-height: 42px;
   text-transform: capitalize;
-  color: #17254e;
-  margin-bottom: 10px;
+  color: #000000;
+  margin-bottom: 20px;
   margin-left: 50px;
 }
 
@@ -166,13 +172,13 @@ img {
   font-family: Sora;
   font-weight: 400;
   line-height: 28px;
-  color: #333931;
+  color: #000000;
   margin-bottom: 24px;
   margin-left: 50px;
 }
 
 .hero-btn {
-  background-color: #17254e;
+  background-color: rgb(0, 0, 0);
   color: #ffffff;
   padding: 18px 24px;
   border-radius: 28px;
@@ -190,7 +196,7 @@ img {
 }
 
 .hero-btn:hover {
-  background-color: #0f1a3a;
+  filter: brightness(1.2);
   transform: scale(1.05);
   transition: all 0.3s ease;
 }
@@ -200,6 +206,8 @@ img {
   background-color: #ffffff;
   padding: 32px 16px;
   text-align: center;
+  margin-top: 50px;
+  margin-bottom: 100px;
 }
 
 .certification-title {
@@ -254,8 +262,8 @@ img {
 }
 
 .about-images img:nth-child(1) { /* fotoCewek1.png */
-  width: 152px; /* Original width */
-  height: 362px; /* Original height */
+  width: 200px; /* Original width */
+  height: 400px; /* Original height */
   object-fit: cover;
   border-radius: 10px; /* Example border-radius */
   position: relative;
@@ -274,13 +282,13 @@ img {
 }
 
 .about-images img:nth-child(3) { /* fotoCewek2.png */
-  width: 214px; /* Original width */
+  width: 250px; /* Original width */
   height: 344px; /* Original height */
   object-fit: cover;
   border-radius: 10px; /* Example border-radius */
   position: relative;
   z-index: 1;
-  margin-bottom: -125px; /* Push this image up slightly */
+  margin-bottom: -80px; /* Push this image up slightly */
 }
 
 .about-text {
@@ -370,7 +378,7 @@ img {
 }
 
 .about-btn:hover {
-  background-color: #333;
+  filter: brightness(1.2);
   transform: scale(1.05);
   transition: all 0.3s ease;
 }
@@ -438,7 +446,7 @@ img {
 .why-learn-section {
   background-color: #eef5ff;
   padding: 80px 16px;
-  box-shadow: 0px 4px 10px rgba(136, 136, 136, 1);
+  /* box-shadow: 0px 4px 10px rgba(136, 136, 136, 1); */
   margin-top: 50px;
 }
 
@@ -450,7 +458,7 @@ img {
   text-transform: capitalize;
   color: #344630;
   text-align: center;
-  margin-bottom: 34px;
+  margin-bottom: 75px;
 }
 
 .features-grid {
@@ -461,12 +469,13 @@ img {
   margin: 0 auto;
 }
 
+/* ga tau dah ini kenapa ga bisa dihilang shadownya ?? */
 .feature-card {
   background-color: #ffffff;
   border-radius: 20px;
   padding: 32px 24px;
   text-align: center;
-  box-shadow: 0px 10px 60px rgba(38, 44, 117, 0.08);
+  box-shadow: 0px 10px 60px rgba(38, 44, 117, 0.08); 
   position: relative;
 }
 
@@ -525,6 +534,7 @@ img {
 
 .courses-header {
   margin-bottom: 68px;
+  text-align: center;
 }
 
 .courses-badge {
@@ -550,6 +560,7 @@ img {
   text-transform: capitalize;
   color: #0e2a46;
   margin-left: 54px;
+  margin-bottom: 20px;
 }
 
 .courses-grid {
@@ -592,21 +603,37 @@ img {
   text-transform: capitalize;
   color: #0e2a46;
   margin-bottom: 14px;
+  text-align: center;
 }
 
 .course-meta {
   background-color: #ffffff;
   border: 1px solid #a4c14c;
   border-radius: 5px;
-  padding: 14px;
+  padding: 14px 20px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  font-size: 11px;
-  font-family: Sora;
+  align-items: center; /* pastikan sejajar tengah */
+  gap: 10px;
+  font-size: 14px;
+  font-family: 'Sora', sans-serif;
   font-weight: 400;
-  line-height: 14px;
-  text-transform: capitalize;
+  color: #17254e;
+}
+
+.course-meta-item {
+  display: flex;
+  align-items: center; 
+  gap: 8px; 
+}
+
+.course-meta-item i,
+.course-meta-item svg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  font-size: 18px;
   color: #17254e;
 }
 
@@ -755,8 +782,8 @@ img {
 .plan-features .check-icon {
   width: 20px;
   height: 20px;
-  background-color: #5e9f47;
-  border: 1px solid #5e9f47;
+  /* background-color: #5e9f47;
+  border: 1px solid #5e9f47; */
   border-radius: 6px;
   display: flex;
   align-items: center;
@@ -918,7 +945,7 @@ button:active, .btn:active {
   }
 
   .hero-title {
-    font-size: 40px;
+    font-size: 50px;
     line-height: 56px;
   }
 
@@ -927,7 +954,7 @@ button:active, .btn:active {
   }
 
   .hero-description {
-    font-size: 16px;
+    font-size: 25px;
   }
 
   .certification-title {
@@ -1053,12 +1080,13 @@ button:active, .btn:active {
   }
 
   .hero-title {
-    font-size: 50px;
+    font-size: 70px;
     line-height: 72px;
   }
 
   .hero-welcome {
     font-size: 30px;
+    font:bold;
     /* font-weight: ; */
     /* margin-bottom: 50; */
   }
@@ -1105,11 +1133,79 @@ button:active, .btn:active {
 @media (min-width: 1280px) {
   .hero-bg-image {
     width: 750px;
-    height: 500px;
+    height: 500px; 
+    object-fit: cover; 
+    border-radius: 60% 60% 30% 100% / 100% 80% 70% 50%;
   }
 
   .hero-overlay-image {
     width: 554px;
     height: 590px;
   }
+}
+
+/* =======================================================
+   SMOOTH SCROLLING & SECTION FADE-IN ANIMATION
+   ======================================================= */
+
+/* Efek scroll halus untuk navigasi antar-anchor link */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Animasi muncul halus untuk semua section */
+.fade-section {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 0.8s ease-out;
+}
+
+/* Saat section terlihat di layar */
+.fade-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Variasi animasi tambahan opsional */
+.fade-left {
+  opacity: 0;
+  transform: translateX(-50px);
+  transition: all 0.8s ease-out;
+}
+
+.fade-right {
+  opacity: 0;
+  transform: translateX(50px);
+  transition: all 0.8s ease-out;
+}
+
+.fade-left.visible,
+.fade-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Tambahan transisi untuk elemen-elemen interaktif */
+button, .btn, .nav-item, .get-started-btn, .hero-btn, .about-btn, .plan-btn {
+  transition: all 0.3s ease-in-out;
+}
+
+button:hover, .btn:hover, .nav-item:hover, .get-started-btn:hover, 
+.hero-btn:hover, .about-btn:hover, .plan-btn:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+button:active, .btn:active {
+  transform: scale(0.95);
+}
+
+/* Tambahan efek halus saat hover card */
+.course-card, .feature-card, .pricing-card, .category-item {
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.course-card:hover, .feature-card:hover, .pricing-card:hover, .category-item:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
