@@ -23,4 +23,4 @@ Route::get('/studentDashboard', function () {
     return view('studentDashboard');
 });
 
-Route::post('/postlogin', 'LoginController@postLogin')->name('postlogin');
+Route::post('/login', [LoginController::class, 'postLogin'])->name('postlogin');
