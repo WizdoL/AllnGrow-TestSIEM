@@ -38,7 +38,7 @@
           <label for="email" class="input-label">Email</label>
           <div class="input-wrapper">
             <img src="images/mailLogo.png" alt="Email Icon" class="input-icon" />
-            <input type="email" id="email" class="input-field" placeholder="example@gmail.com" required />
+            <input type="email" name='email' id="email" class="input-field" placeholder="example@gmail.com" required />
           </div>
         </div>
         
@@ -47,7 +47,7 @@
           <label for="password" class="input-label">Password</label>
           <div class="input-wrapper">
             <img src="images/lockPicture.png" alt="Lock Icon" class="input-icon" />
-            <input type="password" id="password" class="input-field password-field" placeholder="••••••••" required />
+            <input type="password" name='password' id="password" class="input-field password-field" placeholder="••••••••" required />
           </div>
         </div>
         
