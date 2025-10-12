@@ -29,7 +29,7 @@
     </section>
     
     <!-- Form login -->
-    <form class="form-container" method="POST" action="{{ route('login') }}">
+    <form class="form-container" method="POST" action="{{ route('postlogin') }}">
       @csrf
       <div class="form-fields">
 
