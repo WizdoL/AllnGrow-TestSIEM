@@ -29,7 +29,8 @@
     </section>
     
     <!-- Form login -->
-    <form class="form-container">
+    <form class="form-container" method="POST" action="{{ route('login') }}">
+      @csrf
       <div class="form-fields">
 
         <!-- Input Email -->

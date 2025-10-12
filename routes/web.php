@@ -21,3 +21,5 @@ Route::get('/teacherDashboard', function () {
 Route::get('/studentDashboard', function () {
     return view('studentDashboard');
 });
+
+Route::post('/login', [App\Http\Controllers\LoginController::class, 'postLogin']);
