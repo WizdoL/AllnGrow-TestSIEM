@@ -18,14 +18,15 @@ class Authenticate
      */
     public function handle(Request $request, Closure $next, ...$guards)
     {
-        if (! Auth::check()) {
+        // If user is not authenticated, block access
+        if (! \Illuminate\Support\Facades\Auth::check()) {
             if ($request->expectsJson()) {
                 return response()->json(['message' => 'Unauthenticated.'], 401);
             }
-
             return redirect()->route('login');
         }
 
+        // Allow the request to proceed
         return $next($request);
     }
 }
