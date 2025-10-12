@@ -29,6 +29,15 @@
     </section>
     
     <!-- Form login -->
+    @if($errors->any())
+      <div class="error-messages">
+        <ul>
+          @foreach($errors->all() as $error)
+            <li>{{ $error }}</li>
+          @endforeach
+        </ul>
+      </div>
+    @endif
     <form class="form-container" method="POST" action="{{ route('postlogin') }}">
       @csrf
       <div class="form-fields">
@@ -38,7 +47,7 @@
           <label for="email" class="input-label">Email</label>
           <div class="input-wrapper">
             <img src="images/mailLogo.png" alt="Email Icon" class="input-icon" />
-            <input type="email" name='email' id="email" class="input-field" placeholder="example@gmail.com" required />
+            <input type="email" name='email' id="email" class="input-field" placeholder="example@gmail.com" value="{{ old('email') }}" required />
           </div>
         </div>
         

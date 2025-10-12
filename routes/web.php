@@ -9,18 +9,20 @@ Route::get('/', function () {
 
 Route::get('/login', function () {
     return view('login');
-});
+})->name('login');
 
 Route::get('/register', function () {
     return view('register');
 });
 
-Route::get('/teacherDashboard', function () {
-    return view('teacherDashboard');
-});
+Route::middleware('auth')->group(function () {
+    Route::get('/teacherDashboard', function () {
+        return view('teacherDashboard');
+    });
 
-Route::get('/studentDashboard', function () {
-    return view('studentDashboard');
+    Route::get('/studentDashboard', function () {
+        return view('studentDashboard');
+    });
 });
 
 Route::post('/login', [LoginController::class, 'postLogin'])->name('postlogin');
