@@ -51,7 +51,7 @@
   <!-- tampilan awal (hero section (bawahnnya header)) -->
   <main>
     <section class="hero-section">
-      <img src="images/workspace3.jpg" alt="Learning background" class="hero-bg-image" />
+      <!-- <img src="images/workspace3.jpg" alt="Learning background" class="hero-bg-image" /> -->
       <div class="hero-content">
         <p class="hero-welcome">Welcome</p>
         <h1 class="hero-title">Achieving Your Dreams Through Education</h1>
@@ -176,7 +176,7 @@
         </div>
       <div class="courses-grid">
         <article class="course-card">
-          <img src="images/datapic.png" alt="IT Statistics Data Science course" class="course-image" />
+          <img src="images/dataPic.png" alt="IT Statistics Data Science course" class="course-image" />
           <div class="course-rating">
             <img src="images/starSymbol.png" alt="5 star rating" width="78" height="14" />
             <span>4.5k</span> 
