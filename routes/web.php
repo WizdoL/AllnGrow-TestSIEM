@@ -19,6 +19,7 @@ Route::middleware('web')->group(function () {
     Route::get('/register', function () {
         return view('register');
     });
+    Route::post('/register', [\App\Http\Controllers\RegisterController::class, 'register'])->name('register');
     
     // Authentication form handlers
     Route::post('/login', [LoginController::class, 'postLogin'])->name('postlogin');

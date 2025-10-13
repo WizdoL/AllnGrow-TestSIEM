@@ -20,14 +20,21 @@
             <h1 class="login-title">Register</h1>
         </div>
 
-        <!-- Pemilihan role (Student / Teacher) -->
-        <div class="role-selection-group">
-            <button type="button" class="role-button student-active">Student</button>
-            <button type="button" class="role-button teacher-inactive">Teacher</button>
-        </div>
+        <!-- Pemilihan role (Student only) -->
+        <input type="hidden" name="level" value="student" />
         
         <!-- Formulir Sign-Up -->
-        <form class="form-container">
+        <form class="form-container" method="POST" action="{{ route('register') }}">
+            @csrf
+            @if($errors->any())
+                <div class="error-messages">
+                    <ul>
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <div class="form-fields">
                 
                 <!-- Input Nama -->
@@ -39,7 +46,7 @@
                             <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
                             <circle cx="12" cy="7" r="4"/>
                         </svg>
-                        <input type="text" id="name" class="input-field" placeholder="John Doe" required />
+                        <input type="text" id="name" name="name" class="input-field" placeholder="John Doe" value="{{ old('name') }}" required />
                     </div>
                 </div>
 
@@ -51,7 +58,7 @@
                             <rect x="3" y="5" width="18" height="14" rx="2"/>
                             <path d="m22 7-8.975 5.25L3 7"/>
                         </svg>
-                        <input type="email" id="email" class="input-field" placeholder="example@gmail.com" required />
+                        <input type="email" id="email" name="email" class="input-field" placeholder="example@gmail.com" value="{{ old('email') }}" required />
                     </div>
                 </div>
 
@@ -63,7 +70,15 @@
                             <rect x="3" y="11" width="18" height="11" rx="2"/>
                             <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                         </svg>
-                        <input type="password" id="password" class="input-field" placeholder="••••••••" required />
+                        <input type="password" id="password" name="password" class="input-field" placeholder="••••••••" required />
+                    </div>
+                </div>
+
+                <!-- Password Confirmation -->
+                <div class="input-group">
+                    <label for="password_confirmation" class="input-label">Confirm Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password_confirmation" name="password_confirmation" class="input-field" placeholder="••••••••" required />
                     </div>
                 </div>
 
