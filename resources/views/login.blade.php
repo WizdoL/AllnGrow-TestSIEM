@@ -29,6 +29,12 @@
     </section>
     
     <!-- Form login -->
+    @if(session('success'))
+      <div class="success-message">{{ session('success') }}</div>
+    @endif
+    @if(session('error'))
+      <div class="error-message">{{ session('error') }}</div>
+    @endif
     @if($errors->any())
       <div class="error-messages">
         <ul>

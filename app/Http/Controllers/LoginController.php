@@ -28,13 +28,13 @@ class LoginController extends Controller
                 $default = '/studentDashboard';
             } else {
                 Auth::logout();
-                return redirect()->route('login')->withErrors(['level' => 'Invalid user level.']);
+                return redirect()->route('login')->with('error', 'Invalid user level.');
             }
 
             // Redirect to the intended URL if present, otherwise to the role default
             return redirect()->intended($default);
         }
 
-        return redirect()->route('login')->withErrors(['email' => 'Invalid credentials.'])->withInput($request->only('email'));
+        return redirect()->route('login')->with('error', 'Invalid credentials.')->withInput($request->only('email'));
     }
 }

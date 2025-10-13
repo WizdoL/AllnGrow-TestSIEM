@@ -17,20 +17,18 @@ class RegisterController extends Controller
             'password' => 'required|string|min:6|confirmed',
         ]);
 
-        $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'level' => 'student',
-            'password' => Hash::make($data['password']),
-        ]);
+        try {
+            $user = User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'level' => 'student',
+                'password' => Hash::make($data['password']),
+            ]);
 
-        Auth::login($user);
-        $request->session()->regenerate();
-
-        if ($user->level === 'teacher') {
-            return redirect('/teacherDashboard');
+            // Redirect to login with a success message
+            return redirect()->route('login')->with('success', 'Registration successful. Please log in.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Registration failed: ' . $e->getMessage());
         }
-
-        return redirect('/studentDashboard');
     }
 }
