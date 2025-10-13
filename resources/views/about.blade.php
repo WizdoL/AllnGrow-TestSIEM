@@ -31,6 +31,9 @@
 
   <!-- HERO -->
   <section class="about-hero fade-section">
+    <div class="about-hero-img">
+      <img src="images/Picture1.jpg" alt="Picture1" />
+    </div>
     <h1>About AllnGrow</h1>
     <p>Empowering college students to reach their full potential through professional learning, 
        personal mentorship, and global certification.</p>
