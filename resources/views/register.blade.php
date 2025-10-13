@@ -25,10 +25,14 @@
             @csrf
             <input type="hidden" name="level" value="student" />
             @if(session('success'))
-                <div class="success-message">{{ session('success') }}</div>
+                <div style="background:#d4edda;border:1px solid #c3e6cb;color:#155724;padding:12px;margin:12px 0;border-radius:4px;font-weight:600;">
+                    {{ session('success') }}
+                </div>
             @endif
             @if(session('error'))
-                <div class="error-message">{{ session('error') }}</div>
+                <div style="background:#fff3cd;border:1px solid #ffeeba;color:#856404;padding:12px;margin:12px 0;border-radius:4px;font-weight:600;">
+                    {{ session('error') }}
+                </div>
             @endif
             @if($errors->any())
                 <div class="error-messages">
@@ -123,7 +127,7 @@
         <!-- Link ke Sign-In -->
         <div class="signup-section">
             <span class="signup-text">Already have an account yet?</span>
-            <a href="{{ route('login') }}" class="signup-link">Sign in</a>
+            <a href="/login" class="signup-link">Sign in</a>
         </div>
         
     </main>
