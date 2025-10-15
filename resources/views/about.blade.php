@@ -13,22 +13,25 @@
 
 <body>
   <!-- HEADER -->
-  <header class="header">
-    <div class="header-content">
-      <!-- <img src="images/companyLogo.png" alt="AllnGrow Logo" class="logo" /> -->
-      <nav class="nav-menu" role="navigation">
-        <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
-        <a href="{{ route('about') }}" class="nav-item" role="menuitem">About us</a>
-        <a href="#" class="nav-item" role="menuitem">Courses</a>
-        <a href="#" class="nav-item" role="menuitem">Get Started</a>
-      </button>
-    </div>
-  </header>
+  </head>
+      <header class="header">
+        <div class="header-content">
+          <div class="logo">AllnGrow</div>
+          <nav class="nav-menu">
+            <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
+            <a href="{{ route('about') }}" class="nav-item" role="menuitem">About us</a>
+            <a href="#" class="nav-item">Courses</a>
+            <a href="#" class="nav-item get-started-btn">Get Started</a>
+          </nav>
+        </div>
+      </header>
+      </div>
+    </header>
 
   <!-- HERO -->
   <section class="about-hero fade-section">
     <div class="about-hero-img">
-      <img src="images/Picture1.jpg" alt="Picture1" />
+      <img src="images/sproutGrowth.jpg" alt="Picture1" />
     </div>
     <h1>About AllnGrow</h1>
     <p>Empowering college students to reach their full potential through professional learning, 
@@ -38,7 +41,7 @@
   <!-- OUR STORY -->
   <section class="about-content-section fade-left">
     <div class="about-img">
-      <img src="images/anime2.jpg" alt="AllnGrow learning" />
+      <img src="images/mentoringPicture.jpg" alt="AllnGrow learning" />
     </div>
     <div class="about-text">
       <h2>Our Story</h2>
@@ -60,7 +63,7 @@
          real-world skills that set them apart in the competitive job market.</p>
     </div>
     <div class="about-img">
-      <img src="images/workspace3.jpg" alt="Online mentorship" />
+      <img src="images/jobAchieve.jpg" alt="Online mentorship" />
     </div>
   </section>
 
@@ -92,27 +95,27 @@
   </section>
 
   <!-- FOOTER -->
-  <footer class="footer fade-section">
-    <div class="footer-content">
-      <div class="footer-brand">
-        <img src="images/companyLogo.png" alt="AllnGrow Footer Logo" class="footer-logo" />
-        <p class="footer-description">One Platform, All Skills. From Hobby to Professional <br> Learn. Grow. and Certify</p>
-      </div>
-      <div class="footer-contact">
-        <h3 class="contact-title">Contact Info</h3>
-        <div class="contact-info">
-          Address : Jakarta, Indonesia<br />
-          Phone : +62123456789<br />
-          Email : AllnGrow@gmail.com
-        </div>
-      </div>
+  <footer class="simple-footer">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <div class="footer-left">
+      <a href="#"><i class="fab fa-x-twitter"></i></a>
+      <a href="#"><i class="fab fa-youtube"></i></a>
+      <a href="#"><i class="fab fa-linkedin"></i></a>
+      <a href="#"><i class="fab fa-github"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-tiktok"></i></a>
+      <a href="#"><i class="fab fa-discord"></i></a>
     </div>
-    <div class="footer-bottom">
-      <p class="footer-copyright">
-        Copyright © 2025 <span class="footer-brand-name">AllnGrow</span> || All Rights Reserved
-      </p>
+
+    <div class="footer-center">
+      <p>AllnGrow © 2025 — All Rights Reserved</p>
+    </div>
+
+    <div class="footer-right">
+      <button class="lang-btn">Indonesia</button>
     </div>
   </footer>
+
 
   <script>
     document.addEventListener("DOMContentLoaded", function() {
