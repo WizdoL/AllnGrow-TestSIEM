@@ -4,17 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AllnGrow - Professional Online Learning & Certification Platform</title>
-  <!-- SEO -->
   <meta name="description" content="Transform your career with AllnGrow's professional online courses. Get certified by global institutions like Google, Adobe & ABRSM. Live coaching, expert instructors, flexible learning plans from 99K/month." />
   <meta name="keywords" content="online learning, professional certification, courses, education platform, career development, skill training" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="AllnGrow - Professional Online Learning & Certification Platform" />
   <meta property="og:description" content="Transform your career with AllnGrow's professional online courses. Get certified by global institutions like Google, Adobe & ABRSM." />
-
-  <!-- refer ke file css -->
   <link rel="stylesheet" href="css/landing.css">
 
-  <!-- animation effect -->
   <style>
     .fade-section, .fade-left, .fade-right {
       opacity: 0;
@@ -28,40 +24,46 @@
       transform: translate(0, 0);
     }
   </style>
+  
+  </head>
+      <header class="header">
+        <div class="header-content">
+          <div class="logo">AllnGrow</div>
+          <nav class="nav-menu">
+            <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
+            <a href="{{ route('about') }}" class="nav-item" role="menuitem">About us</a>
+            <a href="#" class="nav-item">Courses</a>
+            <a href="#" class="nav-item get-started-btn">Get Started</a>
+          </nav>
+        </div>
+      </header>
+      </div>
+    </header>
 
-<!-- header contennt (yang paling atas sendiri) -->
-</head>
-<body>
-  <header class="header">
-    <div class="header-content">
-      <img src="images/companyLogo.png" alt="AllnGrow Logo" class="logo" />
-      <nav class="nav-menu" role="navigation">
-        <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
-        <a href="{{ route('about') }}" class="nav-item" role="menuitem">About us</a>
-        <a href="#" class="nav-item" role="menuitem">Courses</a>
-      </nav>
-      <button class="hamburger" aria-label="Toggle menu">☰</button>
-      <button onclick="window.location.href='/login'" class="get-started-btn">
-        Get Started
-        <img src="images/arrowLeft.png" alt="" width="16" height="14" />
-      </button>
-    </div>
-  </header>
-
-  <!-- tampilan awal (hero section (bawahnnya header)) -->
   <main>
     <section class="hero-section">
-      <!-- <img src="images/workspace3.jpg" alt="Learning background" class="hero-bg-image" /> -->
+      <div class="hero-animation"> 
+        <img src = "images/peoplehappy.jpg" alt="PeopleHappy" class="hero-img"
+          background = "transparent"
+          speed = "1"
+          style = "width: 100%; max-width: 400px;"
+          loop
+          autoplay />
+      </div>
+
       <div class="hero-content">
         <p class="hero-welcome">Welcome</p>
         <h1 class="hero-title">Achieving Your Dreams Through Education</h1>
-        <p class="hero-description">We are experienced in educational platform and skilled strategies for the success of our online learning.</p>
+        <p class="hero-description">
+          We are experienced in educational platform and skilled strategies for the success of our online learning.
+        </p>
         <button class="hero-btn">
           Find courses
-          <img src="/images/arrowWhiteBlackBackground.png" alt="" width="58" height="58" />
         </button>
       </div>
     </section>
+  </main>
+
 
   <!-- partnership section -->
     <section class="certification-section fade-section">
@@ -75,12 +77,12 @@
       </div>
     </section>
 
+    <!-- about us section -->
     <section class="about-section fade-left">
       <div class="about-content">
         <div class="about-images">
-          <img src="images/anime1.jpg" alt="Student learning" width="152" height="362" />
-          <img src="images/ijoIjojelek.png" alt="Learning materials" width="66" height="74" />
-          <img src="images/anime2.jpg" alt="Online education" width="214" height="344" />
+          <img src="images/peopleStudy1.jpg" alt="Student learning" width="152" height="362" />
+          <img src="images/peopleStudy2.jpg" alt="Online education" width="214" height="344" />
         </div>
         <div class="about-text">
           <p class="about-label">About us</p>
@@ -103,40 +105,6 @@
               <p class="feature-text">To be a trusted Hybrid learning platform that helps every individual develop with professional guidance.</p>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ini yang sudah enroll dkk -->
-    <section class="stats-section fade-section">
-      <div class="stats-container">
-        <div class="stat-item">
-          <div class="stat-icon">
-            <img src="images/sucessfullyTrained.png" alt="Successfully trained icon" />
-          </div>
-          <div class="stat-number">3K+</div>
-          <div class="stat-label">Successfully Trained</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-icon">
-            <img src="images/classesComplete.png" alt="Classes completed icon" />
-          </div>
-          <div class="stat-number">15K+</div>
-          <div class="stat-label">Classes Completed</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-icon">
-            <img src="images/satisfactionRate.png" alt="Satisfaction rate icon" />
-          </div>
-          <div class="stat-number">97K+</div>
-          <div class="stat-label">Satisfaction Rate</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-icon">
-            <img src="images/expertReaction.png" alt="Expert instructor icon" />
-          </div>
-          <div class="stat-number">50+</div>
-          <div class="stat-label">Expert Instructor</div>
         </div>
       </div>
     </section>
@@ -214,66 +182,76 @@
       </div>
     </section>
 
-    <!-- categories section -->
-    <section class="categories-section fade-left">
+        <!-- Categories Section -->
+    <section class="categories-section">
       <h2 class="categories-title">Browse By Categories</h2>
+
       <div class="categories-grid">
-        <div class="category-item" style="background-color: #eaf6ff;">
-          <div class="category-icon" style="background-color: rgba(27, 117, 232, 0.1); border: 1px solid #1b75e8;">
-            <img src="images/bnfIcon.png" alt="Business icon" width="40" height="40" />
+        <div class="category-item">
+          <div class="category-icon">
+            <img src="images/bnfIcon.png" alt="Business icon" />
           </div>
           <div class="category-name">Business & Finance</div>
         </div>
-        <div class="category-item" style="background-color: #fef2f4;">
-          <div class="category-icon" style="background-color: rgba(255, 104, 129, 0.15); border: 1px solid #ff6881;">
-            <img src="images/mnpIcon.png" alt="Music icon" width="40" height="40" />
+
+        <div class="category-item">
+          <div class="category-icon">
+            <img src="images/mnpIcon.png" alt="Music icon" />
           </div>
           <div class="category-name">Music & Perform Arts</div>
         </div>
-        <div class="category-item" style="background-color: #eefbf5;">
-          <div class="category-icon" style="background-color: #d1f5e4; border: 1px solid #00bc65;">
-            <img src="images/ITicon.png" alt="IT icon" width="46" height="40" />
+
+        <div class="category-item">
+          <div class="category-icon">
+            <img src="images/ITicon.png" alt="IT icon" />
           </div>
           <div class="category-name">IT</div>
         </div>
-        <div class="category-item" style="background-color: #fffaef;">
-          <div class="category-icon" style="background-color: #fff3d9; border: 1px solid #f2a700;">
-            <img src="images/andIcon.png" alt="Art icon" width="38" height="40" />
+
+        <div class="category-item">
+          <div class="category-icon">
+            <img src="images/andIcon.png" alt="Art icon" />
           </div>
           <div class="category-name">Art & Design</div>
         </div>
-        <div class="category-item" style="background-color: #f7f3ff;">
-          <div class="category-icon" style="background-color: #dfd4f4; border: 1px solid #4500d0;">
-            <img src="images/lnwIcon.png" alt="Language icon" width="40" height="40" />
+
+        <div class="category-item">
+          <div class="category-icon">
+            <img src="images/lnwIcon.png" alt="Language icon" />
           </div>
           <div class="category-name">Language & Writing</div>
         </div>
-        <div class="category-item" style="background-color: #fff0f8;">
-          <div class="category-icon" style="background-color: #ffdaf0; border: 1px solid #bb0064;">
-            <img src="images/lndIcon.png" alt="Lifestyle icon" width="40" height="40" />
+
+        <div class="category-item">
+          <div class="category-icon">
+            <img src="images/lndIcon.png" alt="Lifestyle icon" />
           </div>
           <div class="category-name">Lifestyle & Development</div>
         </div>
-        <div class="category-item" style="background-color: #f3f4fe;">
-          <div class="category-icon" style="background-color: #dcdffd; border: 1px solid #0011bb;">
-            <img src="images/cncIcon.png" alt="Cooking icon" width="40" height="40" />
+
+        <div class="category-item">
+          <div class="category-icon">
+            <img src="images/cncIcon.png" alt="Cooking icon" />
           </div>
           <div class="category-name">Cooking & Culinary</div>
         </div>
-        <div class="category-item" style="background-color: #fff7ef;">
-          <div class="category-icon" style="background-color: #ffecd9; border: 1px solid #d16900;">
-            <img src="images/pcIcon.png" alt="Professional icon" width="42" height="40" />
+
+        <div class="category-item">
+          <div class="category-icon">
+            <img src="images/pcIcon.png" alt="Professional icon" />
           </div>
-          <div class="category-name">Professional certification</div>
+          <div class="category-name">Professional Certification</div>
         </div>
-        <div class="category-item" style="background-color: #f1fbff;">
-          <div class="category-icon" style="background-color: #dcf5ff; border: 1px solid #00a9ed;">
-            <img src="images/hndIcon.png" alt="Health icon" width="40" height="40" />
+
+        <div class="category-item">
+          <div class="category-icon">
+            <img src="images/hndIcon.png" alt="Health icon" />
           </div>
           <div class="category-name">Health & Sports</div>
         </div>
       </div>
     </section>
+
 
     <!-- pricting section -->
     <section class="pricing-section fade-section">
@@ -335,25 +313,24 @@
   </main>
 
   <!-- footer section -->
-  <footer class="footer fade-section">
-    <div class="footer-content">
-      <div class="footer-brand">
-        <img src="images/companyLogo.png" alt="AllnGrow Footer Logo" class="footer-logo" />
-        <p class="footer-description">One Platform, All Skills. From Hobby to Professional <br> Learn. Grow. and Certify</p>
-      </div>
-      <div class="footer-contact">
-        <h3 class="contact-title">Contact Info</h3>
-        <div class="contact-info">
-          Address : Jakarta, Indonesia<br />
-          Phone : +62123456789<br />
-          Email : AllnGrow@gmail.com
-        </div>
-      </div>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <footer class="simple-footer">
+    <div class="footer-left">
+      <a href="#"><i class="fab fa-x-twitter"></i></a>
+      <a href="#"><i class="fab fa-youtube"></i></a>
+      <a href="#"><i class="fab fa-linkedin"></i></a>
+      <a href="#"><i class="fab fa-github"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-tiktok"></i></a>
+      <a href="#"><i class="fab fa-discord"></i></a>
     </div>
-    <div class="footer-bottom">
-      <p class="footer-copyright">
-        Copyright © 2025 <span class="footer-brand-name">AllnGrow</span> || All Rights Reserved
-      </p>
+
+    <div class="footer-center">
+      <p>AllnGrow © 2025 — All Rights Reserved</p>
+    </div>
+
+    <div class="footer-right">
+      <button class="lang-btn">Indonesia</button>
     </div>
   </footer>
 
