@@ -38,6 +38,10 @@ Route::middleware('web')->group(function () {
         return view('registerInstructor'); 
     })->name('registerInstructor');
 
+    Route::get('/instructorRegisterForm', function () {
+        return view('instructorRegisterForm'); 
+    })->name('instructorRegisterForm');
+
     
     Route::get('/register', function () {
         return view('register');
