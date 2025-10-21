@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Register route middleware aliases used in routes/web.php
         $middleware->alias([
             'auth' => 'App\\Http\\Middleware\\Authenticate',
+            'role' => 'App\\Http\\Middleware\\EnsureRole',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
