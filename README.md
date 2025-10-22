@@ -3,4 +3,4 @@
 
 
 # AllnGrow
-Jangan dikasih tau
+Jangan dikasih tau.
