@@ -82,7 +82,7 @@
     
     <div class="signup-section">
       <span class="signup-text">Don't have an account yet?</span>
-      <a href="/register" class="signup-link">Sign up</a>
+      <a href="/instructorRegisterForm" class="signup-link">Sign up</a>
     </div>
     
     <div class="divider-section">
