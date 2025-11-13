@@ -22,7 +22,12 @@ Route::middleware('web')->group(function () {
         return view('courses'); 
     })->name('courses');
     
-    // ini nanti dihapus atau nggak dirapiin logikanya aja, soalnay ini cuma placehorder agar bisa di view di localhost biar lebih gampang
+    // ini nanti dihapus atau nggak dirapiin logikanya aja, soalnay ini cuma placehorder agar bisa di view di localhost biar lebih gampan
+    
+    Route::get('/dashboardSiswa', function () {
+        return view('dashboardSiswa'); 
+    })->name('dashboardSiswa');
+
     Route::get('/overviewcourses', function () {
         return view('overviewcourses'); 
     })->name('overviewcourses');
