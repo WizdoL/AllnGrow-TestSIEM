@@ -24,6 +24,7 @@ Route::middleware('web')->group(function () {
     
     // ini nanti dihapus atau nggak dirapiin logikanya aja, soalnay ini cuma placehorder agar bisa di view di localhost biar lebih gampan
     
+    // dashboard student
     Route::get('/dashboardSiswa', function () {
         return view('/dashboardSiswa/dashboardSiswa'); 
     })->name('dashboardSiswa');
@@ -48,10 +49,20 @@ Route::middleware('web')->group(function () {
         return view('/detailCourses/overviewcourses'); 
     })->name('overviewcourses');
 
-    Route::get('/userprofile', function () {
-        return view('userprofile'); 
-    })->name('userprofile');
+    // dashboard instructor
+    Route::get('/dashboardInstructor', function () {
+        return view('/dashboardInstructor/dashboardInstructor'); 
+    })->name('dashboardinstructor');
 
+    Route::get('/messageInstructor', function () {
+        return view('/dashboardInstructor/messageInstructor'); 
+    })->name('messageInstructor');
+
+    Route::get('/settingsInstructor', function () {
+        return view('/dashboardInstructor/settingsInstructor'); 
+    })->name('settingsInstructor');
+
+    // login register Instructor
     Route::get('/loginInstructor', function () {
         return view('/loginRegisterInstructor/loginInstructor'); 
     })->name('loginInstructor');
