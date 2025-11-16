@@ -10,7 +10,6 @@ return new class extends Migration
     {
         Schema::create('instructor_details', function (Blueprint $table) {
             $table->unsignedBigInteger('instructorID')->primary();
-            $table->foreign('instructorID')->references('id')->on('instructors')->cascadeOnDelete();
             $table->string('fullname')->nullable();
             $table->string('phone')->nullable();
             $table->string('gender')->nullable();
@@ -25,6 +24,13 @@ return new class extends Migration
             $table->timestamps();
 
             $table->index('status');
+        });
+
+        Schema::table('instructor_details', function (Blueprint $table) {
+            $table->foreign('instructorID')
+                  ->references('id')
+                  ->on('instructors')
+                  ->onDelete('cascade');
         });
     }
 

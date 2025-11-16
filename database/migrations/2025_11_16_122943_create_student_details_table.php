@@ -10,11 +10,17 @@ return new class extends Migration
     {
         Schema::create('student_details', function (Blueprint $table) {
             $table->unsignedBigInteger('studentID')->primary();
-            $table->foreign('studentID')->references('id')->on('students')->cascadeOnDelete();
             $table->string('fullname')->nullable();
             $table->string('phone')->nullable();
             $table->text('bio')->nullable();
             $table->timestamps();
+        });
+
+        Schema::table('student_details', function (Blueprint $table) {
+            $table->foreign('studentID')
+                  ->references('id')
+                  ->on('students')
+                  ->onDelete('cascade');
         });
     }
 
