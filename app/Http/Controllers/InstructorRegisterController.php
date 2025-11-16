@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\Instructor;
+use App\Models\InstructorDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -29,7 +30,7 @@ class InstructorRegisterController extends Controller
 
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email',
+            'email' => 'required|string|email|max:255|unique:instructors,email',
             'password' => 'required|string|min:6|confirmed',
 
             // Profile / optional fields
@@ -50,10 +51,8 @@ class InstructorRegisterController extends Controller
         ]);
 
         try {
-            $user = User::create([
-                'name' => InputSanitizer::sanitizeText($data['name']),
+            $instructor = Instructor::create([
                 'email' => $data['email'],
-                'level' => 'teacher',
                 'password' => Hash::make($data['password']),
             ]);
 
@@ -61,13 +60,13 @@ class InstructorRegisterController extends Controller
 
             // store profile photo
             if ($request->hasFile('profile_photo')) {
-                $path = $request->file('profile_photo')->store('instructors/'.$user->id.'/photos', 'public');
+                $path = $request->file('profile_photo')->store('instructors/'.$instructor->id.'/photos', 'public');
                 $stored['profile_photo'] = $path;
             }
 
             // store CV
             if ($request->hasFile('cv')) {
-                $path = $request->file('cv')->store('instructors/'.$user->id.'/cv', 'public');
+                $path = $request->file('cv')->store('instructors/'.$instructor->id.'/cv', 'public');
                 $stored['cv'] = $path;
             }
 
@@ -76,7 +75,7 @@ class InstructorRegisterController extends Controller
                 $certs = [];
                 foreach ($request->file('certifications') as $file) {
                     if ($file && $file->isValid()) {
-                        $certs[] = $file->store('instructors/'.$user->id.'/certifications', 'public');
+                        $certs[] = $file->store('instructors/'.$instructor->id.'/certifications', 'public');
                     }
                 }
                 $stored['certifications'] = $certs;
@@ -84,28 +83,29 @@ class InstructorRegisterController extends Controller
 
             // Log stored file paths so admins or future migrations can pick them up.
             if (!empty($stored)) {
-                Log::info('Instructor registration stored files', ['user_id' => $user->id, 'files' => $stored]);
+                Log::info('Instructor registration stored files', ['instructor_id' => $instructor->id, 'files' => $stored]);
             }
 
-            // persist profile fields to the user record
-            $profile = [];
-            $profile['gender'] = $data['gender'] ?? null;
-            $profile['dob'] = $data['dob'] ?? null;
-            $profile['phone'] = isset($data['phone']) ? InputSanitizer::sanitizeText($data['phone']) : null;
-            $profile['country'] = isset($data['country']) ? InputSanitizer::sanitizeText($data['country']) : null;
-            $profile['bio'] = isset($data['bio']) ? InputSanitizer::sanitizeHtml($data['bio']) : null;
-            $profile['expertise'] = isset($data['expertise']) ? InputSanitizer::sanitizeText($data['expertise']) : null;
-            $profile['years_experience'] = $data['years_experience'] ?? null;
-            $profile['linkedin'] = isset($data['linkedin']) ? trim($data['linkedin']) : null;
-            $profile['profile_photo'] = $stored['profile_photo'] ?? null;
-            $profile['cv'] = $stored['cv'] ?? null;
-            $profile['certifications'] = $stored['certifications'] ?? null;
+            $detail = [
+                'instructorID' => $instructor->id,
+                'fullname' => InputSanitizer::sanitizeText($data['name']),
+                'phone' => isset($data['phone']) ? InputSanitizer::sanitizeText($data['phone']) : null,
+                'gender' => $data['gender'] ?? null,
+                'dob' => $data['dob'] ?? null,
+                'bio' => isset($data['bio']) ? InputSanitizer::sanitizeHtml($data['bio']) : null,
+                'country' => isset($data['country']) ? InputSanitizer::sanitizeText($data['country']) : null,
+                'expertise' => isset($data['expertise']) ? InputSanitizer::sanitizeText($data['expertise']) : null,
+                'yearsOfExperience' => $data['years_experience'] ?? null,
+                'linkedin' => isset($data['linkedin']) ? trim($data['linkedin']) : null,
+                'cv' => $stored['cv'] ?? null,
+                'status' => 'pending',
+            ];
 
-            $user->update($profile);
+            InstructorDetail::create($detail);
 
             // Optionally, you may want to flag teacher accounts for manual approval. For now
             // we simply redirect to login with a success message.
-            return redirect()->route('login')->with('success', 'Instructor registration successful. Please log in.');
+            return redirect()->route('login')->with('success', 'Instructor registration submitted. Your account will be reviewed.');
         } catch (\Exception $e) {
             Log::error('Instructor registration failed: '.$e->getMessage(), ['exception' => $e]);
             return redirect()->back()->withInput()->with('error', 'Registration failed. Please try again later.');

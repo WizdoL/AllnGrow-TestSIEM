@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\Student;
+use App\Models\StudentDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -21,23 +22,28 @@ class RegisterController extends Controller
 
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email',
+            'email' => 'required|string|email|max:255|unique:students,email',
             'password' => 'required|string|min:6|confirmed',
         ]);
 
         try {
-            $user = User::create([
-                'name' => InputSanitizer::sanitizeText($data['name']),
+            // Create student account
+            $student = Student::create([
                 'email' => $data['email'],
-                'level' => 'student',
                 'password' => Hash::make($data['password']),
             ]);
 
-            // Redirect to login with a success message
+            // Create student detail record (fullname, phone, bio)
+            StudentDetail::create([
+                'studentID' => $student->id,
+                'fullname' => InputSanitizer::sanitizeText($data['name']),
+                'phone' => $request->input('phone') ? InputSanitizer::sanitizeText($request->input('phone')) : null,
+                'bio' => $request->input('bio') ? InputSanitizer::sanitizeHtml($request->input('bio')) : null,
+            ]);
+
             return redirect()->route('login')->with('success', 'Registration successful. Please log in.');
         } catch (\Exception $e) {
-            // Log the exception for debugging and show a generic error to the user
-            Log::error('Registration failed: '.$e->getMessage(), ['exception' => $e]);
+            Log::error('Student registration failed: '.$e->getMessage(), ['exception' => $e]);
             return redirect()->back()->withInput()->with('error', 'Registration failed. Please try again later.');
         }
     }
