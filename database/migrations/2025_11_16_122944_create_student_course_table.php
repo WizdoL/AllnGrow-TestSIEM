@@ -10,13 +10,19 @@ return new class extends Migration
     {
         Schema::create('student_course', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('studentID'); // Ubah ini
-            $table->unsignedBigInteger('courseID'); // Ubah ini
+            $table->unsignedBigInteger('studentID');
+            $table->unsignedBigInteger('courseID');
             $table->tinyInteger('completion')->default(0)->comment('0-100 progress percent');
             $table->boolean('completed')->default(false);
             $table->timestamps();
 
-            // Foreign key terpisah
+            $table->unique(['studentID', 'courseID']);
+            $table->index('studentID');
+            $table->index('courseID');
+        });
+
+        // Foreign keys terpisah
+        Schema::table('student_course', function (Blueprint $table) {
             $table->foreign('studentID')
                   ->references('id')
                   ->on('students')
@@ -26,10 +32,6 @@ return new class extends Migration
                   ->references('id')
                   ->on('courses')
                   ->onDelete('cascade');
-
-            $table->unique(['studentID', 'courseID']);
-            $table->index('studentID');
-            $table->index('courseID');
         });
     }
 

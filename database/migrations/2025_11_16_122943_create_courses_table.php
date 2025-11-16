@@ -10,19 +10,21 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('instructorID'); // Ubah ini
+            $table->unsignedBigInteger('instructorID');
             $table->string('title');
             $table->decimal('price', 10, 2)->default(0);
             $table->string('thumbnail')->nullable();
             $table->timestamps();
 
-            // Foreign key terpisah
+            $table->index('instructorID');
+        });
+
+        // Foreign key terpisah
+        Schema::table('courses', function (Blueprint $table) {
             $table->foreign('instructorID')
                   ->references('id')
                   ->on('instructors')
                   ->onDelete('cascade');
-
-            $table->index('instructorID');
         });
     }
 

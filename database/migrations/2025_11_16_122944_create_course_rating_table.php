@@ -10,13 +10,19 @@ return new class extends Migration
     {
         Schema::create('course_rating', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('courseID'); // Ubah ini
-            $table->unsignedBigInteger('studentID'); // Ubah ini
+            $table->unsignedBigInteger('courseID');
+            $table->unsignedBigInteger('studentID');
             $table->tinyInteger('rating')->comment('1-5 scale');
             $table->text('review')->nullable();
             $table->timestamps();
 
-            // Foreign key terpisah
+            $table->unique(['courseID', 'studentID']);
+            $table->index('courseID');
+            $table->index('studentID');
+        });
+
+        // Foreign keys terpisah
+        Schema::table('course_rating', function (Blueprint $table) {
             $table->foreign('courseID')
                   ->references('id')
                   ->on('courses')
@@ -26,10 +32,6 @@ return new class extends Migration
                   ->references('id')
                   ->on('students')
                   ->onDelete('cascade');
-
-            $table->unique(['courseID', 'studentID']);
-            $table->index('courseID');
-            $table->index('studentID');
         });
     }
 
