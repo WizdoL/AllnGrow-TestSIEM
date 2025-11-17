@@ -20,9 +20,8 @@
             <div class="logo">AllnGrow</div>
             <h1 class="login-title">Register For Instructor</h1>
         </div>
-        <form class="form-container" method="POST" action="{{ route('register') }}">
+        <form class="form-container" method="POST" action="{{ route('register.instructor') }}">
             @csrf
-            <input type="hidden" name="level" value="student" />
             {{-- Prominent warning box when registration fails --}}
             @if(session('error') || $errors->any())
                 <div style="background:#fff3cd;border:1px solid #ffeeba;color:#856404;padding:14px;margin:12px 0;border-radius:6px;">
