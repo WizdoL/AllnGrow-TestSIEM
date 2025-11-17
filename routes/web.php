@@ -7,11 +7,14 @@ use App\Http\Controllers\InstructorRegisterController;
 use App\Http\Controllers\StudentLoginController;
 use App\Http\Controllers\InstructorLoginController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\AdminLoginController;
+use App\Http\Controllers\AdminInstructorController;
+use App\Http\Controllers\InstructorCourseController;
 
 Route::middleware('web')->group(function () {
     // landing page
     Route::get('/', function () {
-        return view('/landingPage/landing');
+        return view('landingPage.landing');
     })->name('home');
 
     // Student Login
@@ -20,7 +23,7 @@ Route::middleware('web')->group(function () {
     Route::post('/student/logout', [StudentLoginController::class, 'logout'])->name('student.logout');
 
     Route::get('/about', function () {
-        return view('/landingPage/about');
+        return view('landingPage.about');
     })->name('about');
 
     Route::get('/courses', [CourseController::class, 'course_page'])->name('courses');
@@ -30,11 +33,11 @@ Route::middleware('web')->group(function () {
 
     // Course overview & detail
     Route::get('/overviewcourses', function () {
-        return view('/detailCourses/overviewcourses'); 
+        return view('detailCourses.overviewcourses'); 
     })->name('overviewcourses');
 
     Route::get('/coursesDetail', function () {
-        return view('/detailCourses/coursesDetail'); 
+        return view('detailCourses.coursesDetail'); 
     })->name('coursesDetail');
 
     // Instructor Login
@@ -42,69 +45,86 @@ Route::middleware('web')->group(function () {
     Route::post('/loginInstructor', [InstructorLoginController::class, 'login'])->name('instructor.login.post')->middleware('throttle:5,1');
     Route::post('/instructor/logout', [InstructorLoginController::class, 'logout'])->name('instructor.logout');
 
-    // Login & Dashboard Admin (sementara tanpa middleware auth khusus)
-    Route::get('/loginAdmin', function () {
-        return view('/loginAdmin/loginAdmin'); 
-    })->name('loginAdmin');
-
-    Route::get('/dashboardAdmin', function () {
-        return view('/dashboardAdmin/dashboardAdmin'); 
-    })->name('dashboardAdmin');
+    // Admin Login
+    Route::get('/loginAdmin', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
+    Route::post('/loginAdmin', [AdminLoginController::class, 'login'])->name('admin.login.post')->middleware('throttle:5,1');
+    Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
 
     // Register Instructor & Student (view)
     Route::get('/registerInstructor', function () {
-        return view('/loginRegisterInstructor/registerInstructor'); 
+        return view('loginRegisterInstructor.registerInstructor'); 
     })->name('registerInstructor');
 
     Route::get('/registerInstructorForm', function () {
-        return view('/loginRegisterInstructor/registerInstructorForm'); 
+        return view('loginRegisterInstructor.registerInstructorForm'); 
     })->name('registerInstructorForm');
 
     Route::get('/register', function () {
-        return view('/loginRegisterSiswa/register');
+        return view('loginRegisterSiswa.register');
     });
 
     // Register handler (logic)
     Route::post('/register', [RegisterController::class, 'register'])->name('register');
-    Route::post('/register-instructor', [InstructorRegisterController::class, 'register'])->name('register.instructor');
+    Route::post('/register-instructor-step1', [InstructorRegisterController::class, 'registerStep1'])->name('register.instructor.step1');
+    Route::post('/register-instructor-step2', [InstructorRegisterController::class, 'registerStep2'])->name('register.instructor.step2');
 });
 
 // Protected routes untuk Student (harus login sebagai student)
 Route::middleware(['web', 'auth.student'])->group(function () {
     // dashboard student
     Route::get('/dashboardSiswa', function () {
-        return view('/dashboardSiswa/dashboardSiswa'); 
+        return view('dashboardSiswa.dashboardSiswa'); 
     })->name('dashboardSiswa');
 
     Route::get('/progress', function () {
-        return view('/dashboardSiswa/progress'); 
+        return view('dashboardSiswa.progress'); 
     })->name('progress');
 
     Route::get('/schedule', function () {
-        return view('/dashboardSiswa/schedule'); 
+        return view('dashboardSiswa.schedule'); 
     })->name('schedule');
 
     Route::get('/settings', function () {
-        return view('/dashboardSiswa/settings'); 
+        return view('dashboardSiswa.settings'); 
     })->name('settings');
 
     Route::get('/myCourses', function () {
-        return view('/dashboardSiswa/myCourses'); 
+        return view('dashboardSiswa.myCourses'); 
     })->name('myCourses');
 });
 
 // Protected routes untuk Instructor (harus login sebagai instructor)
 Route::middleware(['web', 'auth.instructor'])->group(function () {
     // dashboard instructor
-    Route::get('/dashboardInstructor', function () {
-        return view('/dashboardInstructor/dashboardInstructor'); 
-    })->name('dashboardinstructor');
+    Route::get('/dashboardInstructor', [InstructorCourseController::class, 'dashboard'])->name('dashboardinstructor');
 
     Route::get('/messageInstructor', function () {
-        return view('/dashboardInstructor/messageInstructor'); 
+        return view('dashboardInstructor.messageInstructor'); 
     })->name('messageInstructor');
 
     Route::get('/settingsInstructor', function () {
-        return view('/dashboardInstructor/settingsInstructor'); 
+        return view('dashboardInstructor.settingsInstructor'); 
     })->name('settingsInstructor');
+
+    // Course Management
+    Route::get('/instructor/courses', [InstructorCourseController::class, 'index'])->name('instructor.courses.index');
+    Route::get('/instructor/courses/create', [InstructorCourseController::class, 'create'])->name('instructor.courses.create');
+    Route::post('/instructor/courses', [InstructorCourseController::class, 'store'])->name('instructor.courses.store');
+    Route::get('/instructor/courses/{id}/edit', [InstructorCourseController::class, 'edit'])->name('instructor.courses.edit');
+    Route::put('/instructor/courses/{id}', [InstructorCourseController::class, 'update'])->name('instructor.courses.update');
+    Route::delete('/instructor/courses/{id}', [InstructorCourseController::class, 'destroy'])->name('instructor.courses.destroy');
+    
+    // Subcourse Management
+    Route::post('/instructor/courses/{courseId}/subcourses', [InstructorCourseController::class, 'storeSubcourse'])->name('instructor.subcourses.store');
+    Route::put('/instructor/courses/{courseId}/subcourses/{subcourseId}', [InstructorCourseController::class, 'updateSubcourse'])->name('instructor.subcourses.update');
+    Route::delete('/instructor/courses/{courseId}/subcourses/{subcourseId}', [InstructorCourseController::class, 'destroySubcourse'])->name('instructor.subcourses.destroy');
+});
+
+// Protected routes untuk Admin (harus login sebagai admin)
+Route::middleware(['web', 'auth.admin'])->group(function () {
+    // dashboard admin - menampilkan daftar instructor
+    Route::get('/dashboardAdmin', [AdminInstructorController::class, 'index'])->name('dashboardAdmin');
+    
+    // Update status instructor (approve/reject)
+    Route::post('/admin/instructor/{id}/update-status', [AdminInstructorController::class, 'updateStatus'])->name('admin.instructor.updateStatus');
 });
