@@ -3,25 +3,34 @@
          alt="{{ $course->title }}" 
          class="course-image" />
 
+    <!-- Rating -->
     <div class="course-rating">
         <img src="{{ asset('images/starSymbol.png') }}" 
-             alt="5 star rating" 
+             alt="Rating Stars" 
              width="78" 
              height="14" />
-        <span>4.5k</span>
+        <span>{{ $course->rating ?? '4.5' }} ★</span>
     </div>
 
-    <h3 class="course-title">{{ $course->title }}</h3>
+    <!-- Title -->
+    <h3 class="course-title">
+        {{ Str::limit($course->title, 45, '...') }}
+    </h3>
 
+    <!-- Meta -->
     <div class="course-meta">
         <span>
-            <img src="{{ asset('images/timeSymbol.png') }}" alt="Duration" width="32" height="14" />
-            {{ $course->duration ?? '19h 30m' }}
+            <img src="{{ asset('images/timeSymbol.png') }}" 
+                 alt="Duration" 
+                 width="18" />
+            {{ $course->duration ?? '—' }}
         </span>
 
         <span>
-            <img src="{{ asset('images/user.png') }}" alt="Students" width="30" height="14" />
-            {{ $course->category->name ?? 'Unknown Category' }}
+            <img src="{{ asset('images/user.png') }}" 
+                 alt="Students" 
+                 width="18" />
+            {{ $course->students_count ?? '0' }} Students
         </span>
     </div>
 </article>
