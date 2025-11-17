@@ -1,0 +1,223 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Course;
+use App\Models\Subcourse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use App\Services\InputSanitizer;
+
+class InstructorCourseController extends Controller
+{
+    /**
+     * Display form untuk create course baru
+     */
+    public function create()
+    {
+        return view('dashboardInstructor.createCourse');
+    }
+
+    /**
+     * Store course baru ke database
+     */
+    public function store(Request $request)
+    {
+        $instructor = Auth::guard('instructor')->user();
+
+        // Validasi input
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'thumbnail' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:5120',
+            'description' => 'nullable|string|max:5000',
+            
+            // Subcourses (optional, multiple)
+            'subcourses' => 'nullable|array',
+            'subcourses.*.title' => 'required|string|max:255',
+            'subcourses.*.content' => 'nullable|string|max:10000',
+            'subcourses.*.thumbnail' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:5120',
+            'subcourses.*.fileUpload' => 'nullable|mimes:pdf,doc,docx,ppt,pptx,mp4,mov,avi|max:51200',
+        ]);
+
+        try {
+            // Upload thumbnail jika ada
+            $thumbnailPath = null;
+            if ($request->hasFile('thumbnail')) {
+                $thumbnailPath = $request->file('thumbnail')->store('courses/thumbnails', 'public');
+            }
+
+            // Buat course
+            $course = Course::create([
+                'instructorID' => $instructor->id,
+                'title' => InputSanitizer::sanitizeText($data['title']),
+                'price' => $data['price'],
+                'thumbnail' => $thumbnailPath,
+            ]);
+
+            // Buat subcourses jika ada
+            if (isset($data['subcourses']) && is_array($data['subcourses'])) {
+                foreach ($data['subcourses'] as $index => $subcourseData) {
+                    $subThumbnail = null;
+                    $subFile = null;
+
+                    // Upload subcourse thumbnail
+                    if (isset($request->subcourses[$index]['thumbnail'])) {
+                        $file = $request->file("subcourses.{$index}.thumbnail");
+                        if ($file) {
+                            $subThumbnail = $file->store("courses/{$course->id}/subcourses/thumbnails", 'public');
+                        }
+                    }
+
+                    // Upload subcourse file
+                    if (isset($request->subcourses[$index]['fileUpload'])) {
+                        $file = $request->file("subcourses.{$index}.fileUpload");
+                        if ($file) {
+                            $subFile = $file->store("courses/{$course->id}/subcourses/files", 'public');
+                        }
+                    }
+
+                    Subcourse::create([
+                        'course_id' => $course->id,
+                        'title' => InputSanitizer::sanitizeText($subcourseData['title']),
+                        'content' => isset($subcourseData['content']) ? InputSanitizer::sanitizeHtml($subcourseData['content']) : null,
+                        'thumbnail' => $subThumbnail,
+                        'fileUpload' => $subFile,
+                    ]);
+                }
+            }
+
+            Log::info('Course created successfully', [
+                'instructor_id' => $instructor->id,
+                'course_id' => $course->id,
+                'title' => $course->title,
+            ]);
+
+            return redirect()->route('instructor.courses.index')->with('success', 'Course created successfully!');
+        } catch (\Exception $e) {
+            Log::error('Failed to create course: ' . $e->getMessage(), [
+                'instructor_id' => $instructor->id,
+                'exception' => $e,
+            ]);
+            return redirect()->back()->withInput()->with('error', 'Failed to create course. Please try again.');
+        }
+    }
+
+    /**
+     * Display list courses milik instructor
+     */
+    public function index()
+    {
+        $instructor = Auth::guard('instructor')->user();
+        $courses = Course::where('instructorID', $instructor->id)
+            ->withCount('subcourses')
+            ->withCount('students')
+            ->latest()
+            ->paginate(10);
+
+        return view('dashboardInstructor.myCourses', compact('courses'));
+    }
+
+    /**
+     * Display detail course untuk edit
+     */
+    public function edit($id)
+    {
+        $instructor = Auth::guard('instructor')->user();
+        $course = Course::where('instructorID', $instructor->id)
+            ->with('subcourses')
+            ->findOrFail($id);
+
+        return view('dashboardInstructor.editCourse', compact('course'));
+    }
+
+    /**
+     * Update course
+     */
+    public function update(Request $request, $id)
+    {
+        $instructor = Auth::guard('instructor')->user();
+        $course = Course::where('instructorID', $instructor->id)->findOrFail($id);
+
+        // Validasi input
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'thumbnail' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:5120',
+        ]);
+
+        try {
+            // Upload thumbnail baru jika ada
+            if ($request->hasFile('thumbnail')) {
+                // Hapus thumbnail lama
+                if ($course->thumbnail) {
+                    Storage::disk('public')->delete($course->thumbnail);
+                }
+                $data['thumbnail'] = $request->file('thumbnail')->store('courses/thumbnails', 'public');
+            }
+
+            // Update course
+            $course->update([
+                'title' => InputSanitizer::sanitizeText($data['title']),
+                'price' => $data['price'],
+                'thumbnail' => $data['thumbnail'] ?? $course->thumbnail,
+            ]);
+
+            Log::info('Course updated successfully', [
+                'instructor_id' => $instructor->id,
+                'course_id' => $course->id,
+            ]);
+
+            return redirect()->route('instructor.courses.index')->with('success', 'Course updated successfully!');
+        } catch (\Exception $e) {
+            Log::error('Failed to update course: ' . $e->getMessage(), [
+                'course_id' => $id,
+                'exception' => $e,
+            ]);
+            return redirect()->back()->withInput()->with('error', 'Failed to update course. Please try again.');
+        }
+    }
+
+    /**
+     * Delete course
+     */
+    public function destroy($id)
+    {
+        $instructor = Auth::guard('instructor')->user();
+        $course = Course::where('instructorID', $instructor->id)->findOrFail($id);
+
+        try {
+            // Hapus thumbnail
+            if ($course->thumbnail) {
+                Storage::disk('public')->delete($course->thumbnail);
+            }
+
+            // Hapus subcourses files
+            foreach ($course->subcourses as $subcourse) {
+                if ($subcourse->thumbnail) {
+                    Storage::disk('public')->delete($subcourse->thumbnail);
+                }
+                if ($subcourse->fileUpload) {
+                    Storage::disk('public')->delete($subcourse->fileUpload);
+                }
+            }
+
+            $course->delete();
+
+            Log::info('Course deleted successfully', [
+                'instructor_id' => $instructor->id,
+                'course_id' => $course->id,
+            ]);
+
+            return redirect()->route('instructor.courses.index')->with('success', 'Course deleted successfully!');
+        } catch (\Exception $e) {
+            Log::error('Failed to delete course: ' . $e->getMessage(), [
+                'course_id' => $id,
+                'exception' => $e,
+            ]);
+            return redirect()->back()->with('error', 'Failed to delete course. Please try again.');
+        }
+    }
+}

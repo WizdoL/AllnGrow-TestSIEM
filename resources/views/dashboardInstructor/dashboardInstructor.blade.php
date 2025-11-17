@@ -17,10 +17,10 @@
         <a class="nav-link active" data-page="dashboard">
           <i class="fas fa-home"></i> Dashboard
         </a>
-        <a class="nav-link" data-page="courses">
+        <a href="{{ route('instructor.courses.index') }}" class="nav-link">
           <i class="fas fa-book"></i> My Courses
         </a>
-        <a class="nav-link" data-page="add-course">
+        <a href="{{ route('instructor.courses.create') }}" class="nav-link">
           <i class="fas fa-plus-circle"></i> Add Course
         </a>
         <a class="nav-link" data-page="students">

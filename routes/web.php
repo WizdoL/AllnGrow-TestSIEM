@@ -8,6 +8,7 @@ use App\Http\Controllers\StudentLoginController;
 use App\Http\Controllers\InstructorLoginController;
 use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\AdminInstructorController;
+use App\Http\Controllers\InstructorCourseController;
 
 Route::middleware('web')->group(function () {
     // landing page
@@ -104,6 +105,14 @@ Route::middleware(['web', 'auth.instructor'])->group(function () {
     Route::get('/settingsInstructor', function () {
         return view('/dashboardInstructor/settingsInstructor'); 
     })->name('settingsInstructor');
+
+    // Course Management
+    Route::get('/instructor/courses', [InstructorCourseController::class, 'index'])->name('instructor.courses.index');
+    Route::get('/instructor/courses/create', [InstructorCourseController::class, 'create'])->name('instructor.courses.create');
+    Route::post('/instructor/courses', [InstructorCourseController::class, 'store'])->name('instructor.courses.store');
+    Route::get('/instructor/courses/{id}/edit', [InstructorCourseController::class, 'edit'])->name('instructor.courses.edit');
+    Route::put('/instructor/courses/{id}', [InstructorCourseController::class, 'update'])->name('instructor.courses.update');
+    Route::delete('/instructor/courses/{id}', [InstructorCourseController::class, 'destroy'])->name('instructor.courses.destroy');
 });
 
 // Protected routes untuk Admin (harus login sebagai admin)
