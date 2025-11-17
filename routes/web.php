@@ -13,7 +13,7 @@ use App\Http\Controllers\InstructorCourseController;
 Route::middleware('web')->group(function () {
     // landing page
     Route::get('/', function () {
-        return view('/landingPage/landing');
+        return view('landingPage.landing');
     })->name('home');
 
     // Student Login
@@ -22,20 +22,20 @@ Route::middleware('web')->group(function () {
     Route::post('/student/logout', [StudentLoginController::class, 'logout'])->name('student.logout');
 
     Route::get('/about', function () {
-        return view('/landingPage/about');
+        return view('landingPage.about');
     })->name('about');
 
     Route::get('/courses', function () {
-        return view('/landingPage/courses'); 
+        return view('landingPage.courses'); 
     })->name('courses');
 
     // Course overview & detail
     Route::get('/overviewcourses', function () {
-        return view('/detailCourses/overviewcourses'); 
+        return view('detailCourses.overviewcourses'); 
     })->name('overviewcourses');
 
     Route::get('/coursesDetail', function () {
-        return view('/detailCourses/coursesDetail'); 
+        return view('detailCourses.coursesDetail'); 
     })->name('coursesDetail');
 
     // Instructor Login
@@ -58,7 +58,7 @@ Route::middleware('web')->group(function () {
     })->name('registerInstructorForm');
 
     Route::get('/register', function () {
-        return view('/loginRegisterSiswa/register');
+        return view('loginRegisterSiswa.register');
     });
 
     // Register handler (logic)
@@ -71,23 +71,23 @@ Route::middleware('web')->group(function () {
 Route::middleware(['web', 'auth.student'])->group(function () {
     // dashboard student
     Route::get('/dashboardSiswa', function () {
-        return view('/dashboardSiswa/dashboardSiswa'); 
+        return view('dashboardSiswa.dashboardSiswa'); 
     })->name('dashboardSiswa');
 
     Route::get('/progress', function () {
-        return view('/dashboardSiswa/progress'); 
+        return view('dashboardSiswa.progress'); 
     })->name('progress');
 
     Route::get('/schedule', function () {
-        return view('/dashboardSiswa/schedule'); 
+        return view('dashboardSiswa.schedule'); 
     })->name('schedule');
 
     Route::get('/settings', function () {
-        return view('/dashboardSiswa/settings'); 
+        return view('dashboardSiswa.settings'); 
     })->name('settings');
 
     Route::get('/myCourses', function () {
-        return view('/dashboardSiswa/myCourses'); 
+        return view('dashboardSiswa.myCourses'); 
     })->name('myCourses');
 });
 
@@ -95,15 +95,15 @@ Route::middleware(['web', 'auth.student'])->group(function () {
 Route::middleware(['web', 'auth.instructor'])->group(function () {
     // dashboard instructor
     Route::get('/dashboardInstructor', function () {
-        return view('/dashboardInstructor/dashboardInstructor'); 
+        return view('dashboardInstructor.dashboardInstructor'); 
     })->name('dashboardinstructor');
 
     Route::get('/messageInstructor', function () {
-        return view('/dashboardInstructor/messageInstructor'); 
+        return view('dashboardInstructor.messageInstructor'); 
     })->name('messageInstructor');
 
     Route::get('/settingsInstructor', function () {
-        return view('/dashboardInstructor/settingsInstructor'); 
+        return view('dashboardInstructor.settingsInstructor'); 
     })->name('settingsInstructor');
 
     // Course Management

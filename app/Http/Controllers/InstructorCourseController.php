@@ -17,7 +17,12 @@ class InstructorCourseController extends Controller
      */
     public function create()
     {
-        return view('dashboardInstructor.createCourse');
+        try {
+            return view('dashboardInstructor.createCourse');
+        } catch (\Exception $e) {
+            Log::error('Failed to load create course page: ' . $e->getMessage());
+            return redirect()->route('dashboardinstructor')->with('error', 'Failed to load page. Error: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -110,14 +115,24 @@ class InstructorCourseController extends Controller
      */
     public function index()
     {
-        $instructor = Auth::guard('instructor')->user();
-        $courses = Course::where('instructorID', $instructor->id)
-            ->withCount('subcourses')
-            ->withCount('students')
-            ->latest()
-            ->paginate(10);
+        try {
+            $instructor = Auth::guard('instructor')->user();
+            
+            if (!$instructor) {
+                return redirect()->route('instructor.login')->with('error', 'Please login first.');
+            }
 
-        return view('dashboardInstructor.myCourses', compact('courses'));
+            $courses = Course::where('instructorID', $instructor->id)
+                ->withCount('subcourses')
+                ->withCount('students')
+                ->latest()
+                ->paginate(10);
+
+            return view('dashboardInstructor.myCourses', compact('courses'));
+        } catch (\Exception $e) {
+            Log::error('Failed to load courses: ' . $e->getMessage());
+            return redirect()->route('dashboardinstructor')->with('error', 'Failed to load courses. Error: ' . $e->getMessage());
+        }
     }
 
     /**
