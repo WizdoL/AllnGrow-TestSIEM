@@ -8,6 +8,7 @@ use App\Http\Controllers\StudentLoginController;
 use App\Http\Controllers\InstructorLoginController;
 
 Route::middleware('web')->group(function () {
+    // landing page
     Route::get('/', function () {
         return view('/landingPage/landing');
     })->name('home');
@@ -24,9 +25,18 @@ Route::middleware('web')->group(function () {
     Route::get('/courses', function () {
         return view('/landingPage/courses'); 
     })->name('courses');
-    
-    // ini nanti dihapus atau nggak dirapiin logikanya aja, soalnay ini cuma placehorder agar bisa di view di localhost biar lebih gampan
-    
+
+    // login admin 
+     Route::get('/loginAdmin', function () {
+        return view('/loginAdmin/loginAdmin'); 
+    })->name('loginAdmin');
+
+
+    // dashboard admin
+     Route::get('/dashboardAdmin', function () {
+        return view('/dashboardAdmin/dashboardAdmin'); 
+    })->name('dashboardAdmin');
+
     Route::get('/overviewcourses', function () {
         return view('/detailCourses/overviewcourses'); 
     })->name('overviewcourses');
