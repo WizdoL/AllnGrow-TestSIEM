@@ -3,10 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create Course - AllnGrow Instructor</title>
+  <title>Add New Course - AllnGrow Instructor</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
+    /* Variables – full monochrome dark */
+    :root {
+      --bg: #000000;
+      --surface: #0d0d0d;
+      --surface-soft: #111111;
+      --text: #f5f5f5;
+      --text-muted: #a3a3a3;
+      --border: #262626;
+      --primary: #ffffff;
+      --primary-dark: #e5e5e5;
+      --radius: 12px;
+      --shadow: 0 2px 10px rgba(0,0,0,0.7);
+      --shadow-lg: 0 4px 20px rgba(0,0,0,0.85);
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -15,422 +30,732 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background: #fafafa;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
       min-height: 100vh;
-      padding: 20px;
     }
 
-    .container {
-      max-width: 900px;
+    .page-container {
+      max-width: 1200px;
       margin: 0 auto;
-      background: white;
-      border-radius: 12px;
-      padding: 40px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      padding: 2rem;
     }
 
-    .header {
-      margin-bottom: 30px;
-    }
-
-    .header h1 {
-      font-size: 28px;
-      color: #1a202c;
-      margin-bottom: 8px;
-    }
-
-    .header p {
-      color: #718096;
-      font-size: 14px;
+    /* Header & Back Link */
+    .page-header {
+      margin-bottom: 2rem;
     }
 
     .back-link {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      color: #000000;
+      gap: 0.5rem;
+      color: var(--text-muted);
       text-decoration: none;
-      margin-bottom: 20px;
-      font-size: 14px;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
       font-weight: 500;
-      transition: gap 0.2s;
+      transition: all 0.2s;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+    }
+
+    .back-link i {
+      font-size: 0.9rem;
     }
 
     .back-link:hover {
-      gap: 12px;
+      background: #171717;
+      color: var(--text);
+      transform: translateX(-4px);
     }
 
+    .page-header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    .page-header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Alert Messages (monochrome) */
     .alert {
-      padding: 16px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      font-size: 14px;
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius);
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      border: 1px solid var(--border);
+      background: #111111;
+      color: var(--text-muted);
     }
 
-    .alert-success {
-      background: #d4edda;
-      border: 1px solid #c3e6cb;
-      color: #155724;
+    .alert i {
+      font-size: 1.25rem;
+      flex-shrink: 0;
+      margin-top: 0.125rem;
+      color: var(--text);
+    }
+
+    .alert-success { /* gaya sama, beda konteks saja */
+      background: #101010;
     }
 
     .alert-error {
-      background: #fff3cd;
-      border: 1px solid #ffeeba;
-      color: #856404;
+      background: #101010;
     }
 
+    .alert-info {
+      background: #141414;
+    }
+
+    /* Form Container */
+    .form-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    /* Form Section */
     .form-section {
-      margin-bottom: 30px;
+      margin-bottom: 2.5rem;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .form-section:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
     }
 
     .form-section h2 {
-      font-size: 18px;
-      color: #2d3748;
-      margin-bottom: 16px;
-      padding-bottom: 8px;
-      border-bottom: 2px solid #e2e8f0;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .form-section h2 i {
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    .form-section > p {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Form Grid */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
     }
 
     .form-group {
-      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
     }
 
     .form-group label {
-      display: block;
-      font-size: 14px;
+      font-size: 0.9rem;
       font-weight: 600;
-      color: #4a5568;
-      margin-bottom: 8px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
     }
 
-    .form-group label .required {
-      color: #e53e3e;
+    .required {
+      color: var(--primary);
+      font-weight: 700;
     }
 
     .form-group input[type="text"],
     .form-group input[type="number"],
-    .form-group textarea {
+    .form-group textarea,
+    .form-group select {
       width: 100%;
-      padding: 12px 16px;
-      border: 1px solid #cbd5e0;
-      border-radius: 8px;
-      font-size: 14px;
+      padding: 0.875rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.95rem;
       font-family: inherit;
       transition: all 0.2s;
+      background: #050505;
+      color: var(--text);
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: #6b6b6b;
     }
 
     .form-group input:focus,
-    .form-group textarea:focus {
+    .form-group textarea:focus,
+    .form-group select:focus {
       outline: none;
-      border-color: #000000;
-      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.12);
     }
 
     .form-group textarea {
       resize: vertical;
-      min-height: 100px;
+      min-height: 120px;
+      line-height: 1.6;
     }
 
-    .file-input-wrapper {
+    .hint {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* File Upload */
+    .file-upload-wrapper {
       position: relative;
-      display: inline-block;
-      width: 100%;
     }
 
-    .file-input-wrapper input[type="file"] {
+    .file-upload-wrapper input[type="file"] {
       position: absolute;
       left: -9999px;
     }
 
-    .file-input-label {
+    .file-upload-label {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      border: 2px dashed #cbd5e0;
-      border-radius: 8px;
+      justify-content: center;
+      gap: 0.75rem;
+      padding: 2rem;
+      border: 2px dashed var(--border);
+      border-radius: 10px;
       cursor: pointer;
       transition: all 0.2s;
-      background: #f7fafc;
+      background: #050505;
+      text-align: center;
     }
 
-    .file-input-label:hover {
-      border-color: #000000;
-      background: #f5f5f5;
+    .file-upload-label:hover {
+      border-color: var(--primary);
+      background: #161616;
     }
 
-    .file-input-label i {
-      color: #000000;
-      font-size: 20px;
+    .file-upload-label i {
+      color: var(--primary);
+      font-size: 2rem;
+    }
+
+    .file-upload-label span {
+      font-size: 0.95rem;
+      color: var(--text);
+      font-weight: 500;
     }
 
     .file-name {
-      font-size: 13px;
-      color: #4a5568;
-      margin-top: 6px;
+      font-size: 0.875rem;
+      color: var(--primary);
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
-    .subcourse-section {
-      background: #f7fafc;
-      padding: 20px;
-      border-radius: 8px;
-      margin-bottom: 16px;
-      border: 1px solid #e2e8f0;
+    .file-name i {
+      color: var(--primary);
     }
 
-    .subcourse-header {
+    /* Module/Subcourse Card */
+    .module-card {
+      background: #050505;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .module-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
     }
 
-    .subcourse-header h3 {
-      font-size: 16px;
-      color: #2d3748;
+    .module-header h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
-    .btn-remove {
-      background: #fc8181;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 13px;
-      transition: background 0.2s;
+    .module-header h3 i {
+      color: var(--text);
+      font-size: 1rem;
     }
 
-    .btn-remove:hover {
-      background: #f56565;
+    .module-number {
+      background: #181818;
+      color: var(--text);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
     }
 
-    .btn-add-subcourse {
-      background: #48bb78;
-      color: white;
-      border: none;
-      padding: 12px 20px;
+    .btn-remove-module {
+      background: #222222;
+      color: var(--text);
+      border: 1px solid #3a3a3a;
+      padding: 0.5rem 1rem;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .btn-remove-module:hover {
+      background: #2f2f2f;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.7);
+    }
+
+    /* Add Module Button */
+    .btn-add-module {
+      background: #050505;
+      color: var(--text);
+      border: 2px dashed var(--border);
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      transition: background 0.2s;
-      margin-top: 10px;
+      gap: 0.5rem;
+      transition: all 0.2s;
+      width: 100%;
+      justify-content: center;
     }
 
-    .btn-add-subcourse:hover {
-      background: #38a169;
+    .btn-add-module:hover {
+      border-color: var(--primary);
+      background: #151515;
     }
 
+    .btn-add-module i {
+      font-size: 1rem;
+    }
+
+    /* Form Actions */
     .form-actions {
       display: flex;
-      gap: 12px;
+      gap: 1rem;
       justify-content: flex-end;
-      margin-top: 30px;
-      padding-top: 20px;
-      border-top: 2px solid #e2e8f0;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      margin-top: 2rem;
     }
 
     .btn {
-      padding: 12px 32px;
-      border-radius: 8px;
-      font-size: 14px;
+      padding: 0.875rem 1.75rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s;
       border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
     }
 
     .btn-primary {
-      background: #000000;
-      color: white;
+      background: var(--primary);
+      color: #000000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.6);
     }
 
     .btn-primary:hover {
+      background: var(--primary-dark);
       transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.9);
     }
 
     .btn-secondary {
-      background: #e2e8f0;
-      color: #4a5568;
+      background: var(--surface-soft);
+      color: var(--text);
+      border: 1px solid var(--border);
     }
 
     .btn-secondary:hover {
-      background: #cbd5e0;
+      background: #1a1a1a;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
     }
 
-    .hint {
-      font-size: 12px;
-      color: #718096;
-      margin-top: 4px;
+    /* Empty State (kalau dipakai nanti) */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      color: #3f3f46;
+      margin-bottom: 1rem;
+    }
+
+    .empty-state p {
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .page-container {
+        padding: 1rem;
+      }
+
+      .form-container {
+        padding: 1.5rem;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-actions {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .module-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+
+      .btn-remove-module {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .form-section h2 {
+        font-size: 1.125rem;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="page-container">
+    <!-- Back Link -->
     <a href="{{ route('instructor.courses.index') }}" class="back-link">
       <i class="fas fa-arrow-left"></i> Back to My Courses
     </a>
 
-    <div class="header">
+    <!-- Page Header -->
+    <div class="page-header">
       <h1>Create New Course</h1>
       <p>Fill in the details below to create a new course for your students</p>
     </div>
 
+    <!-- Alert Messages -->
     @if(session('success'))
       <div class="alert alert-success">
-        {{ session('success') }}
+        <i class="fas fa-check-circle"></i>
+        <span>{{ session('success') }}</span>
       </div>
     @endif
 
     @if(session('error') || $errors->any())
       <div class="alert alert-error">
-        @if(session('error'))
-          <div>{{ session('error') }}</div>
-        @endif
-        @if($errors->any())
-          <ul style="margin:8px 0 0 20px;">
-            @foreach($errors->all() as $error)
-              <li>{{ $error }}</li>
-            @endforeach
-          </ul>
-        @endif
+        <i class="fas fa-exclamation-circle"></i>
+        <div>
+          @if(session('error'))
+            <div>{{ session('error') }}</div>
+          @endif
+          @if($errors->any())
+            <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0;">
+              @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+              @endforeach
+            </ul>
+          @endif
+        </div>
       </div>
     @endif
 
+    <!-- Info Alert -->
+    <div class="alert alert-info">
+      <i class="fas fa-info-circle"></i>
+      <div>
+        <strong>Note:</strong> All new courses must be reviewed and approved by administrators before being published. This process typically takes 2-3 business days.
+      </div>
+    </div>
+
+    <!-- Form Container -->
     <form method="POST" action="{{ route('instructor.courses.store') }}" enctype="multipart/form-data">
       @csrf
 
-      <!-- Course Information -->
-      <div class="form-section">
-        <h2>Course Information</h2>
+      <div class="form-container">
+        <!-- Course Information Section -->
+        <div class="form-section">
+          <h2><i class="fas fa-info-circle"></i> Course Information</h2>
+          <p>Provide basic information about your course</p>
 
-        <div class="form-group">
-          <label>Course Title <span class="required">*</span></label>
-          <input type="text" name="title" value="{{ old('title') }}" required placeholder="e.g. Complete Web Development Bootcamp">
-        </div>
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label>
+                Course Title <span class="required">*</span>
+              </label>
+              <input 
+                type="text" 
+                name="title" 
+                value="{{ old('title') }}" 
+                required 
+                placeholder="e.g. Complete Web Development Bootcamp"
+              >
+            </div>
 
-        <div class="form-group">
-          <label>Price (Rp) <span class="required">*</span></label>
-          <input type="number" name="price" value="{{ old('price', 0) }}" min="0" step="0.01" required placeholder="e.g. 500000">
-          <div class="hint">Set to 0 for free course</div>
-        </div>
+            <div class="form-group">
+              <label>
+                Price (Rp) <span class="required">*</span>
+              </label>
+              <input 
+                type="number" 
+                name="price" 
+                value="{{ old('price', 0) }}" 
+                min="0" 
+                step="0.01" 
+                required 
+                placeholder="e.g. 500000"
+              >
+              <span class="hint">Set to 0 for free course</span>
+            </div>
 
-        <div class="form-group">
-          <label>Course Thumbnail</label>
-          <div class="file-input-wrapper">
-            <input type="file" name="thumbnail" id="thumbnail" accept="image/*" onchange="updateFileName(this, 'thumbnail-name')">
-            <label for="thumbnail" class="file-input-label">
-              <i class="fas fa-cloud-upload-alt"></i>
-              <span>Click to upload course thumbnail</span>
-            </label>
+            <div class="form-group">
+              <label>Course Category</label>
+              <select name="category">
+                <option value="">Select Category</option>
+                <option value="web-development">Web Development</option>
+                <option value="mobile-development">Mobile Development</option>
+                <option value="data-science">Data Science</option>
+                <option value="design">Design</option>
+                <option value="marketing">Marketing</option>
+              </select>
+            </div>
+
+            <div class="form-group full-width">
+              <label>Course Thumbnail</label>
+              <div class="file-upload-wrapper">
+                <input 
+                  type="file" 
+                  name="thumbnail" 
+                  id="thumbnail" 
+                  accept="image/*" 
+                  onchange="updateFileName(this, 'thumbnail-name')"
+                >
+                <label for="thumbnail" class="file-upload-label">
+                  <i class="fas fa-cloud-upload-alt"></i>
+                  <span>Click to upload course thumbnail</span>
+                </label>
+              </div>
+              <div class="file-name" id="thumbnail-name"></div>
+              <span class="hint">Recommended: 1920x1080px, JPG/PNG, max 5MB</span>
+            </div>
+
+            <div class="form-group full-width">
+              <label>Course Description</label>
+              <textarea 
+                name="description" 
+                placeholder="Describe what students will learn in this course..."
+              >{{ old('description') }}</textarea>
+              <span class="hint">Provide a detailed overview of your course content and learning outcomes</span>
+            </div>
           </div>
-          <div class="file-name" id="thumbnail-name"></div>
-          <div class="hint">Recommended: 1280x720px, JPG/PNG, max 5MB</div>
         </div>
 
-        <div class="form-group">
-          <label>Course Description</label>
-          <textarea name="description" placeholder="Describe what students will learn in this course...">{{ old('description') }}</textarea>
+        <!-- Modules/Subcourses Section -->
+        <div class="form-section">
+          <h2><i class="fas fa-list"></i> Course Modules</h2>
+          <p>Add modules or lessons for your course structure</p>
+
+          <div id="modules-container">
+            <!-- Modules will be added here via JavaScript -->
+          </div>
+
+          <button type="button" class="btn-add-module" onclick="addModule()">
+            <i class="fas fa-plus"></i> Add New Module
+          </button>
         </div>
-      </div>
 
-      <!-- Subcourses Section -->
-      <div class="form-section">
-        <h2>Course Modules / Subcourses</h2>
-        <p class="hint" style="margin-bottom: 16px;">Add modules or lessons for your course (optional)</p>
-
-        <div id="subcourses-container">
-          <!-- Subcourses akan ditambahkan di sini via JavaScript -->
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <a href="{{ route('instructor.courses.index') }}" class="btn btn-secondary">
+            <i class="fas fa-times"></i> Cancel
+          </a>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-paper-plane"></i> Submit for Review
+          </button>
         </div>
-
-        <button type="button" class="btn-add-subcourse" onclick="addSubcourse()">
-          <i class="fas fa-plus"></i> Add Module
-        </button>
-      </div>
-
-      <!-- Form Actions -->
-      <div class="form-actions">
-        <a href="{{ route('instructor.courses.index') }}" class="btn btn-secondary">Cancel</a>
-        <button type="submit" class="btn btn-primary">Create Course</button>
       </div>
     </form>
   </div>
 
   <script>
-    let subcourseIndex = 0;
+    let moduleIndex = 0;
 
-    function addSubcourse() {
-      const container = document.getElementById('subcourses-container');
-      const subcourseHtml = `
-        <div class="subcourse-section" id="subcourse-${subcourseIndex}">
-          <div class="subcourse-header">
-            <h3>Module ${subcourseIndex + 1}</h3>
-            <button type="button" class="btn-remove" onclick="removeSubcourse(${subcourseIndex})">
-              <i class="fas fa-trash"></i> Remove
+    function addModule() {
+      const container = document.getElementById('modules-container');
+      const moduleNumber = moduleIndex + 1;
+      
+      const moduleHtml = `
+        <div class="module-card" id="module-\${moduleIndex}">
+          <div class="module-header">
+            <h3>
+              <i class="fas fa-book"></i>
+              Module \${moduleNumber}
+              <span class="module-number">#\${moduleNumber}</span>
+            </h3>
+            <button type="button" class="btn-remove-module" onclick="removeModule(\${moduleIndex})">
+              <i class="fas fa-trash"></i> Remove Module
             </button>
           </div>
 
-          <div class="form-group">
-            <label>Module Title <span class="required">*</span></label>
-            <input type="text" name="subcourses[${subcourseIndex}][title]" placeholder="e.g. Introduction to HTML" required>
-          </div>
-
-          <div class="form-group">
-            <label>Module Content</label>
-            <textarea name="subcourses[${subcourseIndex}][content]" placeholder="Describe this module..."></textarea>
-          </div>
-
-          <div class="form-group">
-            <label>Module Thumbnail</label>
-            <div class="file-input-wrapper">
-              <input type="file" name="subcourses[${subcourseIndex}][thumbnail]" id="sub-thumb-${subcourseIndex}" accept="image/*" onchange="updateFileName(this, 'sub-thumb-name-${subcourseIndex}')">
-              <label for="sub-thumb-${subcourseIndex}" class="file-input-label">
-                <i class="fas fa-image"></i>
-                <span>Upload module thumbnail</span>
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label>
+                Module Title <span class="required">*</span>
               </label>
+              <input 
+                type="text" 
+                name="subcourses[\${moduleIndex}][title]" 
+                placeholder="e.g. Introduction to HTML" 
+                required
+              >
             </div>
-            <div class="file-name" id="sub-thumb-name-${subcourseIndex}"></div>
-          </div>
 
-          <div class="form-group">
-            <label>Module File (PDF, Video, etc)</label>
-            <div class="file-input-wrapper">
-              <input type="file" name="subcourses[${subcourseIndex}][fileUpload]" id="sub-file-${subcourseIndex}" accept=".pdf,.doc,.docx,.ppt,.pptx,.mp4,.mov,.avi" onchange="updateFileName(this, 'sub-file-name-${subcourseIndex}')">
-              <label for="sub-file-${subcourseIndex}" class="file-input-label">
-                <i class="fas fa-file-upload"></i>
-                <span>Upload module file</span>
-              </label>
+            <div class="form-group full-width">
+              <label>Module Description</label>
+              <textarea 
+                name="subcourses[\${moduleIndex}][content]" 
+                placeholder="Describe this module content and learning objectives..."
+                rows="4"
+              ></textarea>
             </div>
-            <div class="file-name" id="sub-file-name-${subcourseIndex}"></div>
-            <div class="hint">Accepted: PDF, DOC, PPT, MP4, MOV, AVI (max 50MB)</div>
+
+            <div class="form-group full-width">
+              <label>Module Thumbnail</label>
+              <div class="file-upload-wrapper">
+                <input 
+                  type="file" 
+                  name="subcourses[\${moduleIndex}][thumbnail]" 
+                  id="module-thumb-\${moduleIndex}" 
+                  accept="image/*" 
+                  onchange="updateFileName(this, 'module-thumb-name-\${moduleIndex}')"
+                >
+                <label for="module-thumb-\${moduleIndex}" class="file-upload-label">
+                  <i class="fas fa-image"></i>
+                  <span>Upload module thumbnail</span>
+                </label>
+              </div>
+              <div class="file-name" id="module-thumb-name-\${moduleIndex}"></div>
+              <span class="hint">Optional: 1280x720px, JPG/PNG, max 3MB</span>
+            </div>
+
+            <div class="form-group full-width">
+              <label>Module File (PDF, Video, Document)</label>
+              <div class="file-upload-wrapper">
+                <input 
+                  type="file" 
+                  name="subcourses[\${moduleIndex}][fileUpload]" 
+                  id="module-file-\${moduleIndex}" 
+                  accept=".pdf,.doc,.docx,.ppt,.pptx,.mp4,.mov,.avi" 
+                  onchange="updateFileName(this, 'module-file-name-\${moduleIndex}')"
+                >
+                <label for="module-file-\${moduleIndex}" class="file-upload-label">
+                  <i class="fas fa-file-upload"></i>
+                  <span>Upload module content file</span>
+                </label>
+              </div>
+              <div class="file-name" id="module-file-name-\${moduleIndex}"></div>
+              <span class="hint">Accepted: PDF, DOC, PPT, MP4, MOV, AVI (max 50MB)</span>
+            </div>
           </div>
         </div>
       `;
       
-      container.insertAdjacentHTML('beforeend', subcourseHtml);
-      subcourseIndex++;
+      container.insertAdjacentHTML('beforeend', moduleHtml);
+      moduleIndex++;
     }
 
-    function removeSubcourse(index) {
-      const element = document.getElementById(`subcourse-${index}`);
+    function removeModule(index) {
+      const element = document.getElementById(`module-\${index}`);
       if (element) {
-        element.remove();
+        element.style.transition = 'all 0.3s';
+        element.style.opacity = '0';
+        element.style.transform = 'translateX(-20px)';
+        
+        setTimeout(() => {
+          element.remove();
+        }, 300);
       }
     }
 
     function updateFileName(input, targetId) {
       const target = document.getElementById(targetId);
       if (input.files && input.files[0]) {
-        target.textContent = `Selected: ${input.files[0].name}`;
+        const fileSize = (input.files[0].size / 1024 / 1024).toFixed(2); // Size in MB
+        target.innerHTML = `<i class="fas fa-check-circle"></i> \${input.files[0].name} (\${fileSize} MB)`;
       } else {
-        target.textContent = '';
+        target.innerHTML = '';
       }
     }
+
+    // Kalau mau langsung ada 1 module default saat load:
+    // window.addEventListener('DOMContentLoaded', () => {
+    //   addModule();
+    // });
   </script>
 </body>
 </html>

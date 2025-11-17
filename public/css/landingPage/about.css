@@ -1,8 +1,11 @@
+/* SECTION : ABOUT HERO */
 .about-hero {
   text-align: center;
   padding: 80px 20px;
   font-family: "Sora", sans-serif;
-  color: #111;
+  color: #ffffff;
+  background: #000000;
+  margin-top:150px;
 }
 
 .about-hero-img {
@@ -17,38 +20,33 @@
   height: 340px;
   border-radius: 20px;
   object-fit: cover;
-  background: #fff;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  background: #111;
+  box-shadow: 0 10px 35px rgba(255, 255, 255, 0.08);
   transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
 
 .about-hero-img img:hover {
   transform: translateY(-6px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 18px 45px rgba(255, 255, 255, 0.12);
 }
 
 .about-hero h1 {
   font-size: 40px;
-  font-weight: 500;
+  font-weight: 600;
   margin-bottom: 16px;
-  letter-spacing: -0.5px;
-}
-
-.about-hero p {
-  font-size: 18px;
-  color: #555;
-  max-width: 680px;
-  margin: 0 auto;
-  line-height: 1.7;
+  color: #ffffff;
 }
 
 .about-hero p {
   font-size: 18px;
   max-width: 700px;
   margin: 0 auto;
-  opacity: 0.9;
+  opacity: 0.85;
+  color: #e5e5e5;
+  line-height: 1.7;
 }
 
+/* CONTENT SECTION */
 .about-content-section {
   padding: 80px 20px;
   display: flex;
@@ -56,22 +54,24 @@
   align-items: center;
   justify-content: center;
   gap: 60px;
-  margin-top: 50px;
+  background: #000000;
 }
 
 .about-text {
   max-width: 550px;
 }
+
 .about-text h2 {
   font-size: 32px;
-  color: black;
+  color: #ffffff;
   margin-bottom: 20px;
-  font-weight: 5V00;
+  font-weight: 600;
 }
+
 .about-text p {
   font-size: 18px;
-  line-height: 1.6;
-  color: #444;
+  line-height: 1.7;
+  color: #cfcfcf;
   margin-bottom: 18px;
 }
 
@@ -79,20 +79,23 @@
   border-radius: 12px;
   width: 480px;
   max-width: 100%;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 35px rgba(255, 255, 255, 0.12);
 }
 
+/* VALUES SECTION */
 .values-section {
-  background-color: #ffffff;
+  background-color: #000000;
   padding: 80px 20px;
   text-align: center;
 }
+
 .values-title {
   font-size: 36px;
-  color: black;
+  color: #ffffff;
   margin-bottom: 50px;
-  font-weight:500;
+  font-weight: 600;
 }
+
 .values-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -102,97 +105,69 @@
 }
 
 .value-card {
-  background: white;
-  border-radius: 12px;
+  background: #111111;
+  border-radius: 16px;
   padding: 30px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 32px rgba(255, 255, 255, 0.05);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
 .value-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+  transform: translateY(-10px);
+  box-shadow: 0 18px 40px rgba(255, 255, 255, 0.12);
 }
+
 .value-card h3 {
-  color: black;
+  color: #ffffff;
   font-size: 22px;
   margin-bottom: 15px;
-  font-weight: 400;
+  font-weight: 500;
 }
+
 .value-card p {
-  color: #555;
-  line-height: 1.5;
-  font-size: 16px;
+  color: #cfcfcf;
+  line-height: 1.6;
+  font-size: 15px;
 }
 
-@keyframes gradientAnimation {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
+/* CTA JOIN SECTION */
 .cta-join {
-  background: white;
-  background-size: 400% 400%;
-  animation: gradientAnimation 15s ease infinite;
-  
-  color: black;
-  text-align: center;
+  background: #000000;
   padding: 80px 20px;
-  overflow: hidden; 
+  text-align: center;
+  overflow: hidden;
 }
 
 .cta-join h2 {
+  color: #ffffff;
   font-size: 36px;
   margin-bottom: 20px;
-  font-weight: 700;
-  animation: fadeInUp 0.8s ease-out forwards;
 }
 
 .cta-join p {
   font-size: 18px;
   max-width: 700px;
   margin: 0 auto 40px;
-  opacity: 0;
-  animation: fadeInUp 0.8s ease-out forwards;
-  animation-delay: 0.2s;
+  color: #d1d1d1;
+  line-height: 1.7;
 }
 
 .cta-join button {
-  background-color: #000000;
-  color: white;
+  background-color: #ffffff;
+  color: #000000;
   border: none;
   padding: 16px 36px;
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 700;
   border-radius: 50px;
   cursor: pointer;
   transition: all 0.3s ease;
-  opacity: 0; 
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  animation: fadeInUp 0.8s ease-out forwards;
-  animation-delay: 0.4s;
+  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.1);
 }
 
 .cta-join button:hover {
-  background-color: #ffffff;
-  color: #000000;
-  transform: translateY(-5px); 
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); 
+  background-color: #000000;
+  color: #ffffff;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 35px rgba(255,255,255,0.3);
 }

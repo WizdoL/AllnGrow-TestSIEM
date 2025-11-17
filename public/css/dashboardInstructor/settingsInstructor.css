@@ -1,17 +1,17 @@
-/* Variables */
+/* Variables – dark monochrome (hitam & putih) */
 :root {
-  --bg: #fafafa;
-  --surface: #ffffff;
-  --text: #1a1a1a;
-  --text-muted: #737373;
-  --border: #e5e5e5;
-  --accent: #000000;
-  --primary: #6c5ce7;
-  --success: #00b894;
-  --warning: #fdcb6e;
-  --danger: #e74c3c;
+  --bg: #000000;
+  --surface: #0f0f0f;
+  --text: #f5f5f5;
+  --text-muted: #9ca3af;
+  --border: #27272a;
+  --accent: #ffffff;   /* accent putih */
+  --primary: #ffffff;
+  --success: #ffffff;
+  --warning: #d4d4d4;
+  --danger: #a3a3a3;
   --radius: 12px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.04);
+  --shadow: 0 1px 6px rgba(0,0,0,0.6);
 }
 
 /* Reset */
@@ -102,6 +102,7 @@ body {
   border-radius: var(--radius);
   padding: 2rem;
   margin-bottom: 1.5rem;
+  box-shadow: var(--shadow);
 }
 
 .card-title {
@@ -133,14 +134,15 @@ body {
 .photo-placeholder {
   width: 100px;
   height: 100px;
-  background: var(--accent);
-  color: var(--surface);
+  background: #111111;
+  color: var(--accent);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2rem;
   font-weight: 600;
+  border: 1px solid var(--accent);
 }
 
 .photo-actions {
@@ -188,6 +190,8 @@ body {
   font-size: 0.9rem;
   font-family: inherit;
   transition: all 0.2s;
+  background: #020202;
+  color: var(--text);
 }
 
 .form-group input:focus,
@@ -195,11 +199,12 @@ body {
 .form-group textarea:focus {
   outline: none;
   border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.12);
 }
 
 .form-group input:disabled,
 .form-group input[readonly] {
-  background: var(--bg);
+  background: #050505;
   color: var(--text-muted);
   cursor: not-allowed;
 }
@@ -212,7 +217,7 @@ body {
 .btn-primary {
   padding: 0.75rem 1.5rem;
   background: var(--accent);
-  color: var(--surface);
+  color: #000000;
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -225,7 +230,7 @@ body {
 }
 
 .btn-primary:hover {
-  background: #333;
+  background: #e5e5e5;
 }
 
 .btn-secondary {
@@ -244,7 +249,7 @@ body {
 }
 
 .btn-secondary:hover {
-  background: var(--bg);
+  background: #181818;
 }
 
 .btn-text {
@@ -263,8 +268,8 @@ body {
 
 .btn-danger {
   padding: 0.75rem 1.5rem;
-  background: var(--danger);
-  color: white;
+  background: #262626;
+  color: var(--text);
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -274,7 +279,7 @@ body {
 }
 
 .btn-danger:hover {
-  background: #c0392b;
+  background: #404040;
 }
 
 .form-actions {
@@ -290,8 +295,9 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
-  background: var(--bg);
+  background: #050505;
   border-radius: 8px;
+  border: 1px solid var(--border);
 }
 
 .status-indicator {
@@ -303,12 +309,12 @@ body {
 
 .status-indicator i {
   font-size: 1.25rem;
-  color: var(--danger);
+  color: var(--text-muted);
 }
 
 /* Danger Zone */
 .danger-zone {
-  border-color: var(--danger);
+  border-color: var(--border);
 }
 
 .danger-action {
@@ -316,7 +322,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
-  background: #fee;
+  background: #111111;
   border-radius: 8px;
 }
 
@@ -337,8 +343,9 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 1.25rem;
-  background: var(--bg);
+  background: #050505;
   border-radius: 8px;
+  border: 1px solid var(--border);
 }
 
 .notification-info strong {
@@ -375,7 +382,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
+  background-color: #4b5563;
   transition: 0.3s;
   border-radius: 24px;
 }
@@ -387,7 +394,7 @@ body {
   width: 18px;
   left: 3px;
   bottom: 3px;
-  background-color: white;
+  background-color: #e5e7eb;
   transition: 0.3s;
   border-radius: 50%;
 }
@@ -412,8 +419,9 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 1.25rem;
-  background: var(--bg);
+  background: #050505;
   border-radius: 8px;
+  border: 1px solid var(--border);
 }
 
 .data-action-item strong {

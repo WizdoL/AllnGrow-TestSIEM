@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>About Us - AllnGrow</title>
   <meta name="description" content="Learn about AllnGrow — a trusted online learning platform that empowers college students through professional courses, one-on-one mentoring, and certified programs." />
-  <link rel="stylesheet" href="css/landing.css" />
-  <link rel="stylesheet" href="css/about.css" />
+  <link rel="stylesheet" href="css/landingPage/landing.css" />
+  <link rel="stylesheet" href="css/landingPage/about.css" />
 </head>
 
                                                                      <!-- ABOUT US PAGE -->

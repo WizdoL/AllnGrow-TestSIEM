@@ -1,18 +1,18 @@
-/* Variables */
+/* Variables – dark monochrome */
 :root {
-  --bg: #fafafa;
-  --surface: #ffffff;
-  --text: #1a1a1a;
-  --text-muted: #737373;
-  --border: #e5e5e5;
-  --accent: #000000;
-  --primary: #6c5ce7;
-  --success: #00b894;
-  --gold: #f39c12;
-  --silver: #95a5a6;
-  --bronze: #cd7f32;
+  --bg: #000000;
+  --surface: #0f0f0f;
+  --text: #f5f5f5;
+  --text-muted: #9ca3af;
+  --border: #27272a;
+  --accent: #ffffff;
+  --primary: #ffffff;
+  --success: #d4d4d4;
+  --gold: #f5f5f5;    /* "emas" = paling terang */
+  --silver: #a3a3a3;  /* medium grey */
+  --bronze: #737373;  /* lebih gelap */
   --radius: 12px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.04);
+  --shadow: 0 1px 6px rgba(0,0,0,0.7);
 }
 
 /* Reset */
@@ -66,12 +66,12 @@ body {
 }
 
 .sidebar a:hover {
-  background: var(--bg);
+  background: #181818;
 }
 
 .sidebar a.active {
   background: var(--accent);
-  color: var(--surface);
+  color: #000000;
 }
 
 .sidebar a i {
@@ -127,7 +127,7 @@ body {
 }
 
 .icon-btn:hover {
-  background: var(--bg);
+  background: #181818;
 }
 
 .user {
@@ -140,7 +140,7 @@ body {
   width: 40px;
   height: 40px;
   background: var(--accent);
-  color: var(--surface);
+  color: #000000;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -179,12 +179,13 @@ body {
   display: flex;
   align-items: center;
   gap: 1rem;
+  box-shadow: var(--shadow);
 }
 
 .stat-icon {
   width: 56px;
   height: 56px;
-  background: var(--bg);
+  background: #050505;
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -228,6 +229,7 @@ body {
   display: flex;
   gap: 3rem;
   align-items: center;
+  box-shadow: var(--shadow);
 }
 
 .progress-circle {
@@ -245,7 +247,7 @@ body {
 
 .progress-bg {
   fill: none;
-  stroke: var(--bg);
+  stroke: #050505;
   stroke-width: 8;
 }
 
@@ -316,6 +318,7 @@ body {
   display: flex;
   gap: 2rem;
   align-items: center;
+  box-shadow: var(--shadow);
 }
 
 .course-info {
@@ -364,7 +367,7 @@ body {
 
 .progress-bar-container {
   height: 8px;
-  background: var(--bg);
+  background: #050505;
   border-radius: 999px;
   overflow: hidden;
   margin-bottom: 0.5rem;
@@ -396,10 +399,11 @@ body {
   padding: 1.5rem;
   text-align: center;
   transition: all 0.2s;
+  box-shadow: var(--shadow);
 }
 
 .achievement-card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.8);
   transform: translateY(-2px);
 }
 
@@ -412,21 +416,20 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 1.75rem;
+  color: #000000;
 }
 
+/* Monochrome medal variants */
 .achievement-icon.gold {
-  background: linear-gradient(135deg, #f39c12, #f1c40f);
-  color: white;
+  background: linear-gradient(135deg, var(--gold), #d4d4d4);
 }
 
 .achievement-icon.silver {
-  background: linear-gradient(135deg, #95a5a6, #bdc3c7);
-  color: white;
+  background: linear-gradient(135deg, var(--silver), #d4d4d4);
 }
 
 .achievement-icon.bronze {
-  background: linear-gradient(135deg, #cd7f32, #d98c3a);
-  color: white;
+  background: linear-gradient(135deg, var(--bronze), #4b5563);
 }
 
 .achievement-card h3 {

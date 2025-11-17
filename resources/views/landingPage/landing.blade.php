@@ -9,7 +9,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:title" content="AllnGrow - Professional Online Learning & Certification Platform" />
   <meta property="og:description" content="Transform your career with AllnGrow's professional online courses. Get certified by global institutions like Google, Adobe & ABRSM." />
-  <link rel="stylesheet" href="css/landing.css">
+  <link rel="stylesheet" href="css/landingPage/landing.css">
 
   <style>
     .fade-section, .fade-left, .fade-right {
@@ -277,16 +277,16 @@
           <button class="plan-btn">Choose</button>
         </div>
         <div class="pricing-card featured">
-          <div class="plan-name" style="color: #ffffff;">PRO</div>
+          <div class="plan-name" style="color: #000000ff;">PRO</div>
           <div class="plan-price">199K</div>
-          <div class="plan-period" style="color: #ffffff;">Month</div>
-          <p style="font-size: 16px; color: #ffffff; margin-bottom: 32px;">*include certificate for ....</p>
+          <div class="plan-period" style="color: #000000ff;">Month</div>
+          <p style="font-size: 16px; color: #000000ff; margin-bottom: 32px;">*include certificate for ....</p>
           <ul class="plan-features">
-            <li style="color: #ffffff;"><div class="check-icon"><img src="images/centangIjo.png" alt="Check" width="15" height="20" /></div>All Basic Features</li>
-            <li style="color: #ffffff;"><div class="check-icon"><img src="images/centangIjo.png" alt="Check" width="15" height="20" /></div>Access additional materials</li>
-            <li style="color: #ffffff;"><div class="check-icon"><img src="images/centangIjo.png" alt="Check" width="15" height="20" /></div>Interactive discussions with Instructor</li>
-            <li style="color: #ffffff;"><div class="check-icon"><img src="images/centangIjo.png" alt="Check" width="15" height="20" /></div>Exclusive updates</li>
-            <li style="color: #ffffff;"><div class="check-icon"><img src="images/centangIjo.png" alt="Check" width="15" height="20" /></div>Free practice before certification</li>
+            <li style="color: #000000ff;"><div class="check-icon"><img src="images/centangIjo.png" alt="Check" width="15" height="20" /></div>All Basic Features</li>
+            <li style="color: #000000ff;"><div class="check-icon"><img src="images/centangIjo.png" alt="Check" width="15" height="20" /></div>Access additional materials</li>
+            <li style="color: #000000ff;"><div class="check-icon"><img src="images/centangIjo.png" alt="Check" width="15" height="20" /></div>Interactive discussions with Instructor</li>
+            <li style="color: #000000ff;"><div class="check-icon"><img src="images/centangIjo.png" alt="Check" width="15" height="20" /></div>Exclusive updates</li>
+            <li style="color: #000000ff;"><div class="check-icon"><img src="images/centangIjo.png" alt="Check" width="15" height="20" /></div>Free practice before certification</li>
           </ul>
           <button class="plan-btn">Choose</button>
         </div>

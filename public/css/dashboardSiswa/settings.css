@@ -1,16 +1,16 @@
-/* Variables */
+/* Variables – dark monochrome */
 :root {
-  --bg: #fafafa;
-  --surface: #ffffff;
-  --text: #1a1a1a;
-  --text-muted: #737373;
-  --border: #e5e5e5;
-  --accent: #000000;
-  --primary: #6c5ce7;
-  --success: #00b894;
-  --danger: #e74c3c;
+  --bg: #000000;
+  --surface: #0f0f0f;
+  --text: #f5f5f5;
+  --text-muted: #9ca3af;
+  --border: #27272a;
+  --accent: #ffffff;
+  --primary: #ffffff;
+  --success: #d4d4d4;
+  --danger: #a3a3a3;
   --radius: 12px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.04);
+  --shadow: 0 1px 6px rgba(0,0,0,0.7);
 }
 
 /* Reset */
@@ -64,12 +64,12 @@ body {
 }
 
 .sidebar a:hover {
-  background: var(--bg);
+  background: #181818;
 }
 
 .sidebar a.active {
   background: var(--accent);
-  color: var(--surface);
+  color: #000000;
 }
 
 .sidebar a i {
@@ -125,7 +125,7 @@ body {
 }
 
 .icon-btn:hover {
-  background: var(--bg);
+  background: #181818;
 }
 
 .user {
@@ -138,7 +138,7 @@ body {
   width: 40px;
   height: 40px;
   background: var(--accent);
-  color: var(--surface);
+  color: #000000;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -212,6 +212,7 @@ body {
   border-radius: var(--radius);
   padding: 2rem;
   margin-bottom: 1.5rem;
+  box-shadow: var(--shadow);
 }
 
 .settings-section h2 {
@@ -237,14 +238,15 @@ body {
 .photo-placeholder {
   width: 100px;
   height: 100px;
-  background: var(--accent);
-  color: var(--surface);
+  background: #111111;
+  color: var(--accent);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2rem;
   font-weight: 700;
+  border: 1px solid var(--accent);
 }
 
 .photo-edit-btn {
@@ -254,17 +256,18 @@ body {
   width: 36px;
   height: 36px;
   background: var(--surface);
-  border: 2px solid var(--border);
+  border: 1px solid var(--border);
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+  color: var(--text);
 }
 
 .photo-edit-btn:hover {
-  background: var(--bg);
+  background: #181818;
 }
 
 .photo-info h3 {
@@ -310,6 +313,8 @@ body {
   font-size: 0.9rem;
   font-family: inherit;
   transition: all 0.2s;
+  background: #020202;
+  color: var(--text);
 }
 
 .form-group input:focus,
@@ -317,11 +322,13 @@ body {
 .form-group textarea:focus {
   outline: none;
   border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.1);
 }
 
 .form-group input:disabled {
-  background: var(--bg);
+  background: #050505;
   cursor: not-allowed;
+  color: var(--text-muted);
 }
 
 .form-group textarea {
@@ -339,7 +346,7 @@ body {
 .btn-primary {
   padding: 0.75rem 1.5rem;
   background: var(--accent);
-  color: var(--surface);
+  color: #000000;
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -349,7 +356,7 @@ body {
 }
 
 .btn-primary:hover {
-  background: #333;
+  background: #e5e5e5;
 }
 
 .btn-secondary {
@@ -365,13 +372,13 @@ body {
 }
 
 .btn-secondary:hover {
-  background: var(--bg);
+  background: #181818;
 }
 
 .btn-danger {
   padding: 0.75rem 1.5rem;
-  background: var(--danger);
-  color: var(--surface);
+  background: #262626;
+  color: var(--text);
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -381,7 +388,7 @@ body {
 }
 
 .btn-danger:hover {
-  background: #c0392b;
+  background: #404040;
 }
 
 .btn-disconnect {
@@ -398,7 +405,7 @@ body {
 
 .btn-disconnect:hover {
   background: var(--danger);
-  color: var(--surface);
+  color: #000000;
 }
 
 /* Security Item */
@@ -492,15 +499,17 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
-  color: var(--surface);
+  color: #000000;
 }
 
+/* Monochrome icons instead of brand colors */
 .account-icon.google {
-  background: #ea4335;
+  background: #e5e5e5;
 }
 
 .account-icon.github {
-  background: #24292e;
+  background: #4b4b4b;
+  color: #f5f5f5;
 }
 
 .account-info {
@@ -552,11 +561,13 @@ body {
   border-radius: 8px;
   font-size: 0.875rem;
   cursor: pointer;
+  background: #020202;
+  color: var(--text);
 }
 
 /* Danger Zone */
 .danger-zone {
-  border-color: var(--danger);
+  border-color: var(--border);
 }
 
 .danger-zone h2 {

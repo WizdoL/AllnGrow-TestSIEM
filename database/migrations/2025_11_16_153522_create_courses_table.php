@@ -8,29 +8,28 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('subcourses', function (Blueprint $table) {
+        Schema::create('courses', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('course_id');
+            $table->unsignedBigInteger('instructorID');
             $table->string('title');
-            $table->text('content')->nullable();
+            $table->decimal('price', 10, 2)->default(0);
             $table->string('thumbnail')->nullable();
-            $table->string('fileUpload')->nullable();
             $table->timestamps();
 
-            $table->index('course_id');
+            $table->index('instructorID');
         });
 
         // Foreign key terpisah
-        Schema::table('subcourses', function (Blueprint $table) {
-            $table->foreign('course_id')
+        Schema::table('courses', function (Blueprint $table) {
+            $table->foreign('instructorID')
                   ->references('id')
-                  ->on('courses')
+                  ->on('instructors')
                   ->onDelete('cascade');
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('subcourses');
+        Schema::dropIfExists('courses');
     }
 };

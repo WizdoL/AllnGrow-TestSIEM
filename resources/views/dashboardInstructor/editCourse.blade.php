@@ -310,7 +310,7 @@
           <h2 style="font-size: 20px; margin-bottom: 4px;">Course Modules</h2>
           <p style="color: #718096; font-size: 14px;">Manage lessons and materials for this course</p>
         </div>
-        <button onclick="showAddSubcourseForm()" style="background: #48bb78; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600;">
+        <button onclick="showAddSubcourseForm()" style="background: #00642aff; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600;">
           <i class="fas fa-plus"></i> Add Module
         </button>
       </div>
