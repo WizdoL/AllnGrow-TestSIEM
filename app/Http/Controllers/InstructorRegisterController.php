@@ -13,14 +13,10 @@ use App\Services\InputSanitizer;
 class InstructorRegisterController extends Controller
 {
     /**
-     * Handle instructor registration.
-     *
-     * Assumptions:
-     * - The form submits fields named: name, email, password, password_confirmation,
-     *   gender, dob (date_of_birth), phone, country, bio, expertise, years_experience,
-     *   linkedin, profile_photo, cv, certifications[]
+     * Step 1: Register dengan nama, email, password
+     * Setelah berhasil, redirect ke form detail (step 2)
      */
-    public function register(Request $request)
+    public function registerStep1(Request $request)
     {
         // Normalize common inputs
         $request->merge([
@@ -32,63 +28,69 @@ class InstructorRegisterController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:instructors,email',
             'password' => 'required|string|min:6|confirmed',
-
-            // Profile / optional fields
-            'gender' => 'nullable|in:Male,Female',
-            'dob' => 'nullable|date',
-            'phone' => 'nullable|string|max:30',
-            'country' => 'nullable|string|max:100',
-            'bio' => 'nullable|string|max:2000',
-            'expertise' => 'required|string|max:255',
-            'years_experience' => 'nullable|integer|min:0',
-            'linkedin' => 'nullable|url|max:255',
-
-            // Files
-            'profile_photo' => 'nullable|image|max:2048',
-            'cv' => 'nullable|mimes:pdf,doc,docx|max:5120',
-            'certifications' => 'nullable|array',
-            'certifications.*' => 'file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
 
         try {
+            // Buat instructor account
             $instructor = Instructor::create([
                 'email' => $data['email'],
                 'password' => Hash::make($data['password']),
             ]);
 
+            // Simpan data sementara di session untuk step 2
+            session([
+                'instructor_temp_id' => $instructor->id,
+                'instructor_temp_name' => $data['name'],
+            ]);
+
+            // Redirect ke form detail (step 2)
+            return redirect()->route('registerInstructorForm')->with('success', 'Account created! Please complete your profile.');
+        } catch (\Exception $e) {
+            Log::error('Instructor registration step 1 failed: '.$e->getMessage(), ['exception' => $e]);
+            return redirect()->back()->withInput()->with('error', 'Registration failed. Please try again later.');
+        }
+    }
+
+    /**
+     * Step 2: Lengkapi detail profile (opsional semua field)
+     * Setelah submit, simpan ke instructor_details dan redirect ke login
+     */
+    public function registerStep2(Request $request)
+    {
+        // Ambil instructor ID dari session
+        $instructorId = session('instructor_temp_id');
+        $instructorName = session('instructor_temp_name');
+
+        if (!$instructorId) {
+            return redirect()->route('registerInstructor')->with('error', 'Session expired. Please register again.');
+        }
+
+        // Validasi fields (semua opsional)
+        $data = $request->validate([
+            'gender' => 'nullable|in:Male,Female',
+            'dob' => 'nullable|date',
+            'phone' => 'nullable|string|max:30',
+            'country' => 'nullable|string|max:100',
+            'bio' => 'nullable|string|max:2000',
+            'expertise' => 'nullable|string|max:255',
+            'years_experience' => 'nullable|integer|min:0',
+            'linkedin' => 'nullable|url|max:255',
+            'cv' => 'nullable|mimes:pdf,doc,docx|max:5120',
+        ]);
+
+        try {
             $stored = [];
 
-            // store profile photo
-            if ($request->hasFile('profile_photo')) {
-                $path = $request->file('profile_photo')->store('instructors/'.$instructor->id.'/photos', 'public');
-                $stored['profile_photo'] = $path;
-            }
-
-            // store CV
+            // Store CV jika ada
             if ($request->hasFile('cv')) {
-                $path = $request->file('cv')->store('instructors/'.$instructor->id.'/cv', 'public');
+                $path = $request->file('cv')->store('instructors/'.$instructorId.'/cv', 'public');
                 $stored['cv'] = $path;
             }
 
-            // store certifications (multiple)
-            if ($request->hasFile('certifications')) {
-                $certs = [];
-                foreach ($request->file('certifications') as $file) {
-                    if ($file && $file->isValid()) {
-                        $certs[] = $file->store('instructors/'.$instructor->id.'/certifications', 'public');
-                    }
-                }
-                $stored['certifications'] = $certs;
-            }
-
-            // Log stored file paths so admins or future migrations can pick them up.
-            if (!empty($stored)) {
-                Log::info('Instructor registration stored files', ['instructor_id' => $instructor->id, 'files' => $stored]);
-            }
-
+            // Buat instructor detail
             $detail = [
-                'instructorID' => $instructor->id,
-                'fullname' => InputSanitizer::sanitizeText($data['name']),
+                'instructorID' => $instructorId,
+                'fullname' => InputSanitizer::sanitizeText($instructorName),
                 'phone' => isset($data['phone']) ? InputSanitizer::sanitizeText($data['phone']) : null,
                 'gender' => $data['gender'] ?? null,
                 'dob' => $data['dob'] ?? null,
@@ -103,12 +105,15 @@ class InstructorRegisterController extends Controller
 
             InstructorDetail::create($detail);
 
-            // Optionally, you may want to flag teacher accounts for manual approval. For now
-            // we simply redirect to login with a success message.
-            return redirect()->route('instructor.login')->with('success', 'Instructor registration submitted. Your account will be reviewed.');
+            // Clear session
+            session()->forget(['instructor_temp_id', 'instructor_temp_name']);
+
+            Log::info('Instructor registration completed', ['instructor_id' => $instructorId]);
+
+            return redirect()->route('instructor.login')->with('success', 'Registration completed! Your account will be reviewed by admin.');
         } catch (\Exception $e) {
-            Log::error('Instructor registration failed: '.$e->getMessage(), ['exception' => $e]);
-            return redirect()->back()->withInput()->with('error', 'Registration failed. Please try again later.');
+            Log::error('Instructor registration step 2 failed: '.$e->getMessage(), ['exception' => $e]);
+            return redirect()->back()->withInput()->with('error', 'Failed to save profile. Please try again.');
         }
     }
 }

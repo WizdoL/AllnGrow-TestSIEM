@@ -30,46 +30,43 @@
 
   <div class="form-wrapper">
     <div class="form-container">
-      <h1 class="form-title">Instructor Registration</h1>
-      <p class="form-subtitle">Join AllnGrow and share your expertise with thousands of learners.</p>
+      <h1 class="form-title">Complete Your Profile</h1>
+      <p class="form-subtitle">Add your details to help students learn more about you. All fields are optional.</p>
 
-      <form>
+      @if(session('success'))
+        <div style="background:#d4edda;border:1px solid #c3e6cb;color:#155724;padding:12px;margin:12px 0;border-radius:4px;">
+          {{ session('success') }}
+        </div>
+      @endif
+      @if(session('error') || $errors->any())
+        <div style="background:#fff3cd;border:1px solid #ffeeba;color:#856404;padding:12px;margin:12px 0;border-radius:4px;">
+          @if(session('error'))
+            <div>{{ session('error') }}</div>
+          @endif
+          @if($errors->any())
+            <ul style="margin:0;padding-left:20px;">
+              @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+              @endforeach
+            </ul>
+          @endif
+        </div>
+      @endif
+
+      <form method="POST" action="{{ route('register.instructor.step2') }}" enctype="multipart/form-data">
+      <form method="POST" action="{{ route('register.instructor.step2') }}" enctype="multipart/form-data">
+        @csrf
+        
         <!-- Profile Photo Upload -->
         <div class="photo-upload-section">
-          <label class="photo-label">Profile Photo</label>
+          <label class="photo-label">Profile Photo (Optional)</label>
           <div class="photo-upload-box">
-            <input type="file" id="profile-photo" accept="image/*">
+            <input type="file" id="profile-photo" name="profile_photo" accept="image/*">
             <div class="photo-preview" id="photoPreview">
               <i class="fa-solid fa-camera"></i>
             </div>
           </div>
         </div>
-
-        <!-- Account Information -->
-        <section class="form-section">
-          <h2 class="section-title">Account Information</h2>
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Full Name</label>
-              <input type="text" placeholder="John Doe" required>
-            </div>
-            <div class="form-group">
-              <label>Email Address</label>
-              <input type="email" placeholder="example@gmail.com" required>
-            </div>
-          </div>
-
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Password</label>
-              <input type="password" placeholder="••••••••" required>
-            </div>
-            <div class="form-group">
-              <label>Confirm Password</label>
-              <input type="password" placeholder="••••••••" required>
-            </div>
-          </div>
-        </section>
 
         <!-- Profile Information -->
         <section class="form-section">
@@ -77,37 +74,32 @@
           <div class="form-grid">
             <div class="form-group">
               <label>Gender</label>
-              <select required>
+              <select name="gender">
                 <option value="">Select</option>
-                <option>Male</option>
-                <option>Female</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
               </select>
             </div>
             <div class="form-group">
               <label>Date of Birth</label>
-              <input type="date" required>
+              <input type="date" name="dob" value="{{ old('dob') }}">
             </div>
           </div>
 
           <div class="form-grid">
             <div class="form-group">
               <label>Phone Number</label>
-              <input type="tel" placeholder="+62 812-xxxx-xxxx">
+              <input type="tel" name="phone" placeholder="+62 812-xxxx-xxxx" value="{{ old('phone') }}">
             </div>
             <div class="form-group">
               <label>Country</label>
-              <select>
-                <option value="">Select Country</option>
-                <option>Indonesia</option>
-                <option>Malaysia</option>
-                <option>Singapore</option>
-              </select>
+              <input type="text" name="country" placeholder="Indonesia" value="{{ old('country') }}">
             </div>
           </div>
 
           <div class="form-group">
             <label>Short Bio</label>
-            <textarea rows="3" placeholder="Tell us about your teaching background..."></textarea>
+            <textarea rows="3" name="bio" placeholder="Tell us about your teaching background...">{{ old('bio') }}</textarea>
           </div>
         </section>
 
@@ -118,34 +110,30 @@
           <div class="form-grid">
             <div class="form-group">
               <label>Field of Expertise</label>
-              <input type="text" placeholder="e.g. Web Development, UI/UX Design, Marketing" required>
+              <input type="text" name="expertise" placeholder="e.g. Web Development, UI/UX Design, Marketing" value="{{ old('expertise') }}">
             </div>
             <div class="form-group">
               <label>Years of Experience</label>
-              <input type="number" placeholder="e.g. 5" min="0">
+              <input type="number" name="years_experience" placeholder="e.g. 5" min="0" value="{{ old('years_experience') }}">
             </div>
           </div>
 
           <div class="form-grid">
             <div class="form-group">
               <label>Upload CV</label>
-              <input type="file" accept=".pdf,.doc,.docx">
-            </div>
-            <div class="form-group">
-              <label>Upload Certification(s)</label>
-              <input type="file" accept=".pdf,.jpg,.png" multiple>
+              <input type="file" name="cv" accept=".pdf,.doc,.docx">
             </div>
           </div>
 
           <div class="form-group">
             <label>LinkedIn Profile (Optional)</label>
-            <input type="url" placeholder="https://linkedin.com/in/username">
+            <input type="url" name="linkedin" placeholder="https://linkedin.com/in/username" value="{{ old('linkedin') }}">
           </div>
         </section>
 
         <div class="form-actions">
-          <button type="submit" class="btn primary">Register</button>
-          <button type="reset" class="btn secondary">Cancel</button>
+          <button type="submit" class="btn primary">Complete Registration</button>
+          <a href="{{ route('instructor.login') }}" class="btn secondary">Skip for Now</a>
         </div>
       </form>
     </div>

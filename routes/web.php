@@ -62,7 +62,8 @@ Route::middleware('web')->group(function () {
 
     // Register handler (logic)
     Route::post('/register', [RegisterController::class, 'register'])->name('register');
-    Route::post('/register-instructor', [InstructorRegisterController::class, 'register'])->name('register.instructor');
+    Route::post('/register-instructor-step1', [InstructorRegisterController::class, 'registerStep1'])->name('register.instructor.step1');
+    Route::post('/register-instructor-step2', [InstructorRegisterController::class, 'registerStep2'])->name('register.instructor.step2');
 });
 
 // Protected routes untuk Student (harus login sebagai student)
