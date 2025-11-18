@@ -52,4 +52,12 @@ class Instructor extends Authenticatable
             $q->where('status', 'approved');
         });
     }
+
+    /**
+     * Get instructor name from detail
+     */
+    public function getNameAttribute()
+    {
+        return $this->detail?->fullname ?? $this->email;
+    }
 }

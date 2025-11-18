@@ -281,7 +281,7 @@
                 </div>
                 <div class="info-item">
                   <label>Years of Experience</label>
-                  <p>{{ $instructor->detail->experience ?? 'N/A' }}</p>
+                  <p>{{ $instructor->detail->yearsOfExperience ?? 'N/A' }}</p>
                 </div>
               </div>
 
@@ -339,12 +339,12 @@
         <header class="header">
           <div class="header-left">
             <h1>Manage Instructors</h1>
-            <p class="muted">View and manage all approved instructors</p>
+            <p class="muted">View and manage all instructors</p>
           </div>
           <div class="header-right">
             <div class="search-box">
               <i class="fas fa-search"></i>
-              <input type="text" placeholder="Search instructors...">
+              <input type="text" id="searchInstructor" placeholder="Search instructors..." onkeyup="searchInstructors()">
             </div>
             <button class="icon-btn"><i class="fas fa-bell"></i></button>
             <div class="user">
@@ -357,117 +357,113 @@
           </div>
         </header>
 
+        @if(session('success'))
+          <div style="background:#d4edda;border:1px solid #c3e6cb;color:#155724;padding:16px;margin:20px;border-radius:8px;font-weight:500;">
+            <i class="fas fa-check-circle"></i> {{ session('success') }}
+          </div>
+        @endif
+        @if(session('error'))
+          <div style="background:#f8d7da;border:1px solid #f5c6cb;color:#721c24;padding:16px;margin:20px;border-radius:8px;font-weight:500;">
+            <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
+          </div>
+        @endif
+
         <div class="table-container">
-          <table class="table">
+          <table class="table" id="instructorTable">
             <thead>
               <tr>
                 <th>Instructor</th>
                 <th>Email</th>
+                <th>Expertise</th>
                 <th>Courses</th>
                 <th>Students</th>
-                <th>Rating</th>
-                <th>Revenue</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
+              @forelse($instructors as $instructor)
               <tr>
                 <td>
                   <div class="table-user">
-                    <div class="table-avatar">SJ</div>
+                    <div class="table-avatar">{{ strtoupper(substr($instructor->name ?? 'IN', 0, 2)) }}</div>
                     <div>
-                      <strong>Dr. Sarah Johnson</strong>
-                      <p class="muted">Web Development</p>
+                      <strong>{{ $instructor->name ?? 'Unknown' }}</strong>
+                      <p class="muted">{{ $instructor->created_at->format('M d, Y') }}</p>
                     </div>
                   </div>
                 </td>
-                <td>sarah.johnson@email.com</td>
-                <td>8</td>
-                <td>1,243</td>
-                <td>⭐ 4.8</td>
-                <td>$12,450</td>
-                <td><span class="status-badge active">Active</span></td>
+                <td>{{ $instructor->email }}</td>
+                <td>{{ $instructor->detail->expertise ?? 'N/A' }}</td>
+                <td>{{ $instructor->courses->count() }}</td>
+                <td>
+                  @php
+                    $totalStudents = $instructor->courses->sum(function($course) {
+                      return $course->students->count();
+                    });
+                  @endphp
+                  {{ $totalStudents }}
+                </td>
+                <td>
+                  @if($instructor->detail)
+                    @if($instructor->detail->status === 'approved')
+                      <span class="status-badge active">Approved</span>
+                    @elseif($instructor->detail->status === 'pending')
+                      <span class="status-badge pending">Pending</span>
+                    @else
+                      <span class="status-badge suspended">Rejected</span>
+                    @endif
+                  @else
+                    <span class="status-badge suspended">No Detail</span>
+                  @endif
+                </td>
                 <td>
                   <div class="action-btns">
-                    <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
-                    <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
-                    <button class="action-btn" title="Suspend"><i class="fas fa-ban"></i></button>
+                    @if($instructor->detail)
+                      @if($instructor->detail->status === 'approved')
+                        <form action="{{ route('admin.instructor.updateStatus', $instructor->id) }}" method="POST" style="display: inline;">
+                          @csrf
+                          <input type="hidden" name="status" value="rejected">
+                          <button type="submit" class="action-btn" title="Suspend" onclick="return confirm('Yakin ingin suspend instructor ini?')" style="background:none;border:none;cursor:pointer;">
+                            <i class="fas fa-ban"></i>
+                          </button>
+                        </form>
+                      @elseif($instructor->detail->status === 'pending')
+                        <form action="{{ route('admin.instructor.updateStatus', $instructor->id) }}" method="POST" style="display: inline;">
+                          @csrf
+                          <input type="hidden" name="status" value="approved">
+                          <button type="submit" class="action-btn" title="Approve" onclick="return confirm('Yakin ingin approve instructor ini?')" style="background:none;border:none;cursor:pointer;">
+                            <i class="fas fa-check"></i>
+                          </button>
+                        </form>
+                        <form action="{{ route('admin.instructor.updateStatus', $instructor->id) }}" method="POST" style="display: inline;">
+                          @csrf
+                          <input type="hidden" name="status" value="rejected">
+                          <button type="submit" class="action-btn" title="Reject" onclick="return confirm('Yakin ingin reject instructor ini?')" style="background:none;border:none;cursor:pointer;">
+                            <i class="fas fa-times"></i>
+                          </button>
+                        </form>
+                      @else
+                        <form action="{{ route('admin.instructor.updateStatus', $instructor->id) }}" method="POST" style="display: inline;">
+                          @csrf
+                          <input type="hidden" name="status" value="approved">
+                          <button type="submit" class="action-btn" title="Activate" onclick="return confirm('Yakin ingin activate instructor ini?')" style="background:none;border:none;cursor:pointer;">
+                            <i class="fas fa-check"></i>
+                          </button>
+                        </form>
+                      @endif
+                    @endif
                   </div>
                 </td>
               </tr>
+              @empty
               <tr>
-                <td>
-                  <div class="table-user">
-                    <div class="table-avatar">MC</div>
-                    <div>
-                      <strong>Prof. Michael Chen</strong>
-                      <p class="muted">Data Science</p>
-                    </div>
-                  </div>
-                </td>
-                <td>michael.chen@email.com</td>
-                <td>6</td>
-                <td>856</td>
-                <td>⭐ 4.9</td>
-                <td>$9,800</td>
-                <td><span class="status-badge active">Active</span></td>
-                <td>
-                  <div class="action-btns">
-                    <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
-                    <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
-                    <button class="action-btn" title="Suspend"><i class="fas fa-ban"></i></button>
-                  </div>
+                <td colspan="7" style="text-align: center; padding: 40px; color: #737373;">
+                  <i class="fas fa-inbox" style="font-size: 48px; opacity: 0.5; margin-bottom: 16px;"></i>
+                  <p>Tidak ada instructor</p>
                 </td>
               </tr>
-              <tr>
-                <td>
-                  <div class="table-user">
-                    <div class="table-avatar">JA</div>
-                    <div>
-                      <strong>John Anderson</strong>
-                      <p class="muted">Mobile Development</p>
-                    </div>
-                  </div>
-                </td>
-                <td>john.anderson@email.com</td>
-                <td>5</td>
-                <td>634</td>
-                <td>⭐ 4.7</td>
-                <td>$7,230</td>
-                <td><span class="status-badge active">Active</span></td>
-                <td>
-                  <div class="action-btns">
-                    <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
-                    <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
-                    <button class="action-btn" title="Suspend"><i class="fas fa-ban"></i></button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="table-user">
-                    <div class="table-avatar">LM</div>
-                    <div>
-                      <strong>Lisa Martinez</strong>
-                      <p class="muted">Marketing</p>
-                    </div>
-                  </div>
-                </td>
-                <td>lisa.martinez@email.com</td>
-                <td>4</td>
-                <td>423</td>
-                <td>⭐ 4.6</td>
-                <td>$5,120</td>
-                <td><span class="status-badge suspended">Suspended</span></td>
-                <td>
-                  <div class="action-btns">
-                    <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
-                    <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
-                    <button class="action-btn" title="Activate"><i class="fas fa-check"></i></button>
-                  </div>
-                </td>
-              </tr>
+              @endforelse
             </tbody>
           </table>
         </div>
@@ -688,6 +684,34 @@
         switchTab(targetPage);
       });
     });
+
+    // Search Instructors Function
+    function searchInstructors() {
+      const input = document.getElementById('searchInstructor');
+      const filter = input.value.toLowerCase();
+      const table = document.getElementById('instructorTable');
+      const tr = table.getElementsByTagName('tr');
+
+      for (let i = 1; i < tr.length; i++) {
+        const tdName = tr[i].getElementsByTagName('td')[0];
+        const tdEmail = tr[i].getElementsByTagName('td')[1];
+        const tdExpertise = tr[i].getElementsByTagName('td')[2];
+        
+        if (tdName || tdEmail || tdExpertise) {
+          const nameValue = tdName.textContent || tdName.innerText;
+          const emailValue = tdEmail.textContent || tdEmail.innerText;
+          const expertiseValue = tdExpertise.textContent || tdExpertise.innerText;
+          
+          if (nameValue.toLowerCase().indexOf(filter) > -1 || 
+              emailValue.toLowerCase().indexOf(filter) > -1 ||
+              expertiseValue.toLowerCase().indexOf(filter) > -1) {
+            tr[i].style.display = '';
+          } else {
+            tr[i].style.display = 'none';
+          }
+        }
+      }
+    }
   </script>
 </body>
 </html>

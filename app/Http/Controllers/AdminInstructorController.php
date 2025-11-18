@@ -14,8 +14,8 @@ class AdminInstructorController extends Controller
      */
     public function index()
     {
-        // Ambil semua instructor beserta detail mereka
-        $instructors = Instructor::with('detail')->get();
+        // Ambil semua instructor beserta detail mereka dan courses dengan students count
+        $instructors = Instructor::with(['detail', 'courses.students'])->get();
         
         return view('dashboardAdmin.dashboardAdmin', compact('instructors'));
     }
