@@ -147,23 +147,33 @@ class StudentDashboardController extends Controller
             if ($course->status !== 'approved') {
                 return redirect()->back()->with('error', 'This course is not available for enrollment.');
             }
-            
-            // Enroll with pending payment status - use course's primary key
+
+            // Determine payment status based on course price
+            // Free courses (price = 0) are automatically confirmed
+            $paymentStatus = $course->price == 0 ? 'confirmed' : 'pending';
+
+            // Enroll student - use course's primary key
             $student->courses()->attach($course->courseID, [
                 'completion' => 0,
                 'completed' => false,
-                'payment_status' => 'pending',
+                'payment_status' => $paymentStatus,
                 'created_at' => now(),
                 'updated_at' => now()
             ]);
-            
+
             Log::info('Student enrolled in course', [
                 'student_id' => $student->id,
                 'course_id' => $course->courseID,
-                'payment_status' => 'pending'
+                'payment_status' => $paymentStatus,
+                'is_free' => $course->price == 0
             ]);
-            
-            return redirect()->route('student.my-courses')->with('success', 'Successfully enrolled! Please wait for instructor to confirm your payment.');
+
+            // Different success message for free vs paid courses
+            if ($course->price == 0) {
+                return redirect()->route('student.my-courses')->with('success', 'Successfully enrolled! You can start learning now.');
+            } else {
+                return redirect()->route('student.my-courses')->with('success', 'Successfully enrolled! Please wait for instructor to confirm your payment.');
+            }
         } catch (\Exception $e) {
             Log::error('Failed to enroll course: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to enroll in course.');
