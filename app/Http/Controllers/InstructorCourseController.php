@@ -216,6 +216,7 @@ class InstructorCourseController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
+            'description' => 'nullable|string|max:5000',
             'thumbnail' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:5120',
         ]);
 
@@ -232,6 +233,7 @@ class InstructorCourseController extends Controller
             // Update course
             $course->update([
                 'title' => InputSanitizer::sanitizeText($data['title']),
+                'description' => isset($data['description']) ? InputSanitizer::sanitizeHtml($data['description']) : $course->description,
                 'price' => $data['price'],
                 'thumbnail' => $data['thumbnail'] ?? $course->thumbnail,
             ]);

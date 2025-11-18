@@ -30,18 +30,6 @@
             <span style="position: absolute; right: 1rem; background: #ef4444; color: #fff; padding: 0.2rem 0.5rem; border-radius: 12px; font-size: 0.7rem; font-weight: 600;">{{ $pendingCount }}</span>
           @endif
         </a>
-        <a class="nav-link" data-page="students">
-          <i class="fas fa-users"></i> Students
-        </a>
-        <a class="nav-link" data-page="analytics">
-          <i class="fas fa-chart-bar"></i> Analytics
-        </a>
-        <a class="nav-link" data-page="earnings">
-          <i class="fas fa-wallet"></i> Earnings
-        </a>
-        <a href="{{ route('messageInstructor') }}" class="nav-link">
-          <i class="fas fa-envelope"></i> Messages
-        </a>
         <a href="{{ route('settingsInstructor') }}" class="nav-link">
           <i class="fas fa-cog"></i> Settings
         </a>

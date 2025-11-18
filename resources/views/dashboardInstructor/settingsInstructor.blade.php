@@ -19,17 +19,7 @@
         <a href="{{ route('instructor.createCourse') }}"><i class="fas fa-plus-circle"></i> Create Course</a>
         <a href="{{ route('instructor.student-purchases') }}">
           <i class="fas fa-shopping-cart"></i> Student Purchases
-          @php
-            $pendingCount = \App\Models\Course::where('instructorID', Auth::guard('instructor')->id())
-              ->with(['students' => function($q) { $q->wherePivot('payment_status', 'pending'); }])
-              ->get()
-              ->sum(function($course) { return $course->students->count(); });
-          @endphp
-          @if($pendingCount > 0)
-            <span class="badge">{{ $pendingCount }}</span>
-          @endif
         </a>
-        <a href="{{ route('messageInstructor') }}"><i class="fas fa-envelope"></i> Messages</a>
         <a class="active"><i class="fas fa-cog"></i> Settings</a>
         <div style="margin-top: auto; padding-top: 2rem; border-top: 1px solid #262626;">
           <form method="POST" action="{{ route('instructor.logout') }}">

@@ -118,10 +118,35 @@
       transition: all 0.2s;
     }
 
-    .form-group input:focus {
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
       outline: none;
       border-color: #000000;
       box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #cbd5e0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: all 0.2s;
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-group select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #cbd5e0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: all 0.2s;
+      background: white;
     }
 
     .file-input-wrapper {
@@ -272,6 +297,12 @@
           <label>Price (Rp) <span class="required">*</span></label>
           <input type="number" name="price" value="{{ old('price', $course->price) }}" min="0" step="0.01" required placeholder="e.g. 500000">
           <div class="hint">Set to 0 for free course</div>
+        </div>
+
+        <div class="form-group">
+          <label>Course Description</label>
+          <textarea name="description" rows="4" placeholder="Describe what students will learn in this course...">{{ old('description', $course->description) }}</textarea>
+          <div class="hint">Provide a detailed overview of your course content</div>
         </div>
 
         <div class="form-group">
