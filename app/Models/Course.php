@@ -60,7 +60,7 @@ class Course extends Model
             'student_course',
             'courseID',
             'studentID'
-        )->withPivot(['completion', 'completed'])->withTimestamps();
+        )->withPivot(['completion', 'completed', 'payment_status'])->withTimestamps();
     }
 
     public function ratings(): HasMany

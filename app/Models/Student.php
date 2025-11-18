@@ -54,7 +54,7 @@ class Student extends Authenticatable
             'student_course',
             'studentID',
             'courseID'
-        )->withPivot(['completion', 'completed'])->withTimestamps();
+        )->withPivot(['completion', 'completed', 'payment_status'])->withTimestamps();
     }
 
     /**
