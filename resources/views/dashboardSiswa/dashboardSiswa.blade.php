@@ -92,7 +92,7 @@
         @if($enrolledCourses->count() > 0)
           <div class="course-grid">
             @foreach($enrolledCourses as $course)
-              <article class="course" style="cursor: {{ $course->pivot->payment_status === 'paid' ? 'pointer' : 'default' }};" onclick="@if($course->pivot->payment_status === 'paid') window.location='{{ route('student.view-course', $course->courseID ?? $course->id) }}' @endif">
+              <article class="course" style="cursor: {{ $course->pivot->payment_status === 'confirmed' ? 'pointer' : 'default' }};" onclick="@if($course->pivot->payment_status === 'confirmed') window.location='{{ route('student.view-course', $course->courseID ?? $course->id) }}' @endif">
                 <div class="thumb" style="position: relative; overflow: hidden;">
                   @if($course->thumbnail)
                     <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}" style="width: 100%; height: 100%; object-fit: cover;">

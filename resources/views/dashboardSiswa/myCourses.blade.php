@@ -115,11 +115,11 @@
                   </div>
                   <div class="progress">
                     <div class="progress-bar">
-                      <div style="width: {{ $course->pivot->completion }}%; background: {{ $course->pivot->payment_status === 'paid' ? '#4ade80' : '#fbbf24' }};"></div>
+                      <div style="width: {{ $course->pivot->completion }}%; background: {{ $course->pivot->payment_status === 'confirmed' ? '#4ade80' : '#fbbf24' }};"></div>
                     </div>
                     <div class="progress-num">{{ $course->pivot->completion }}%</div>
                   </div>
-                  
+
                   @if($course->pivot->payment_status === 'pending')
                     <button class="btn-continue" disabled style="opacity: 0.5; cursor: not-allowed;">
                       <i class="fas fa-lock"></i> Waiting Payment Confirmation

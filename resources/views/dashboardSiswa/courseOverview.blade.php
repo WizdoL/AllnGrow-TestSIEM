@@ -504,7 +504,17 @@
               </div>
 
               @if($isEnrolled)
-                @if($enrollment && $enrollment->pivot->payment_status === 'pending')
+                @if($enrollment && $enrollment->pivot->payment_status === 'confirmed')
+                  {{-- Already confirmed - can start learning --}}
+                  <div class="enrollment-status paid">
+                    <i class="fas fa-check-circle"></i>
+                    Anda sudah terdaftar
+                  </div>
+                  <a href="{{ route('student.view-course', $course->courseID) }}" class="enroll-btn primary">
+                    <i class="fas fa-play"></i> Mulai Belajar
+                  </a>
+                @elseif($enrollment && $enrollment->pivot->payment_status === 'pending')
+                  {{-- Pending payment - only for paid courses --}}
                   <div class="enrollment-status pending">
                     <i class="fas fa-clock"></i>
                     Menunggu konfirmasi pembayaran
@@ -513,6 +523,7 @@
                     <i class="fas fa-hourglass-half"></i> Pending
                   </button>
                 @else
+                  {{-- Fallback for any other status --}}
                   <div class="enrollment-status paid">
                     <i class="fas fa-check-circle"></i>
                     Anda sudah terdaftar
@@ -524,9 +535,15 @@
               @else
                 <form method="POST" action="{{ route('student.enroll', $course->courseID) }}">
                   @csrf
-                  <button type="submit" class="enroll-btn primary" onclick="return confirm('Apakah Anda yakin ingin mendaftar course ini?')">
-                    <i class="fas fa-plus"></i> Daftar Sekarang
-                  </button>
+                  @if($course->price == 0)
+                    <button type="submit" class="enroll-btn primary" onclick="return confirm('Apakah Anda yakin ingin mendaftar course gratis ini?')">
+                      <i class="fas fa-plus"></i> Daftar Gratis
+                    </button>
+                  @else
+                    <button type="submit" class="enroll-btn primary" onclick="return confirm('Apakah Anda yakin ingin mendaftar course ini?')">
+                      <i class="fas fa-plus"></i> Daftar Sekarang
+                    </button>
+                  @endif
                 </form>
               @endif
 
