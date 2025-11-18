@@ -575,13 +575,17 @@
 
             <div class="form-group">
               <label>Course Category</label>
-              <select name="category">
+              <select name="category_id">
                 <option value="">Select Category</option>
-                <option value="web-development">Web Development</option>
-                <option value="mobile-development">Mobile Development</option>
-                <option value="data-science">Data Science</option>
-                <option value="design">Design</option>
-                <option value="marketing">Marketing</option>
+                @if(isset($categories) && $categories->count() > 0)
+                  @foreach($categories as $category)
+                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                      {{ $category->name }}
+                    </option>
+                  @endforeach
+                @else
+                  <option value="" disabled>No categories available</option>
+                @endif
               </select>
             </div>
 
@@ -650,14 +654,14 @@
       const moduleNumber = moduleIndex + 1;
       
       const moduleHtml = `
-        <div class="module-card" id="module-\${moduleIndex}">
+        <div class="module-card" id="module-${moduleIndex}">
           <div class="module-header">
             <h3>
               <i class="fas fa-book"></i>
-              Module \${moduleNumber}
-              <span class="module-number">#\${moduleNumber}</span>
+              Module ${moduleNumber}
+              <span class="module-number">#${moduleNumber}</span>
             </h3>
-            <button type="button" class="btn-remove-module" onclick="removeModule(\${moduleIndex})">
+            <button type="button" class="btn-remove-module" onclick="removeModule(${moduleIndex})">
               <i class="fas fa-trash"></i> Remove Module
             </button>
           </div>
@@ -669,7 +673,7 @@
               </label>
               <input 
                 type="text" 
-                name="subcourses[\${moduleIndex}][title]" 
+                name="subcourses[${moduleIndex}][title]" 
                 placeholder="e.g. Introduction to HTML" 
                 required
               >
@@ -678,7 +682,7 @@
             <div class="form-group full-width">
               <label>Module Description</label>
               <textarea 
-                name="subcourses[\${moduleIndex}][content]" 
+                name="subcourses[${moduleIndex}][content]" 
                 placeholder="Describe this module content and learning objectives..."
                 rows="4"
               ></textarea>
@@ -689,17 +693,17 @@
               <div class="file-upload-wrapper">
                 <input 
                   type="file" 
-                  name="subcourses[\${moduleIndex}][thumbnail]" 
-                  id="module-thumb-\${moduleIndex}" 
+                  name="subcourses[${moduleIndex}][thumbnail]" 
+                  id="module-thumb-${moduleIndex}" 
                   accept="image/*" 
-                  onchange="updateFileName(this, 'module-thumb-name-\${moduleIndex}')"
+                  onchange="updateFileName(this, 'module-thumb-name-${moduleIndex}')"
                 >
-                <label for="module-thumb-\${moduleIndex}" class="file-upload-label">
+                <label for="module-thumb-${moduleIndex}" class="file-upload-label">
                   <i class="fas fa-image"></i>
                   <span>Upload module thumbnail</span>
                 </label>
               </div>
-              <div class="file-name" id="module-thumb-name-\${moduleIndex}"></div>
+              <div class="file-name" id="module-thumb-name-${moduleIndex}"></div>
               <span class="hint">Optional: 1280x720px, JPG/PNG, max 3MB</span>
             </div>
 
@@ -708,17 +712,17 @@
               <div class="file-upload-wrapper">
                 <input 
                   type="file" 
-                  name="subcourses[\${moduleIndex}][fileUpload]" 
-                  id="module-file-\${moduleIndex}" 
+                  name="subcourses[${moduleIndex}][fileUpload]" 
+                  id="module-file-${moduleIndex}" 
                   accept=".pdf,.doc,.docx,.ppt,.pptx,.mp4,.mov,.avi" 
-                  onchange="updateFileName(this, 'module-file-name-\${moduleIndex}')"
+                  onchange="updateFileName(this, 'module-file-name-${moduleIndex}')"
                 >
-                <label for="module-file-\${moduleIndex}" class="file-upload-label">
+                <label for="module-file-${moduleIndex}" class="file-upload-label">
                   <i class="fas fa-file-upload"></i>
                   <span>Upload module content file</span>
                 </label>
               </div>
-              <div class="file-name" id="module-file-name-\${moduleIndex}"></div>
+              <div class="file-name" id="module-file-name-${moduleIndex}"></div>
               <span class="hint">Accepted: PDF, DOC, PPT, MP4, MOV, AVI (max 50MB)</span>
             </div>
           </div>

@@ -39,10 +39,12 @@ class InstructorCourseController extends Controller
                 ->get()
                 ->sum('students_count');
 
-            return view('dashboardInstructor.dashboardInstructor', compact('recentCourses', 'totalCourses', 'totalStudents'));
+            return view('dashboardInstructor.dashboardInstructor', compact('instructor', 'recentCourses', 'totalCourses', 'totalStudents'));
         } catch (\Exception $e) {
             Log::error('Failed to load dashboard: ' . $e->getMessage());
+            $instructor = Auth::guard('instructor')->user();
             return view('dashboardInstructor.dashboardInstructor', [
+                'instructor' => $instructor,
                 'recentCourses' => collect(),
                 'totalCourses' => 0,
                 'totalStudents' => 0
@@ -56,7 +58,8 @@ class InstructorCourseController extends Controller
     public function create()
     {
         try {
-            return view('dashboardInstructor.createCourse');
+            $categories = \App\Models\Category::all();
+            return view('dashboardInstructor.createCourse', compact('categories'));
         } catch (\Exception $e) {
             Log::error('Failed to load create course page: ' . $e->getMessage());
             return redirect()->route('dashboardinstructor')->with('error', 'Failed to load page. Error: ' . $e->getMessage());
@@ -76,7 +79,6 @@ class InstructorCourseController extends Controller
             'price' => 'required|numeric|min:0',
             'thumbnail' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:5120',
             'description' => 'nullable|string|max:5000',
-            'category' => 'nullable|string',
             'category_id' => 'nullable|exists:categories,id',
             
             // Subcourses (optional, multiple)
