@@ -142,12 +142,12 @@
                       @endif
                     </div>
                     
-                    @if(in_array($course->id, $enrolledCourseIds))
+                    @if(in_array($course->courseID, $enrolledCourseIds))
                       <button disabled style="padding: 0.5rem 1rem; background: #1a5a1a; color: #4ade80; border: none; border-radius: 8px; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: not-allowed;">
                         <i class="fas fa-check"></i> Enrolled
                       </button>
                     @else
-                      <form method="POST" action="{{ route('student.enroll', $course->id) }}" style="margin: 0;">
+                      <form method="POST" action="{{ route('student.enroll', $course->courseID) }}" style="margin: 0;">
                         @csrf
                         <button type="submit" onclick="return confirm('Are you sure you want to enroll in this course?')" style="padding: 0.5rem 1rem; background: #fff; color: #000; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem;">
                           <i class="fas fa-plus"></i> Enroll Now

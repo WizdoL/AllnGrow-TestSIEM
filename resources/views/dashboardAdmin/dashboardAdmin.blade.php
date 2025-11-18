@@ -205,12 +205,12 @@
                   </div>
                 </div>
                 <div class="approval-actions">
-                  <form action="{{ route('admin.course.updateStatus', $course->id) }}" method="POST" style="display: inline;">
+                  <form action="{{ route('admin.course.updateStatus', $course->courseID) }}" method="POST" style="display: inline;">
                     @csrf
                     <input type="hidden" name="status" value="approved">
                     <button type="submit" class="btn-approve"><i class="fas fa-check"></i> Approve</button>
                   </form>
-                  <form action="{{ route('admin.course.updateStatus', $course->id) }}" method="POST" style="display: inline;">
+                  <form action="{{ route('admin.course.updateStatus', $course->courseID) }}" method="POST" style="display: inline;">
                     @csrf
                     <input type="hidden" name="status" value="rejected">
                     <button type="submit" class="btn-reject"><i class="fas fa-times"></i> Reject</button>
@@ -551,10 +551,10 @@
 
               <div class="course-actions">
                 <div class="action-buttons" style="width: 100%; display: flex; gap: 10px; justify-content: flex-end;">
-                  <button class="btn-reject" onclick="showRejectModal({{ $course->id }}, '{{ addslashes($course->title) }}')">
+                  <button class="btn-reject" onclick="showRejectModal({{ $course->courseID }}, '{{ addslashes($course->title) }}')">
                     <i class="fas fa-times"></i> Reject
                   </button>
-                  <form action="{{ route('admin.course.updateStatus', $course->id) }}" method="POST" style="display: inline;">
+                  <form action="{{ route('admin.course.updateStatus', $course->courseID) }}" method="POST" style="display: inline;">
                     @csrf
                     <input type="hidden" name="status" value="approved">
                     <button type="submit" class="btn-approve" onclick="return confirm('Yakin ingin approve course ini?')">

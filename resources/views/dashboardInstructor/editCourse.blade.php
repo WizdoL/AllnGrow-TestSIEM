@@ -255,7 +255,7 @@
       </div>
     @endif
 
-    <form method="POST" action="{{ route('instructor.courses.update', $course->id) }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('instructor.courses.update', $course->courseID) }}" enctype="multipart/form-data">
       @csrf
       @method('PUT')
 
@@ -318,7 +318,7 @@
       <!-- Add Subcourse Form (Hidden by default) -->
       <div id="addSubcourseForm" style="display: none; background: #f7fafc; padding: 24px; border-radius: 12px; margin-bottom: 24px; border: 2px solid #e2e8f0;">
         <h3 style="font-size: 16px; margin-bottom: 16px;">Add New Module</h3>
-        <form method="POST" action="{{ route('instructor.subcourses.store', $course->id) }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('instructor.subcourses.store', $course->courseID) }}" enctype="multipart/form-data">
           @csrf
           <div class="form-group">
             <label>Module Title <span style="color: #e53e3e;">*</span></label>
@@ -368,7 +368,7 @@
                 <button onclick="toggleEditForm({{ $subcourse->id }})" style="background: #4299e1; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px;">
                   <i class="fas fa-edit"></i> Edit
                 </button>
-                <form method="POST" action="{{ route('instructor.subcourses.destroy', [$course->id, $subcourse->id]) }}" style="display: inline;" onsubmit="return confirm('Delete this module?')">
+                <form method="POST" action="{{ route('instructor.subcourses.destroy', [$course->courseID, $subcourse->id]) }}" style="display: inline;" onsubmit="return confirm('Delete this module?')">
                   @csrf
                   @method('DELETE')
                   <button type="submit" style="background: #fc8181; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px;">
@@ -380,7 +380,7 @@
 
             <!-- Edit Form (Hidden by default) -->
             <div id="editForm{{ $subcourse->id }}" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
-              <form method="POST" action="{{ route('instructor.subcourses.update', [$course->id, $subcourse->id]) }}" enctype="multipart/form-data">
+              <form method="POST" action="{{ route('instructor.subcourses.update', [$course->courseID, $subcourse->id]) }}" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="form-group">
