@@ -180,7 +180,7 @@ class StudentDashboardController extends Controller
             $student->load('detail');
             
             $enrolledCourses = $student->courses()
-                ->with(['instructor.detail', 'category', 'subcourses'])
+                ->with(['instructor', 'category', 'subcourses'])
                 ->withPivot(['completion', 'completed', 'payment_status', 'created_at'])
                 ->orderBy('student_course.created_at', 'desc')
                 ->get();
@@ -205,9 +205,9 @@ class StudentDashboardController extends Controller
             $student = Auth::guard('student')->user();
             $student->load('detail');
             
-            // Check if student is enrolled in this course
+            // Check if student is enrolled in this course - use wherePivot
             $enrollment = $student->courses()
-                ->where('courseID', $courseId)
+                ->wherePivot('courseID', $courseId)
                 ->withPivot(['completion', 'completed', 'payment_status'])
                 ->first();
             
@@ -220,10 +220,15 @@ class StudentDashboardController extends Controller
                 return redirect()->route('student.my-courses')->with('error', 'Please wait for payment confirmation before accessing the course.');
             }
             
-            // Load course with all related data
-            $course = Course::with(['instructor.detail', 'category', 'subcourses' => function($query) {
+            // Load course with all related data - remove instructor.detail to avoid issues
+            $course = Course::with(['instructor', 'category', 'subcourses' => function($query) {
                 $query->orderBy('order', 'asc');
             }])->findOrFail($courseId);
+            
+            // Lazy load instructor detail if exists
+            if ($course->instructor) {
+                $course->instructor->load('detail');
+            }
             
             return view('dashboardSiswa.courseDetail', compact('student', 'course', 'enrollment'));
         } catch (\Exception $e) {
