@@ -148,13 +148,6 @@
       }
     }
 
-    // Form submission
-    document.querySelector('.login-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      // Add your login logic here
-      console.log('Form submitted');
-    });
-
     // Add floating animation to orbs
     const orbs = document.querySelectorAll('.gradient-orb');
     orbs.forEach((orb, index) => {
