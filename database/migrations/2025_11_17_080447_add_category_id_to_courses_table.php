@@ -12,15 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('courses', function (Blueprint $table) {
-            //
-            // add category id (sort by category)
-            $table->unsignedBigInteger('category_id')->after('instructorID');
+            // add category id (sort by category) - nullable
+            $table->unsignedBigInteger('category_id')->nullable()->after('instructorID');
 
             // fk - category
             $table->foreign('category_id')
                 ->references('id')
                 ->on('categories')
-                ->onDelete('cascade');
+                ->onDelete('set null');
 
         });
     }

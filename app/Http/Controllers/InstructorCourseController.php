@@ -83,7 +83,7 @@ class InstructorCourseController extends Controller
             
             // Subcourses (optional, multiple)
             'subcourses' => 'nullable|array',
-            'subcourses.*.title' => 'required|string|max:255',
+            'subcourses.*.title' => 'required_with:subcourses|string|max:255',
             'subcourses.*.content' => 'nullable|string|max:10000',
             'subcourses.*.thumbnail' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:5120',
             'subcourses.*.fileUpload' => 'nullable|mimes:pdf,doc,docx,ppt,pptx,mp4,mov,avi|max:51200',
@@ -148,10 +148,12 @@ class InstructorCourseController extends Controller
             return redirect()->route('instructor.courses.index')->with('success', 'Course created successfully! Waiting for admin approval.');
         } catch (\Exception $e) {
             Log::error('Failed to create course: ' . $e->getMessage(), [
-                'instructor_id' => $instructor->id,
-                'exception' => $e,
+                'instructor_id' => $instructor->id ?? null,
+                'exception' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'request_data' => $request->except(['thumbnail', 'subcourses']),
             ]);
-            return redirect()->back()->withInput()->with('error', 'Failed to create course. Please try again.');
+            return redirect()->back()->withInput()->with('error', 'Failed to create course: ' . $e->getMessage());
         }
     }
 
