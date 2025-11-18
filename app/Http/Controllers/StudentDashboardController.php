@@ -118,8 +118,8 @@ class StudentDashboardController extends Controller
         // Load relationships after pagination
         $courses->load(['instructor', 'category', 'subcourses']);
         
-        // Get enrolled course IDs
-        $enrolledCourseIds = $student->courses()->pluck('courseID')->toArray();
+        // Get enrolled course IDs - specify table prefix to avoid ambiguity
+        $enrolledCourseIds = $student->courses()->pluck('courses.courseID')->toArray();
         
         return view('dashboardSiswa.browseCourses', compact(
             'student',
