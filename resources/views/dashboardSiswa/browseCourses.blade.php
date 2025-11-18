@@ -37,7 +37,7 @@
       <header class="header">
         <div class="header-left">
           <h1>Browse Courses</h1>
-          <p class="muted">Discover new courses and expand your knowledge</p>
+          <p class="muted">Explore and enroll in available courses</p>
         </div>
         <div class="header-right">
           <button class="icon-btn"><i class="fas fa-bell"></i></button>
@@ -73,40 +73,47 @@
         </div>
       @endif
 
-      <!-- Search & Filter -->
+      <!-- Search and Filter -->
       <section style="background: #0d0d0d; border: 1px solid #262626; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;">
         <form method="GET" action="{{ route('student.browse-courses') }}" style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 1rem;">
-          <div style="position: relative; display: flex; align-items: center;">
-            <i class="fas fa-search" style="position: absolute; left: 1rem; color: #a3a3a3;"></i>
-            <input type="text" name="search" placeholder="Search courses..." value="{{ request('search') }}" style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.75rem; background: #000; border: 1px solid #262626; border-radius: 8px; color: #f5f5f5; font-size: 0.9rem;">
+          <div>
+            <input type="text" name="search" placeholder="Search courses..." value="{{ request('search') }}" style="width: 100%; padding: 0.75rem; background: #000; border: 1px solid #262626; border-radius: 8px; color: #f5f5f5;">
           </div>
-          
-          <select name="category_id" onchange="this.form.submit()" style="padding: 0.75rem 1rem; background: #000; border: 1px solid #262626; border-radius: 8px; color: #f5f5f5; font-size: 0.9rem; cursor: pointer;">
-            <option value="">All Categories</option>
-            @foreach($categories as $category)
-              <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
-                {{ $category->name }}
-              </option>
-            @endforeach
-          </select>
-          
-          <select name="price_filter" onchange="this.form.submit()" style="padding: 0.75rem 1rem; background: #000; border: 1px solid #262626; border-radius: 8px; color: #f5f5f5; font-size: 0.9rem; cursor: pointer;">
-            <option value="">All Prices</option>
-            <option value="free" {{ request('price_filter') == 'free' ? 'selected' : '' }}>Free</option>
-            <option value="paid" {{ request('price_filter') == 'paid' ? 'selected' : '' }}>Paid</option>
-          </select>
-          
-          <select name="sort" onchange="this.form.submit()" style="padding: 0.75rem 1rem; background: #000; border: 1px solid #262626; border-radius: 8px; color: #f5f5f5; font-size: 0.9rem; cursor: pointer;">
-            <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Latest</option>
-            <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}>Most Popular</option>
-            <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
-            <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
-          </select>
+          <div>
+            <select name="category_id" style="width: 100%; padding: 0.75rem; background: #000; border: 1px solid #262626; border-radius: 8px; color: #f5f5f5; cursor: pointer;">
+              <option value="">All Categories</option>
+              @foreach($categories as $category)
+                <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                  {{ $category->name }}
+                </option>
+              @endforeach
+            </select>
+          </div>
+          <div>
+            <select name="price_filter" style="width: 100%; padding: 0.75rem; background: #000; border: 1px solid #262626; border-radius: 8px; color: #f5f5f5; cursor: pointer;">
+              <option value="">All Prices</option>
+              <option value="free" {{ request('price_filter') == 'free' ? 'selected' : '' }}>Free</option>
+              <option value="paid" {{ request('price_filter') == 'paid' ? 'selected' : '' }}>Paid</option>
+            </select>
+          </div>
+          <button type="submit" style="padding: 0.75rem; background: #fff; color: #000; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+            <i class="fas fa-search"></i> Search
+          </button>
         </form>
       </section>
 
       <!-- Courses Grid -->
       <section class="section">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <h2 style="margin: 0;">Available Courses ({{ $courses->total() }})</h2>
+          <select name="sort" onchange="window.location.href='{{ route('student.browse-courses') }}?sort=' + this.value + '{{ request('search') ? '&search=' . request('search') : '' }}{{ request('category_id') ? '&category_id=' . request('category_id') : '' }}{{ request('price_filter') ? '&price_filter=' . request('price_filter') : '' }}'" style="padding: 0.5rem 1rem; background: #0d0d0d; border: 1px solid #262626; border-radius: 8px; color: #f5f5f5; cursor: pointer;">
+            <option value="latest" {{ request('sort') == 'latest' || !request('sort') ? 'selected' : '' }}>Latest</option>
+            <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}>Most Popular</option>
+            <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
+            <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
+          </select>
+        </div>
+
         @if($courses->count() > 0)
           <div class="course-grid">
             @foreach($courses as $course)
@@ -128,7 +135,10 @@
                     {{ $course->category->name ?? 'Uncategorized' }}
                   </div>
                   <h3>{{ $course->title }}</h3>
-                  <p class="meta"><i class="fas fa-user-circle"></i> {{ $course->instructor->name ?? $course->instructor->email }}</p>
+                  <p class="meta">
+                    <i class="fas fa-user-circle"></i> 
+                    {{ $course->instructor->detail->fullname ?? $course->instructor->name ?? $course->instructor->email }}
+                  </p>
                   <div style="display: flex; gap: 1rem; font-size: 0.85rem; color: #a3a3a3; margin-bottom: 1rem;">
                     <span><i class="fas fa-book-open"></i> {{ $course->subcourses->count() }} Modules</span>
                     <span><i class="fas fa-users"></i> {{ $course->students->count() }} Students</span>
@@ -169,7 +179,8 @@
         @else
           <div style="text-align: center; padding: 4rem 2rem; color: #a3a3a3;">
             <i class="fas fa-search" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.3;"></i>
-            <p>No courses found</p>
+            <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">No courses found</p>
+            <p style="font-size: 0.9rem;">Try adjusting your search or filters.</p>
           </div>
         @endif
       </section>
