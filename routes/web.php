@@ -84,6 +84,9 @@ Route::middleware(['web', 'auth.student'])->group(function () {
     
     // My Courses
     Route::get('/student/my-courses', [StudentDashboardController::class, 'myCourses'])->name('student.my-courses');
+    
+    // View Course Detail
+    Route::get('/student/course/{courseId}', [StudentDashboardController::class, 'viewCourse'])->name('student.view-course');
 
     Route::get('/progress', function () {
         return view('dashboardSiswa.progress'); 

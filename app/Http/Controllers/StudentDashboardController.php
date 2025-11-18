@@ -200,6 +200,42 @@ class StudentDashboardController extends Controller
     }
 
     /**
+     * Display course detail with subcourses
+     */
+    public function viewCourse($courseId)
+    {
+        try {
+            $student = Auth::guard('student')->user();
+            $student->load('detail');
+            
+            // Check if student is enrolled in this course
+            $enrollment = $student->courses()
+                ->where('courseID', $courseId)
+                ->withPivot(['completion', 'completed', 'payment_status'])
+                ->first();
+            
+            if (!$enrollment) {
+                return redirect()->route('student.my-courses')->with('error', 'You are not enrolled in this course.');
+            }
+            
+            // Check payment status
+            if ($enrollment->pivot->payment_status === 'pending') {
+                return redirect()->route('student.my-courses')->with('error', 'Please wait for payment confirmation before accessing the course.');
+            }
+            
+            // Load course with all related data
+            $course = Course::with(['instructor.detail', 'category', 'subcourses' => function($query) {
+                $query->orderBy('order', 'asc');
+            }])->findOrFail($courseId);
+            
+            return view('dashboardSiswa.courseDetail', compact('student', 'course', 'enrollment'));
+        } catch (\Exception $e) {
+            Log::error('Failed to load course detail: ' . $e->getMessage());
+            return redirect()->route('student.my-courses')->with('error', 'Failed to load course.');
+        }
+    }
+
+    /**
      * Display settings page
      */
     public function settings()

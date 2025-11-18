@@ -13,7 +13,10 @@ class Subcourse extends Model
     protected $fillable = [
         'course_id',
         'title',
+        'description',
         'content',
+        'video_url',
+        'order',
         'thumbnail',
         'fileUpload',
     ];
