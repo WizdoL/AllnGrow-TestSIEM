@@ -651,7 +651,7 @@
               <label>Course Thumbnail</label>
               @if($course->thumbnail)
                 <div class="current-thumbnail">
-                  <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="Current thumbnail">
+                  <img src="{{ Storage::url($course->thumbnail) }}" alt="Current thumbnail">
                   <p>Current thumbnail</p>
                 </div>
               @endif
@@ -784,7 +784,7 @@
                     <label>Thumbnail</label>
                     @if($subcourse->thumbnail)
                       <div style="margin-bottom: 0.5rem;">
-                        <img src="{{ asset('storage/' . $subcourse->thumbnail) }}" style="max-width: 120px; border-radius: 6px;">
+                        <img src="{{ Storage::url($subcourse->thumbnail) }}" style="max-width: 120px; border-radius: 6px;">
                       </div>
                     @endif
                     <input type="file" name="thumbnail" accept="image/*" style="padding: 0.75rem; background: #0a0a0a; border: 1px solid var(--border); border-radius: 8px; color: var(--text); width: 100%;">

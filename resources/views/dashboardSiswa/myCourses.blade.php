@@ -88,7 +88,7 @@
               <article class="course" data-status="{{ $course->pivot->completed ? 'completed' : 'progress' }}">
                 <div class="course-thumb">
                   @if($course->thumbnail)
-                    <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}">
+                    <img src="{{ Storage::url($course->thumbnail) }}" alt="{{ $course->title }}">
                   @else
                     <div style="width: 100%; height: 200px; background: #1a1a1a; display: flex; align-items: center; justify-content: center;">
                       <i class="fas fa-book" style="font-size: 3rem; color: #404040;"></i>

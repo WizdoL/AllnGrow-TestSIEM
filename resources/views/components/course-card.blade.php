@@ -1,7 +1,7 @@
 <article class="course-card">
     <!-- Thumbnail -->
     @if($course->thumbnail)
-        <img src="{{ asset('storage/' . $course->thumbnail) }}"
+        <img src="{{ Storage::url($course->thumbnail) }}"
              alt="{{ $course->title }}"
              class="course-image" />
     @else

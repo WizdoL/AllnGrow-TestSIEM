@@ -479,7 +479,7 @@
                 <a href="{{ route('student.course-overview', $course->courseID) }}" style="text-decoration: none; color: inherit; display: block;">
                   <div class="thumb" style="position: relative;">
                     @if($course->thumbnail)
-                      <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                      <img src="{{ Storage::url($course->thumbnail) }}" alt="{{ $course->title }}" style="width: 100%; height: 100%; object-fit: cover;">
                     @else
                       <div style="width: 100%; height: 100%; background: #1a1a1a; display: flex; align-items: center; justify-content: center;">
                         <i class="fas fa-book" style="font-size: 3rem; color: #404040;"></i>

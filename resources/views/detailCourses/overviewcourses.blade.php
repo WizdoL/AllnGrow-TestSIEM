@@ -36,7 +36,7 @@
     <div class="course-header">
       <div class="course-image">
         @if($course->thumbnail)
-          <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}" />
+          <img src="{{ Storage::url($course->thumbnail) }}" alt="{{ $course->title }}" />
         @else
           <div style="width: 100%; height: 100%; background: #1a1a1a; display: flex; align-items: center; justify-content: center;">
             <i class="fas fa-book" style="font-size: 5rem; color: #333;"></i>
@@ -148,13 +148,9 @@
     <div class="instructor fade-up delay-1">
       <h2>Instruktur</h2>
       <div class="instructor-card">
-        @if($course->instructor && $course->instructor->detail && $course->instructor->detail->photo)
-          <img src="{{ asset('storage/' . $course->instructor->detail->photo) }}" alt="{{ $course->instructor->detail->fullname ?? 'Instructor' }}" />
-        @else
-          <div style="width: 180px; height: 180px; border-radius: 12px; background: #1a1a1a; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-            <i class="fas fa-user" style="font-size: 4rem; color: #333;"></i>
-          </div>
-        @endif
+        <div style="width: 180px; height: 180px; border-radius: 12px; background: #1a1a1a; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <i class="fas fa-user" style="font-size: 4rem; color: #333;"></i>
+        </div>
         <div class="instructor-info">
           <h3>{{ $course->instructor->detail->fullname ?? $course->instructor->name ?? $course->instructor->email ?? 'Instruktur' }}</h3>
           @if($course->instructor && $course->instructor->detail)

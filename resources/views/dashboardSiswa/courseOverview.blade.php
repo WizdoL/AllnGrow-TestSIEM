@@ -406,7 +406,7 @@
         <!-- Hero Section -->
         <div class="course-hero">
           @if($course->thumbnail)
-            <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}">
+            <img src="{{ Storage::url($course->thumbnail) }}" alt="{{ $course->title }}">
           @else
             <div class="course-hero-placeholder">
               <i class="fas fa-book"></i>
@@ -476,11 +476,7 @@
               <h3><i class="fas fa-user-tie"></i> Instruktur</h3>
               <div class="instructor-card">
                 <div class="instructor-avatar">
-                  @if($course->instructor && $course->instructor->detail && $course->instructor->detail->photo)
-                    <img src="{{ asset('storage/' . $course->instructor->detail->photo) }}" alt="Instructor">
-                  @else
-                    <i class="fas fa-user"></i>
-                  @endif
+                  <i class="fas fa-user"></i>
                 </div>
                 <div class="instructor-info">
                   <h4>{{ $course->instructor->detail->fullname ?? $course->instructor->name ?? $course->instructor->email ?? 'Instructor' }}</h4>

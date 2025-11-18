@@ -95,7 +95,7 @@
               <article class="course" style="cursor: {{ $course->pivot->payment_status === 'confirmed' ? 'pointer' : 'default' }};" onclick="@if($course->pivot->payment_status === 'confirmed') window.location='{{ route('student.view-course', $course->courseID ?? $course->id) }}' @endif">
                 <div class="thumb" style="position: relative; overflow: hidden;">
                   @if($course->thumbnail)
-                    <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    <img src="{{ Storage::url($course->thumbnail) }}" alt="{{ $course->title }}" style="width: 100%; height: 100%; object-fit: cover;">
                   @else
                     <i class="fas fa-book" style="font-size: 3rem; color: #404040;"></i>
                   @endif

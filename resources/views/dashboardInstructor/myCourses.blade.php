@@ -604,7 +604,7 @@
           <div class="course-card">
             <div class="course-thumbnail">
               @if($course->thumbnail)
-                <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}">
+                <img src="{{ Storage::url($course->thumbnail) }}" alt="{{ $course->title }}">
               @else
                 <i class="fas fa-graduation-cap"></i>
               @endif
