@@ -371,6 +371,40 @@ class StudentDashboardController extends Controller
     }
 
     /**
+     * Display course overview (public preview before enrolling)
+     */
+    public function courseOverview($courseId)
+    {
+        try {
+            $student = Auth::guard('student')->user();
+            $student->load('detail');
+
+            // Get course with all details
+            $course = Course::where('status', 'approved')
+                ->with(['category', 'instructor.detail', 'subcourses', 'students', 'ratings'])
+                ->withCount(['subcourses', 'students'])
+                ->findOrFail($courseId);
+
+            // Check if student is already enrolled
+            $isEnrolled = $student->courses()->wherePivot('courseID', $courseId)->exists();
+
+            // Get enrollment status if enrolled
+            $enrollment = null;
+            if ($isEnrolled) {
+                $enrollment = $student->courses()
+                    ->wherePivot('courseID', $courseId)
+                    ->withPivot(['completion', 'completed', 'payment_status'])
+                    ->first();
+            }
+
+            return view('dashboardSiswa.courseOverview', compact('student', 'course', 'isEnrolled', 'enrollment'));
+        } catch (\Exception $e) {
+            Log::error('Failed to load course overview: ' . $e->getMessage());
+            return redirect()->route('student.browse-courses')->with('error', 'Course not found.');
+        }
+    }
+
+    /**
      * Display progress page with enrolled courses statistics
      */
     public function progress()

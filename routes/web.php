@@ -86,6 +86,9 @@ Route::middleware(['web', 'auth.student'])->group(function () {
     // View Course Detail
     Route::get('/student/course/{courseId}', [StudentDashboardController::class, 'viewCourse'])->name('student.view-course');
 
+    // Course Overview (preview before enrolling)
+    Route::get('/student/course-overview/{courseId}', [StudentDashboardController::class, 'courseOverview'])->name('student.course-overview');
+
     Route::get('/progress', [StudentDashboardController::class, 'progress'])->name('progress');
 
     Route::get('/schedule', [StudentDashboardController::class, 'schedule'])->name('schedule');

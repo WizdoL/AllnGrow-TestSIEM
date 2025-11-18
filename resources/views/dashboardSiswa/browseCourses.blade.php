@@ -475,7 +475,7 @@
         @if($courses->count() > 0)
           <div class="course-grid">
             @foreach($courses as $course)
-              <article class="course">
+              <article class="course" style="cursor: pointer;" onclick="window.location.href='{{ route('student.course-overview', $course->courseID) }}'">
                 <div class="thumb" style="position: relative;">
                   @if($course->thumbnail)
                     <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}" style="width: 100%; height: 100%; object-fit: cover;">
