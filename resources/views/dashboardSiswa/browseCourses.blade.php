@@ -475,55 +475,54 @@
         @if($courses->count() > 0)
           <div class="course-grid">
             @foreach($courses as $course)
-              <article class="course" style="cursor: pointer;" onclick="window.location.href='{{ route('student.course-overview', $course->courseID) }}'">
-                <div class="thumb" style="position: relative;">
-                  @if($course->thumbnail)
-                    <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}" style="width: 100%; height: 100%; object-fit: cover;">
-                  @else
-                    <div style="width: 100%; height: 100%; background: #1a1a1a; display: flex; align-items: center; justify-content: center;">
-                      <i class="fas fa-book" style="font-size: 3rem; color: #404040;"></i>
-                    </div>
-                  @endif
-                  @if($course->price == 0)
-                    <span style="position: absolute; top: 0.5rem; right: 0.5rem; background: #ffffff; color: #000000; padding: 0.25rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600;">Free</span>
-                  @endif
-                </div>
-                <div class="course-body">
-                  <div style="font-size: 0.75rem; color: #a3a3a3; text-transform: uppercase; margin-bottom: 0.5rem;">
-                    {{ $course->category->name ?? 'Uncategorized' }}
-                  </div>
-                  <h3>{{ $course->title }}</h3>
-                  <p class="meta">
-                    <i class="fas fa-user-circle"></i> 
-                    {{ $course->instructor->detail->fullname ?? $course->instructor->name ?? $course->instructor->email }}
-                  </p>
-                  <div style="display: flex; gap: 1rem; font-size: 0.85rem; color: #a3a3a3; margin-bottom: 1rem;">
-                    <span><i class="fas fa-book-open"></i> {{ $course->subcourses->count() }} Modules</span>
-                    <span><i class="fas fa-users"></i> {{ $course->students->count() }} Students</span>
-                  </div>
-                  <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 1rem; border-top: 1px solid #262626;">
-                    <div style="font-size: 1.25rem; font-weight: 700; color: #f5f5f5;">
-                      @if($course->price == 0)
-                        Free
-                      @else
-                        Rp {{ number_format($course->price, 0, ',', '.') }}
-                      @endif
-                    </div>
-                    
-                    @if(in_array($course->courseID, $enrolledCourseIds))
-                      <button disabled style="padding: 0.5rem 1rem; background: #1f1f1f; color: #f5f5f5; border: none; border-radius: 8px; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: not-allowed;">
-                        <i class="fas fa-check"></i> Enrolled
-                      </button>
+              <article class="course" style="cursor: pointer; transition: all 0.2s;">
+                <a href="{{ route('student.course-overview', $course->courseID) }}" style="text-decoration: none; color: inherit; display: block;">
+                  <div class="thumb" style="position: relative;">
+                    @if($course->thumbnail)
+                      <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}" style="width: 100%; height: 100%; object-fit: cover;">
                     @else
-                      <form method="POST" action="{{ route('student.enroll', $course->courseID) }}" style="margin: 0;">
-                        @csrf
-                        <button type="submit" onclick="return confirm('Are you sure you want to enroll in this course?')" style="padding: 0.5rem 1rem; background: #ffffff; color: #000000; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem;">
-                          <i class="fas fa-plus"></i> Enroll Now
-                        </button>
-                      </form>
+                      <div style="width: 100%; height: 100%; background: #1a1a1a; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-book" style="font-size: 3rem; color: #404040;"></i>
+                      </div>
+                    @endif
+                    @if($course->price == 0)
+                      <span style="position: absolute; top: 0.5rem; right: 0.5rem; background: #ffffff; color: #000000; padding: 0.25rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600;">Free</span>
                     @endif
                   </div>
-                </div>
+                  <div class="course-body">
+                    <div style="font-size: 0.75rem; color: #a3a3a3; text-transform: uppercase; margin-bottom: 0.5rem;">
+                      {{ $course->category->name ?? 'Uncategorized' }}
+                    </div>
+                    <h3>{{ $course->title }}</h3>
+                    <p class="meta">
+                      <i class="fas fa-user-circle"></i>
+                      {{ $course->instructor->detail->fullname ?? $course->instructor->name ?? $course->instructor->email ?? 'Instructor' }}
+                    </p>
+                    <div style="display: flex; gap: 1rem; font-size: 0.85rem; color: #a3a3a3; margin-bottom: 1rem;">
+                      <span><i class="fas fa-book-open"></i> {{ $course->subcourses->count() }} Modules</span>
+                      <span><i class="fas fa-users"></i> {{ $course->students->count() }} Students</span>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 1rem; border-top: 1px solid #262626;">
+                      <div style="font-size: 1.25rem; font-weight: 700; color: #f5f5f5;">
+                        @if($course->price == 0)
+                          Free
+                        @else
+                          Rp {{ number_format($course->price, 0, ',', '.') }}
+                        @endif
+                      </div>
+
+                      @if(in_array($course->courseID, $enrolledCourseIds))
+                        <span style="padding: 0.5rem 1rem; background: #1f1f1f; color: #f5f5f5; border-radius: 8px; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem;">
+                          <i class="fas fa-check"></i> Enrolled
+                        </span>
+                      @else
+                        <span style="padding: 0.5rem 1rem; background: #ffffff; color: #000000; border-radius: 8px; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem;">
+                          <i class="fas fa-eye"></i> View Details
+                        </span>
+                      @endif
+                    </div>
+                  </div>
+                </a>
               </article>
             @endforeach
           </div>
