@@ -16,7 +16,8 @@
       <nav>
         <a href="dashboardSiswa"><i class="fas fa-home"></i> Dashboard</a>
         <a href="myCourses"><i class="fas fa-book"></i> My Courses</a>
-        <a class="active"><i class="fas fa-calendar"></i> Schedule</a>
+        <a href="{{ route('student.browse-courses') }}"><i class="fas fa-search"></i> Browse Courses</a>
+        <a class="active" href="schedule"><i class="fas fa-calendar"></i> Schedule</a>
         <a href="progress"><i class="fas fa-chart-line"></i> Progress</a>
         <a href="settings"><i class="fas fa-cog"></i> Settings</a>
         <div style="margin-top: auto; padding-top: 2rem; border-top: 1px solid #262626;">
