@@ -93,14 +93,14 @@
           <div class="course-grid">
             @foreach($enrolledCourses as $course)
               <article class="course" style="cursor: {{ $course->pivot->payment_status === 'paid' ? 'pointer' : 'default' }};" onclick="@if($course->pivot->payment_status === 'paid') window.location='{{ route('student.view-course', $course->courseID ?? $course->id) }}' @endif">
-                <div class="thumb">
+                <div class="thumb" style="position: relative; overflow: hidden;">
                   @if($course->thumbnail)
                     <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}" style="width: 100%; height: 100%; object-fit: cover;">
                   @else
                     <i class="fas fa-book" style="font-size: 3rem; color: #404040;"></i>
                   @endif
                   @if($course->pivot->payment_status === 'pending')
-                    <div style="position: absolute; top: 0.5rem; right: 0.5rem; background: #fbbf24; color: #000; padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 0.7rem; font-weight: 600;">
+                    <div style="position: absolute; top: 0.5rem; right: 0.5rem; background: #fbbf24; color: #000; padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 0.7rem; font-weight: 600; white-space: nowrap; z-index: 10;">
                       Pending Payment
                     </div>
                   @endif
