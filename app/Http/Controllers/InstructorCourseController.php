@@ -117,19 +117,13 @@ class InstructorCourseController extends Controller
                     $subFile = null;
 
                     // Upload subcourse thumbnail
-                    if (isset($request->subcourses[$index]['thumbnail'])) {
-                        $file = $request->file("subcourses.{$index}.thumbnail");
-                        if ($file) {
-                            $subThumbnail = $file->store("courses/{$course->courseID}/subcourses/thumbnails", 'public');
-                        }
+                    if ($request->hasFile("subcourses.{$index}.thumbnail")) {
+                        $subThumbnail = $request->file("subcourses.{$index}.thumbnail")->store("courses/{$course->courseID}/subcourses/thumbnails", 'public');
                     }
 
                     // Upload subcourse file
-                    if (isset($request->subcourses[$index]['fileUpload'])) {
-                        $file = $request->file("subcourses.{$index}.fileUpload");
-                        if ($file) {
-                            $subFile = $file->store("courses/{$course->courseID}/subcourses/files", 'public');
-                        }
+                    if ($request->hasFile("subcourses.{$index}.fileUpload")) {
+                        $subFile = $request->file("subcourses.{$index}.fileUpload")->store("courses/{$course->courseID}/subcourses/files", 'public');
                     }
 
                     Subcourse::create([
@@ -236,7 +230,7 @@ class InstructorCourseController extends Controller
             // Update course
             $course->update([
                 'title' => InputSanitizer::sanitizeText($data['title']),
-                'description' => isset($data['description']) ? InputSanitizer::sanitizeHtml($data['description']) : $course->description,
+                'description' => array_key_exists('description', $data) ? InputSanitizer::sanitizeHtml($data['description'] ?? '') : $course->description,
                 'price' => $data['price'],
                 'thumbnail' => $data['thumbnail'] ?? $course->thumbnail,
             ]);
@@ -374,7 +368,7 @@ class InstructorCourseController extends Controller
 
             $subcourse->update([
                 'title' => InputSanitizer::sanitizeText($data['title']),
-                'content' => isset($data['content']) ? InputSanitizer::sanitizeHtml($data['content']) : null,
+                'content' => isset($data['content']) ? InputSanitizer::sanitizeHtml($data['content']) : $subcourse->content,
                 'thumbnail' => $data['thumbnail'] ?? $subcourse->thumbnail,
                 'fileUpload' => $data['fileUpload'] ?? $subcourse->fileUpload,
             ]);
