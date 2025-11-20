@@ -251,9 +251,65 @@
     .btn-toggle { background: #1f1f1f; color: var(--text-muted); }
     .btn-toggle:hover { background: #2f2f2f; }
 
-    /* Lessons inside chapter */
-    .chapter-lessons { padding: 1rem 1.25rem; display: none; }
-    .chapter-lessons.active { display: block; }
+    /* Chapter body (matching createCourse) */
+    .chapter-body {
+      padding: 1.25rem;
+      display: none;
+      border-top: 1px solid var(--border);
+    }
+    .chapter-body.active { display: block; }
+
+    /* Lesson Card - Minimalist Design (matching createCourse) */
+    .lesson-card {
+      background: #0a0a0a;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      overflow: hidden;
+      transition: all 0.2s;
+    }
+
+    .lesson-card:hover {
+      border-color: #3f3f3f;
+    }
+
+    .lesson-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.25rem;
+      background: #111;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .lesson-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .lesson-number-badge {
+      background: var(--accent);
+      color: #fff;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .lesson-body {
+      padding: 1.25rem;
+    }
+
+    .lesson-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .lesson-section:last-child {
+      margin-bottom: 0;
+    }
 
     .lesson-item {
       background: #050505;
@@ -586,87 +642,65 @@
       @if($course->chapters->count() > 0)
         @foreach($course->chapters as $chapterIndex => $chapter)
           <div class="chapter-card">
-            <div class="chapter-card-header">
+            <div class="chapter-card-header" onclick="toggleChapterBody({{ $chapter->id }})" style="cursor: pointer;">
               <div class="chapter-info">
                 <h4>
                   <span class="chapter-number">Bab {{ $chapterIndex + 1 }}</span>
-                  {{ $chapter->title }}
+                  <span id="chapter-name-display-{{ $chapter->id }}">{{ $chapter->title }}</span>
                 </h4>
-                @if($chapter->description)
-                  <p>{{ Str::limit($chapter->description, 100) }}</p>
-                @endif
                 <div class="chapter-meta">
                   <i class="fas fa-play-circle"></i> {{ $chapter->lessons->count() }} lessons
                 </div>
               </div>
               <div class="chapter-actions">
-                <button type="button" class="btn-icon btn-toggle" onclick="toggleChapterLessons({{ $chapter->id }})" title="Toggle Lessons">
-                  <i class="fas fa-chevron-down" id="chapter-toggle-icon-{{ $chapter->id }}"></i>
+                <button type="button" class="btn-icon btn-toggle" onclick="event.stopPropagation(); toggleChapterBody({{ $chapter->id }})" title="Toggle">
+                  <i class="fas fa-chevron-down" id="chapter-body-icon-{{ $chapter->id }}"></i>
                 </button>
-                <button type="button" class="btn-icon btn-edit" onclick="toggleEditChapterForm({{ $chapter->id }})" title="Edit Chapter">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <form method="POST" action="{{ route('instructor.chapters.destroy', [$course->courseID, $chapter->id]) }}" style="display: inline;" onsubmit="return confirm('Delete this chapter and all its lessons?')">
+                <form method="POST" action="{{ route('instructor.chapters.destroy', [$course->courseID, $chapter->id]) }}" style="display: inline;" onsubmit="event.stopPropagation(); return confirm('Delete this chapter and all its lessons?')">
                   @csrf
                   @method('DELETE')
-                  <button type="submit" class="btn-icon btn-delete" title="Delete Chapter">
+                  <button type="submit" class="btn-icon btn-delete" title="Delete Chapter" onclick="event.stopPropagation();">
                     <i class="fas fa-trash"></i>
                   </button>
                 </form>
               </div>
             </div>
 
-            <!-- Edit Chapter Form -->
-            <div class="edit-form" id="editChapterForm{{ $chapter->id }}">
+            <!-- Chapter Body (Edit Form + Lessons) -->
+            <div class="chapter-body" id="chapterBody{{ $chapter->id }}">
               <form method="POST" action="{{ route('instructor.chapters.update', [$course->courseID, $chapter->id]) }}">
                 @csrf
                 @method('PUT')
-                <div class="form-grid">
+                <div class="form-grid" style="margin-bottom: 1.5rem;">
                   <div class="form-group full-width">
                     <label>Chapter Title <span class="required">*</span></label>
-                    <input type="text" name="title" value="{{ $chapter->title }}" required>
+                    <input type="text" name="title" value="{{ $chapter->title }}" required placeholder="e.g. Getting Started" oninput="updateChapterNameDisplay({{ $chapter->id }}, this.value)">
                   </div>
                   <div class="form-group full-width">
-                    <label>Description</label>
-                    <textarea name="description" rows="2">{{ $chapter->description }}</textarea>
+                    <label>Chapter Description</label>
+                    <textarea name="description" placeholder="Brief description of this chapter..." rows="2">{{ $chapter->description }}</textarea>
                   </div>
                 </div>
-                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-                  <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update</button>
-                  <button type="button" class="btn btn-secondary" onclick="toggleEditChapterForm({{ $chapter->id }})">Cancel</button>
+                <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                  <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan Chapter</button>
                 </div>
               </form>
-            </div>
 
-            <!-- Lessons List -->
-            <div class="chapter-lessons" id="chapterLessons{{ $chapter->id }}">
+              <h4 style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-muted);">
+                <i class="fas fa-play-circle"></i> Lessons
+              </h4>
+
               @if($chapter->lessons->count() > 0)
                 @foreach($chapter->lessons as $lessonIndex => $lesson)
-                  <div class="lesson-item">
-                    <div class="lesson-info">
-                      <h5>
-                        <span class="lesson-number">{{ $lessonIndex + 1 }}</span>
-                        {{ $lesson->title }}
+                  <div class="lesson-card">
+                    <div class="lesson-header">
+                      <div class="lesson-title">
+                        <span class="lesson-number-badge">{{ $lessonIndex + 1 }}</span>
+                        <span>Materi</span>
                         @if($lesson->is_free)
                           <span style="background: var(--success); color: #fff; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.65rem;">FREE</span>
                         @endif
-                      </h5>
-                      <div class="lesson-meta">
-                        @if($lesson->duration)
-                          <span><i class="fas fa-clock"></i> {{ $lesson->formatted_duration }}</span>
-                        @endif
-                        @if($lesson->video_url)
-                          <span><i class="fas fa-video"></i> Video</span>
-                        @endif
-                        @if($lesson->fileUpload)
-                          <span><i class="fas fa-file"></i> File</span>
-                        @endif
                       </div>
-                    </div>
-                    <div class="chapter-actions">
-                      <button type="button" class="btn-icon btn-edit" onclick="toggleEditLessonForm({{ $lesson->id }})" title="Edit">
-                        <i class="fas fa-edit"></i>
-                      </button>
                       <form method="POST" action="{{ route('instructor.lessons.destroy', [$course->courseID, $chapter->id, $lesson->id]) }}" style="display: inline;" onsubmit="return confirm('Delete this lesson?')">
                         @csrf
                         @method('DELETE')
@@ -675,88 +709,86 @@
                         </button>
                       </form>
                     </div>
-                  </div>
 
-                  <!-- Edit Lesson Form -->
-                  <div class="edit-form" id="editLessonForm{{ $lesson->id }}" style="margin-bottom: 0.75rem; border-radius: 8px;">
-                    <form method="POST" action="{{ route('instructor.lessons.update', [$course->courseID, $chapter->id, $lesson->id]) }}" enctype="multipart/form-data">
-                      @csrf
-                      @method('PUT')
+                    <div class="lesson-body">
+                      <form method="POST" action="{{ route('instructor.lessons.update', [$course->courseID, $chapter->id, $lesson->id]) }}" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
 
-                      <!-- Basic Info -->
-                      <div class="lesson-form-section">
-                        <div class="lesson-section-title">
-                          <i class="fas fa-info-circle"></i> Informasi Dasar
-                        </div>
-                        <input type="text" name="title" value="{{ $lesson->title }}" class="lesson-input" required placeholder="Judul materi">
-                      </div>
-
-                      <!-- Video Section -->
-                      <div class="lesson-form-section">
-                        <div class="lesson-section-title">
-                          <i class="fas fa-video"></i> Video
-                        </div>
-                        <div class="lesson-form-grid">
-                          <div>
-                            <input type="url" name="video_url" value="{{ $lesson->video_url }}" class="lesson-input" placeholder="URL Video (YouTube/Vimeo)">
+                        <!-- Basic Info -->
+                        <div class="lesson-section">
+                          <div class="lesson-section-title">
+                            <i class="fas fa-info-circle"></i> Informasi Dasar
                           </div>
-                          <div>
-                            <input type="number" name="duration" value="{{ $lesson->duration }}" class="lesson-input" min="0" placeholder="Durasi (menit)">
-                          </div>
+                          <input type="text" name="title" value="{{ $lesson->title }}" class="lesson-input" required placeholder="Judul materi, contoh: Pengenalan HTML Dasar">
                         </div>
-                      </div>
 
-                      <!-- Description Section -->
-                      <div class="lesson-form-section">
-                        <div class="lesson-section-title">
-                          <i class="fas fa-align-left"></i> Deskripsi & Penjelasan Materi
-                        </div>
-                        <textarea name="content" class="lesson-input lesson-textarea" placeholder="Jelaskan apa yang akan dipelajari siswa dalam materi ini..." rows="4">{{ $lesson->content }}</textarea>
-                        <p style="font-size: 0.75rem; color: #525252; margin-top: 0.5rem;">
-                          <i class="fas fa-lightbulb" style="color: #fbbf24;"></i> Tips: Jelaskan konsep utama dan apa yang diharapkan siswa pahami.
-                        </p>
-                      </div>
-
-                      <!-- Files Section -->
-                      <div class="lesson-form-section">
-                        <div class="lesson-section-title">
-                          <i class="fas fa-paperclip"></i> File & Lampiran
-                        </div>
-                        <div class="lesson-form-grid">
-                          <div>
-                            <label style="font-size: 0.75rem; color: #737373; margin-bottom: 0.5rem; display: block;">Thumbnail</label>
-                            @if($lesson->thumbnail)
-                              <div style="margin-bottom: 0.5rem;">
-                                <img src="{{ Storage::url($lesson->thumbnail) }}" style="max-width: 80px; border-radius: 6px;">
-                              </div>
-                            @endif
-                            <input type="file" name="thumbnail" accept="image/*" class="file-input-minimal">
+                        <!-- Video Section -->
+                        <div class="lesson-section">
+                          <div class="lesson-section-title">
+                            <i class="fas fa-video"></i> Video
                           </div>
-                          <div>
-                            <label style="font-size: 0.75rem; color: #737373; margin-bottom: 0.5rem; display: block;">File Pendukung</label>
-                            @if($lesson->fileUpload)
-                              <div style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.5rem;">
-                                <i class="fas fa-file"></i> {{ basename($lesson->fileUpload) }}
-                              </div>
-                            @endif
-                            <input type="file" name="fileUpload" accept=".pdf,.doc,.docx,.ppt,.pptx,.mp4" class="file-input-minimal">
+                          <div class="lesson-form-grid">
+                            <div>
+                              <input type="url" name="video_url" value="{{ $lesson->video_url }}" class="lesson-input" placeholder="URL Video (YouTube/Vimeo)">
+                            </div>
+                            <div>
+                              <input type="number" name="duration" value="{{ $lesson->duration }}" class="lesson-input" min="0" placeholder="Durasi (menit)">
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      <!-- Options -->
-                      <div class="lesson-form-section">
-                        <label class="checkbox-minimal">
-                          <input type="checkbox" name="is_free" value="1" {{ $lesson->is_free ? 'checked' : '' }}>
-                          <span><i class="fas fa-eye"></i> Jadikan preview gratis</span>
-                        </label>
-                      </div>
+                        <!-- Description Section -->
+                        <div class="lesson-section">
+                          <div class="lesson-section-title">
+                            <i class="fas fa-align-left"></i> Deskripsi & Penjelasan Materi
+                          </div>
+                          <textarea name="content" class="lesson-input lesson-textarea" placeholder="Jelaskan apa yang akan dipelajari siswa dalam materi ini. Anda dapat menyertakan poin-poin penting, ringkasan, atau catatan tambahan..." rows="4">{{ $lesson->content }}</textarea>
+                          <p style="font-size: 0.75rem; color: #525252; margin-top: 0.5rem;">
+                            <i class="fas fa-lightbulb" style="color: #fbbf24;"></i> Tips: Jelaskan konsep utama yang akan dipelajari dan apa yang diharapkan siswa pahami setelah menyelesaikan materi ini.
+                          </p>
+                        </div>
 
-                      <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
-                        <button type="button" class="btn btn-secondary" onclick="toggleEditLessonForm({{ $lesson->id }})">Batal</button>
-                      </div>
-                    </form>
+                        <!-- Files Section -->
+                        <div class="lesson-section">
+                          <div class="lesson-section-title">
+                            <i class="fas fa-paperclip"></i> File & Lampiran
+                          </div>
+                          <div class="lesson-form-grid">
+                            <div>
+                              <label style="font-size: 0.75rem; color: #737373; margin-bottom: 0.5rem; display: block;">Thumbnail</label>
+                              @if($lesson->thumbnail)
+                                <div style="margin-bottom: 0.5rem;">
+                                  <img src="{{ Storage::url($lesson->thumbnail) }}" style="max-width: 80px; border-radius: 6px;">
+                                </div>
+                              @endif
+                              <input type="file" name="thumbnail" accept="image/*" class="file-input-minimal">
+                            </div>
+                            <div>
+                              <label style="font-size: 0.75rem; color: #737373; margin-bottom: 0.5rem; display: block;">File Pendukung</label>
+                              @if($lesson->fileUpload)
+                                <div style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                                  <i class="fas fa-file"></i> {{ basename($lesson->fileUpload) }}
+                                </div>
+                              @endif
+                              <input type="file" name="fileUpload" accept=".pdf,.doc,.docx,.ppt,.pptx,.mp4" class="file-input-minimal">
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Options -->
+                        <div class="lesson-section">
+                          <label class="checkbox-minimal">
+                            <input type="checkbox" name="is_free" value="1" {{ $lesson->is_free ? 'checked' : '' }}>
+                            <span><i class="fas fa-eye"></i> Jadikan preview gratis (siswa dapat melihat tanpa mendaftar)</span>
+                          </label>
+                        </div>
+
+                        <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan Perubahan</button>
+                        </div>
+                      </form>
+                    </div>
                   </div>
                 @endforeach
               @else
@@ -858,24 +890,21 @@
       document.getElementById('addChapterForm').classList.toggle('active');
     }
 
-    function toggleEditChapterForm(chapterId) {
-      document.getElementById('editChapterForm' + chapterId).classList.toggle('active');
-    }
-
-    function toggleChapterLessons(chapterId) {
-      const lessons = document.getElementById('chapterLessons' + chapterId);
-      const icon = document.getElementById('chapter-toggle-icon-' + chapterId);
-      lessons.classList.toggle('active');
+    function toggleChapterBody(chapterId) {
+      const body = document.getElementById('chapterBody' + chapterId);
+      const icon = document.getElementById('chapter-body-icon-' + chapterId);
+      body.classList.toggle('active');
       icon.classList.toggle('fa-chevron-down');
       icon.classList.toggle('fa-chevron-up');
     }
 
-    function toggleAddLessonForm(chapterId) {
-      document.getElementById('addLessonForm' + chapterId).classList.toggle('active');
+    function updateChapterNameDisplay(chapterId, value) {
+      const display = document.getElementById('chapter-name-display-' + chapterId);
+      display.textContent = value || 'New Chapter';
     }
 
-    function toggleEditLessonForm(lessonId) {
-      document.getElementById('editLessonForm' + lessonId).classList.toggle('active');
+    function toggleAddLessonForm(chapterId) {
+      document.getElementById('addLessonForm' + chapterId).classList.toggle('active');
     }
   </script>
 </body>
