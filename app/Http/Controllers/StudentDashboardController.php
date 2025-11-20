@@ -150,8 +150,8 @@ class StudentDashboardController extends Controller
             }
 
             // Determine payment status based on course price
-            // Free courses (price = 0) are automatically confirmed
-            $paymentStatus = $course->price == 0 ? 'confirmed' : 'pending';
+            // Free courses (price = 0) are automatically paid/confirmed
+            $paymentStatus = $course->price == 0 ? 'paid' : 'pending';
 
             // Enroll student - use course's primary key
             $student->courses()->attach($course->courseID, [

@@ -119,7 +119,7 @@
                   </div>
                   <div class="progress">
                     <div class="progress-bar">
-                      <div style="width: {{ $course->pivot->completion }}%; background: {{ $course->pivot->payment_status === 'confirmed' ? '#4ade80' : '#fbbf24' }};"></div>
+                      <div style="width: {{ $course->pivot->completion }}%; background: {{ $course->pivot->payment_status === 'paid' ? '#4ade80' : '#fbbf24' }};"></div>
                     </div>
                     <div class="progress-num">{{ $course->pivot->completion }}%</div>
                   </div>

@@ -674,8 +674,8 @@
               </div>
 
               @if($isEnrolled)
-                @if($enrollment && $enrollment->pivot->payment_status === 'confirmed')
-                  {{-- Already confirmed - can start learning --}}
+                @if($enrollment && $enrollment->pivot->payment_status === 'paid')
+                  {{-- Already paid/confirmed - can start learning --}}
                   <div class="enrollment-status paid">
                     <i class="fas fa-check-circle"></i>
                     Anda sudah terdaftar
