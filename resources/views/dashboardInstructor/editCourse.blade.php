@@ -590,6 +590,134 @@
               </label>
               <span class="hint">Recommended: 1280x720px, JPG/PNG, max 5MB</span>
             </div>
+
+            <!-- Teaching Mode -->
+            <div class="form-group full-width">
+              <label>Teaching Mode <span class="required">*</span></label>
+              <select name="teaching_mode" id="teaching_mode" onchange="toggleTeachingModeFields()" required>
+                <option value="static" {{ old('teaching_mode', $course->teaching_mode) == 'static' ? 'selected' : '' }}>Self-Paced (Video Only)</option>
+                <option value="online" {{ old('teaching_mode', $course->teaching_mode) == 'online' ? 'selected' : '' }}>Live Online (via Zoom/Meet)</option>
+                <option value="offline" {{ old('teaching_mode', $course->teaching_mode) == 'offline' ? 'selected' : '' }}>In-Person (Offline)</option>
+                <option value="hybrid" {{ old('teaching_mode', $course->teaching_mode) == 'hybrid' ? 'selected' : '' }}>Hybrid (Online + Offline)</option>
+              </select>
+              <span class="hint">Self-paced courses contain only video content. Live courses include scheduled sessions.</span>
+            </div>
+
+            <!-- Online Meeting Fields -->
+            <div id="online-fields" class="form-group full-width" style="display: none;">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Meeting Platform</label>
+                  <select name="meeting_platform">
+                    <option value="">Select Platform</option>
+                    <option value="zoom" {{ old('meeting_platform', $course->meeting_platform) == 'zoom' ? 'selected' : '' }}>Zoom</option>
+                    <option value="google_meet" {{ old('meeting_platform', $course->meeting_platform) == 'google_meet' ? 'selected' : '' }}>Google Meet</option>
+                    <option value="microsoft_teams" {{ old('meeting_platform', $course->meeting_platform) == 'microsoft_teams' ? 'selected' : '' }}>Microsoft Teams</option>
+                    <option value="other" {{ old('meeting_platform', $course->meeting_platform) == 'other' ? 'selected' : '' }}>Other</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Default Meeting Link</label>
+                  <input type="url" name="default_meeting_link" value="{{ old('default_meeting_link', $course->default_meeting_link) }}" placeholder="https://zoom.us/j/...">
+                </div>
+              </div>
+            </div>
+
+            <!-- Offline Location Fields -->
+            <div id="offline-fields" class="form-group full-width" style="display: none;">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Location Name</label>
+                  <input type="text" name="location_name" value="{{ old('location_name', $course->location_name) }}" placeholder="e.g. AllnGrow Training Center">
+                </div>
+                <div class="form-group">
+                  <label>City</label>
+                  <input type="text" name="location_city" value="{{ old('location_city', $course->location_city) }}" placeholder="e.g. Jakarta">
+                </div>
+                <div class="form-group full-width">
+                  <label>Full Address</label>
+                  <textarea name="location_address" rows="2" placeholder="Complete address...">{{ old('location_address', $course->location_address) }}</textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Max Participants -->
+            <div id="max-participants-field" class="form-group" style="display: none;">
+              <label>Max Participants</label>
+              <input type="number" name="max_participants" value="{{ old('max_participants', $course->max_participants) }}" min="1" placeholder="e.g. 30">
+              <span class="hint">Leave empty for unlimited</span>
+            </div>
+
+            <!-- Session Scheduling -->
+            <div id="sessions-section" class="form-group full-width" style="display: none; margin-top: 1.5rem;">
+              <div style="border-top: 1px solid var(--border); padding-top: 1.5rem;">
+                <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                  <i class="fas fa-calendar-alt" style="color: var(--accent);"></i> Session Schedule
+                </h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">
+                  Add scheduled sessions for your live course. Students will see these dates before enrolling.
+                </p>
+
+                <div id="sessions-container">
+                  <!-- Existing sessions -->
+                  @if(isset($course->sessions) && $course->sessions->count() > 0)
+                    @foreach($course->sessions as $index => $session)
+                      <div class="lesson-card" id="existing-session-{{ $session->id }}" style="margin-bottom: 1rem;">
+                        <div class="lesson-header">
+                          <div class="lesson-title">
+                            <span class="lesson-number-badge" style="background: #7c3aed;">{{ $index + 1 }}</span>
+                            <span>{{ $session->title }}</span>
+                          </div>
+                          <button type="button" class="btn-icon btn-delete" onclick="removeExistingSession({{ $session->id }})">
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </div>
+                        <div class="lesson-body">
+                          <input type="hidden" name="existing_sessions[{{ $session->id }}][id]" value="{{ $session->id }}">
+                          <div class="lesson-form-grid">
+                            <div style="grid-column: 1 / -1;">
+                              <label style="font-size: 0.75rem; color: #737373; margin-bottom: 0.5rem; display: block;">Session Title <span class="required">*</span></label>
+                              <input type="text" name="existing_sessions[{{ $session->id }}][title]" class="lesson-input" value="{{ $session->title }}" required placeholder="e.g. Introduction & Setup">
+                            </div>
+                            <div>
+                              <label style="font-size: 0.75rem; color: #737373; margin-bottom: 0.5rem; display: block;">Start Date & Time <span class="required">*</span></label>
+                              <input type="datetime-local" name="existing_sessions[{{ $session->id }}][start_time]" class="lesson-input" value="{{ $session->start_time->format('Y-m-d\TH:i') }}" required>
+                            </div>
+                            <div>
+                              <label style="font-size: 0.75rem; color: #737373; margin-bottom: 0.5rem; display: block;">End Date & Time <span class="required">*</span></label>
+                              <input type="datetime-local" name="existing_sessions[{{ $session->id }}][end_time]" class="lesson-input" value="{{ $session->end_time->format('Y-m-d\TH:i') }}" required>
+                            </div>
+                            <div style="grid-column: 1 / -1;">
+                              <label style="font-size: 0.75rem; color: #737373; margin-bottom: 0.5rem; display: block;">Session Type</label>
+                              <select name="existing_sessions[{{ $session->id }}][session_type]" class="lesson-input">
+                                <option value="online" {{ $session->session_type === 'online' ? 'selected' : '' }}>Online</option>
+                                <option value="offline" {{ $session->session_type === 'offline' ? 'selected' : '' }}>Offline</option>
+                              </select>
+                            </div>
+                            <div style="grid-column: 1 / -1;">
+                              <label style="font-size: 0.75rem; color: #737373; margin-bottom: 0.5rem; display: block;">Meeting Link / Location Notes</label>
+                              <input type="text" name="existing_sessions[{{ $session->id }}][meeting_link]" class="lesson-input" value="{{ $session->meeting_link }}" placeholder="https://zoom.us/j/... or additional location details">
+                            </div>
+                            <div style="grid-column: 1 / -1;">
+                              <label style="font-size: 0.75rem; color: #737373; margin-bottom: 0.5rem; display: block;">Description (optional)</label>
+                              <textarea name="existing_sessions[{{ $session->id }}][description]" class="lesson-input" rows="2" placeholder="What will be covered in this session...">{{ $session->description }}</textarea>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    @endforeach
+                  @endif
+
+                  <!-- New sessions will be added here -->
+                </div>
+
+                <input type="hidden" name="deleted_sessions" id="deleted_sessions" value="">
+
+                <button type="button" class="btn-add" onclick="addSession()" style="margin-top: 1rem; width: 100%;">
+                  <i class="fas fa-plus"></i> Add Session
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -886,6 +1014,124 @@
   </div>
 
   <script>
+    function toggleTeachingModeFields() {
+      const mode = document.getElementById('teaching_mode').value;
+      const onlineFields = document.getElementById('online-fields');
+      const offlineFields = document.getElementById('offline-fields');
+      const maxParticipants = document.getElementById('max-participants-field');
+      const sessionsSection = document.getElementById('sessions-section');
+
+      // Hide all first
+      onlineFields.style.display = 'none';
+      offlineFields.style.display = 'none';
+      maxParticipants.style.display = 'none';
+      sessionsSection.style.display = 'none';
+
+      // Show based on mode
+      if (mode === 'online') {
+        onlineFields.style.display = 'block';
+        maxParticipants.style.display = 'block';
+        sessionsSection.style.display = 'block';
+      } else if (mode === 'offline') {
+        offlineFields.style.display = 'block';
+        maxParticipants.style.display = 'block';
+        sessionsSection.style.display = 'block';
+      } else if (mode === 'hybrid') {
+        onlineFields.style.display = 'block';
+        offlineFields.style.display = 'block';
+        maxParticipants.style.display = 'block';
+        sessionsSection.style.display = 'block';
+      }
+    }
+
+    // Initialize teaching mode fields on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      toggleTeachingModeFields();
+    });
+
+    let sessionIndex = 0;
+    let deletedSessions = [];
+
+    function addSession() {
+      const container = document.getElementById('sessions-container');
+      const mode = document.getElementById('teaching_mode').value;
+      sessionIndex++;
+      const sessionNum = container.querySelectorAll('.lesson-card').length + 1;
+
+      const sessionHtml = `
+        <div class="lesson-card" id="new-session-${sessionIndex}" style="margin-bottom: 1rem;">
+          <div class="lesson-header">
+            <div class="lesson-title">
+              <span class="lesson-number-badge" style="background: #7c3aed;">New</span>
+              <span>New Session</span>
+            </div>
+            <button type="button" class="btn-icon btn-delete" onclick="removeNewSession(${sessionIndex})">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+          <div class="lesson-body">
+            <div class="lesson-form-grid">
+              <div style="grid-column: 1 / -1;">
+                <label style="font-size: 0.75rem; color: #737373; margin-bottom: 0.5rem; display: block;">Session Title <span class="required">*</span></label>
+                <input type="text" name="sessions[${sessionIndex}][title]" class="lesson-input" required placeholder="e.g. Introduction & Setup">
+              </div>
+              <div>
+                <label style="font-size: 0.75rem; color: #737373; margin-bottom: 0.5rem; display: block;">Start Date & Time <span class="required">*</span></label>
+                <input type="datetime-local" name="sessions[${sessionIndex}][start_time]" class="lesson-input" required>
+              </div>
+              <div>
+                <label style="font-size: 0.75rem; color: #737373; margin-bottom: 0.5rem; display: block;">End Date & Time <span class="required">*</span></label>
+                <input type="datetime-local" name="sessions[${sessionIndex}][end_time]" class="lesson-input" required>
+              </div>
+              <div style="grid-column: 1 / -1;">
+                <label style="font-size: 0.75rem; color: #737373; margin-bottom: 0.5rem; display: block;">Session Type</label>
+                <select name="sessions[${sessionIndex}][session_type]" class="lesson-input">
+                  <option value="online" ${mode === 'online' ? 'selected' : ''}>Online</option>
+                  <option value="offline" ${mode === 'offline' ? 'selected' : ''}>Offline</option>
+                </select>
+              </div>
+              <div style="grid-column: 1 / -1;">
+                <label style="font-size: 0.75rem; color: #737373; margin-bottom: 0.5rem; display: block;">Meeting Link / Location Notes</label>
+                <input type="text" name="sessions[${sessionIndex}][meeting_link]" class="lesson-input" placeholder="https://zoom.us/j/... or additional location details">
+              </div>
+              <div style="grid-column: 1 / -1;">
+                <label style="font-size: 0.75rem; color: #737373; margin-bottom: 0.5rem; display: block;">Description (optional)</label>
+                <textarea name="sessions[${sessionIndex}][description]" class="lesson-input" rows="2" placeholder="What will be covered in this session..."></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      container.insertAdjacentHTML('beforeend', sessionHtml);
+    }
+
+    function removeExistingSession(sessionId) {
+      if (confirm('Delete this session?')) {
+        const element = document.getElementById('existing-session-' + sessionId);
+        if (element) {
+          element.style.transition = 'all 0.3s';
+          element.style.opacity = '0';
+          element.style.transform = 'translateX(-20px)';
+          setTimeout(() => element.remove(), 300);
+
+          // Track deleted session
+          deletedSessions.push(sessionId);
+          document.getElementById('deleted_sessions').value = deletedSessions.join(',');
+        }
+      }
+    }
+
+    function removeNewSession(index) {
+      const element = document.getElementById('new-session-' + index);
+      if (element) {
+        element.style.transition = 'all 0.3s';
+        element.style.opacity = '0';
+        element.style.transform = 'translateX(-20px)';
+        setTimeout(() => element.remove(), 300);
+      }
+    }
+
     function toggleAddChapterForm() {
       document.getElementById('addChapterForm').classList.toggle('active');
     }

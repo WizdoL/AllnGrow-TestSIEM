@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Chapter;
 use App\Models\Lesson;
+use App\Models\CourseSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -86,6 +87,15 @@ class InstructorCourseController extends Controller
             'description' => 'nullable|string|max:5000',
             'category_id' => 'nullable|exists:categories,id',
 
+            // Teaching mode fields
+            'teaching_mode' => 'required|in:static,online,offline,hybrid',
+            'meeting_platform' => 'nullable|string|max:50',
+            'default_meeting_link' => 'nullable|url|max:500',
+            'location_name' => 'nullable|string|max:255',
+            'location_address' => 'nullable|string|max:1000',
+            'location_city' => 'nullable|string|max:100',
+            'max_participants' => 'nullable|integer|min:1',
+
             // Chapters (Bab)
             'chapters' => 'nullable|array',
             'chapters.*.title' => 'required_with:chapters|string|max:255',
@@ -100,6 +110,15 @@ class InstructorCourseController extends Controller
             'chapters.*.lessons.*.is_free' => 'nullable|boolean',
             'chapters.*.lessons.*.thumbnail' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:5120',
             'chapters.*.lessons.*.fileUpload' => 'nullable|mimes:pdf,doc,docx,ppt,pptx,mp4,mov,avi|max:51200',
+
+            // Sessions for live courses
+            'sessions' => 'nullable|array',
+            'sessions.*.title' => 'required_with:sessions|string|max:255',
+            'sessions.*.start_time' => 'required_with:sessions|date',
+            'sessions.*.end_time' => 'required_with:sessions|date|after:sessions.*.start_time',
+            'sessions.*.session_type' => 'nullable|in:online,offline',
+            'sessions.*.meeting_link' => 'nullable|string|max:500',
+            'sessions.*.description' => 'nullable|string|max:1000',
         ]);
 
         try {
@@ -118,6 +137,14 @@ class InstructorCourseController extends Controller
                 'price' => $data['price'],
                 'thumbnail' => $thumbnailPath,
                 'status' => 'pending',
+                // Teaching mode fields
+                'teaching_mode' => $data['teaching_mode'],
+                'meeting_platform' => $data['meeting_platform'] ?? null,
+                'default_meeting_link' => $data['default_meeting_link'] ?? null,
+                'location_name' => isset($data['location_name']) ? InputSanitizer::sanitizeText($data['location_name']) : null,
+                'location_address' => isset($data['location_address']) ? InputSanitizer::sanitizeText($data['location_address']) : null,
+                'location_city' => isset($data['location_city']) ? InputSanitizer::sanitizeText($data['location_city']) : null,
+                'max_participants' => $data['max_participants'] ?? null,
             ]);
 
             // Buat chapters dan lessons jika ada
@@ -162,6 +189,27 @@ class InstructorCourseController extends Controller
                             ]);
                         }
                     }
+                }
+            }
+
+            // Create sessions for live courses
+            if (isset($data['sessions']) && is_array($data['sessions'])) {
+                foreach ($data['sessions'] as $sessionData) {
+                    $startTime = new \DateTime($sessionData['start_time']);
+                    $endTime = new \DateTime($sessionData['end_time']);
+                    $durationMinutes = ($endTime->getTimestamp() - $startTime->getTimestamp()) / 60;
+
+                    CourseSession::create([
+                        'course_id' => $course->courseID,
+                        'title' => InputSanitizer::sanitizeText($sessionData['title']),
+                        'description' => isset($sessionData['description']) ? InputSanitizer::sanitizeText($sessionData['description']) : null,
+                        'session_type' => $sessionData['session_type'] ?? 'online',
+                        'meeting_link' => $sessionData['meeting_link'] ?? null,
+                        'start_time' => $sessionData['start_time'],
+                        'end_time' => $sessionData['end_time'],
+                        'duration_minutes' => $durationMinutes,
+                        'status' => 'scheduled',
+                    ]);
                 }
             }
 
@@ -228,6 +276,9 @@ class InstructorCourseController extends Controller
             ->with(['chapters.lessons' => function($query) {
                 $query->orderBy('order');
             }])
+            ->with(['sessions' => function($query) {
+                $query->orderBy('start_time');
+            }])
             ->findOrFail($id);
 
         $categories = \App\Models\Category::all();
@@ -250,6 +301,30 @@ class InstructorCourseController extends Controller
             'description' => 'nullable|string|max:5000',
             'category_id' => 'nullable|exists:categories,id',
             'thumbnail' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:5120',
+            // Teaching mode fields
+            'teaching_mode' => 'required|in:static,online,offline,hybrid',
+            'meeting_platform' => 'nullable|string|max:50',
+            'default_meeting_link' => 'nullable|url|max:500',
+            'location_name' => 'nullable|string|max:255',
+            'location_address' => 'nullable|string|max:1000',
+            'location_city' => 'nullable|string|max:100',
+            'max_participants' => 'nullable|integer|min:1',
+            // Sessions
+            'deleted_sessions' => 'nullable|string',
+            'existing_sessions' => 'nullable|array',
+            'existing_sessions.*.title' => 'required_with:existing_sessions|string|max:255',
+            'existing_sessions.*.start_time' => 'required_with:existing_sessions|date',
+            'existing_sessions.*.end_time' => 'required_with:existing_sessions|date',
+            'existing_sessions.*.session_type' => 'nullable|in:online,offline',
+            'existing_sessions.*.meeting_link' => 'nullable|string|max:500',
+            'existing_sessions.*.description' => 'nullable|string|max:1000',
+            'sessions' => 'nullable|array',
+            'sessions.*.title' => 'required_with:sessions|string|max:255',
+            'sessions.*.start_time' => 'required_with:sessions|date',
+            'sessions.*.end_time' => 'required_with:sessions|date',
+            'sessions.*.session_type' => 'nullable|in:online,offline',
+            'sessions.*.meeting_link' => 'nullable|string|max:500',
+            'sessions.*.description' => 'nullable|string|max:1000',
         ]);
 
         try {
@@ -269,7 +344,72 @@ class InstructorCourseController extends Controller
                 'price' => $data['price'],
                 'category_id' => $data['category_id'] ?? $course->category_id,
                 'thumbnail' => $data['thumbnail'] ?? $course->thumbnail,
+                // Teaching mode fields
+                'teaching_mode' => $data['teaching_mode'],
+                'meeting_platform' => $data['meeting_platform'] ?? null,
+                'default_meeting_link' => $data['default_meeting_link'] ?? null,
+                'location_name' => isset($data['location_name']) ? InputSanitizer::sanitizeText($data['location_name']) : null,
+                'location_address' => isset($data['location_address']) ? InputSanitizer::sanitizeText($data['location_address']) : null,
+                'location_city' => isset($data['location_city']) ? InputSanitizer::sanitizeText($data['location_city']) : null,
+                'max_participants' => $data['max_participants'] ?? null,
             ]);
+
+            // Handle sessions
+            // Delete sessions marked for deletion
+            if (!empty($data['deleted_sessions'])) {
+                $deletedIds = array_filter(explode(',', $data['deleted_sessions']));
+                if (!empty($deletedIds)) {
+                    CourseSession::where('course_id', $course->courseID)
+                        ->whereIn('id', $deletedIds)
+                        ->delete();
+                }
+            }
+
+            // Update existing sessions
+            if (isset($data['existing_sessions']) && is_array($data['existing_sessions'])) {
+                foreach ($data['existing_sessions'] as $sessionId => $sessionData) {
+                    $session = CourseSession::where('course_id', $course->courseID)
+                        ->where('id', $sessionId)
+                        ->first();
+
+                    if ($session) {
+                        $startTime = new \DateTime($sessionData['start_time']);
+                        $endTime = new \DateTime($sessionData['end_time']);
+                        $durationMinutes = ($endTime->getTimestamp() - $startTime->getTimestamp()) / 60;
+
+                        $session->update([
+                            'title' => InputSanitizer::sanitizeText($sessionData['title']),
+                            'description' => isset($sessionData['description']) ? InputSanitizer::sanitizeText($sessionData['description']) : null,
+                            'session_type' => $sessionData['session_type'] ?? 'online',
+                            'meeting_link' => $sessionData['meeting_link'] ?? null,
+                            'start_time' => $sessionData['start_time'],
+                            'end_time' => $sessionData['end_time'],
+                            'duration_minutes' => $durationMinutes,
+                        ]);
+                    }
+                }
+            }
+
+            // Create new sessions
+            if (isset($data['sessions']) && is_array($data['sessions'])) {
+                foreach ($data['sessions'] as $sessionData) {
+                    $startTime = new \DateTime($sessionData['start_time']);
+                    $endTime = new \DateTime($sessionData['end_time']);
+                    $durationMinutes = ($endTime->getTimestamp() - $startTime->getTimestamp()) / 60;
+
+                    CourseSession::create([
+                        'course_id' => $course->courseID,
+                        'title' => InputSanitizer::sanitizeText($sessionData['title']),
+                        'description' => isset($sessionData['description']) ? InputSanitizer::sanitizeText($sessionData['description']) : null,
+                        'session_type' => $sessionData['session_type'] ?? 'online',
+                        'meeting_link' => $sessionData['meeting_link'] ?? null,
+                        'start_time' => $sessionData['start_time'],
+                        'end_time' => $sessionData['end_time'],
+                        'duration_minutes' => $durationMinutes,
+                        'status' => 'scheduled',
+                    ]);
+                }
+            }
 
             Log::info('Course updated successfully', [
                 'instructor_id' => $instructor->id,

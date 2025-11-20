@@ -566,6 +566,93 @@
           </div>
         </div>
 
+        <!-- Teaching Mode -->
+        <div class="form-section">
+          <h2><i class="fas fa-chalkboard-teacher"></i> Teaching Mode</h2>
+          <p>Choose how you want to deliver this course</p>
+
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label>Teaching Mode <span class="required">*</span></label>
+              <select name="teaching_mode" id="teaching_mode" onchange="toggleTeachingModeFields()" required>
+                <option value="static" {{ old('teaching_mode', 'static') == 'static' ? 'selected' : '' }}>Self-Paced (Video Only)</option>
+                <option value="online" {{ old('teaching_mode') == 'online' ? 'selected' : '' }}>Live Online (via Zoom/Meet)</option>
+                <option value="offline" {{ old('teaching_mode') == 'offline' ? 'selected' : '' }}>In-Person (Offline)</option>
+                <option value="hybrid" {{ old('teaching_mode') == 'hybrid' ? 'selected' : '' }}>Hybrid (Online + Offline)</option>
+              </select>
+              <span class="hint">Self-paced courses contain only video content. Live courses include scheduled sessions.</span>
+            </div>
+
+            <!-- Online Meeting Fields -->
+            <div id="online-fields" style="display: none; grid-column: 1 / -1;">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Meeting Platform</label>
+                  <select name="meeting_platform">
+                    <option value="">Select Platform</option>
+                    <option value="zoom" {{ old('meeting_platform') == 'zoom' ? 'selected' : '' }}>Zoom</option>
+                    <option value="google_meet" {{ old('meeting_platform') == 'google_meet' ? 'selected' : '' }}>Google Meet</option>
+                    <option value="microsoft_teams" {{ old('meeting_platform') == 'microsoft_teams' ? 'selected' : '' }}>Microsoft Teams</option>
+                    <option value="other" {{ old('meeting_platform') == 'other' ? 'selected' : '' }}>Other</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Default Meeting Link</label>
+                  <input type="url" name="default_meeting_link" value="{{ old('default_meeting_link') }}" placeholder="https://zoom.us/j/...">
+                  <span class="hint">You can also set specific links per session</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Offline Location Fields -->
+            <div id="offline-fields" style="display: none; grid-column: 1 / -1;">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Location Name</label>
+                  <input type="text" name="location_name" value="{{ old('location_name') }}" placeholder="e.g. AllnGrow Training Center">
+                </div>
+                <div class="form-group">
+                  <label>City</label>
+                  <input type="text" name="location_city" value="{{ old('location_city') }}" placeholder="e.g. Jakarta">
+                </div>
+                <div class="form-group full-width">
+                  <label>Full Address</label>
+                  <textarea name="location_address" rows="2" placeholder="Complete address with building name, floor, etc.">{{ old('location_address') }}</textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Max Participants -->
+            <div id="max-participants-field" style="display: none;">
+              <div class="form-group">
+                <label>Max Participants</label>
+                <input type="number" name="max_participants" value="{{ old('max_participants') }}" min="1" placeholder="e.g. 30">
+                <span class="hint">Leave empty for unlimited</span>
+              </div>
+            </div>
+
+            <!-- Session Scheduling -->
+            <div id="sessions-section" style="display: none; grid-column: 1 / -1; margin-top: 1.5rem;">
+              <div style="border-top: 1px solid var(--border); padding-top: 1.5rem;">
+                <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                  <i class="fas fa-calendar-alt" style="color: var(--accent);"></i> Session Schedule
+                </h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">
+                  Add scheduled sessions for your live course. Students will see these dates before enrolling.
+                </p>
+
+                <div id="sessions-container">
+                  <!-- Sessions will be added here -->
+                </div>
+
+                <button type="button" class="btn-add-lesson" onclick="addSession()" style="margin-top: 1rem;">
+                  <i class="fas fa-plus"></i> Add Session
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Chapters & Lessons -->
         <div class="form-section">
           <h2><i class="fas fa-book"></i> Course Curriculum</h2>
@@ -769,6 +856,107 @@
         setTimeout(() => element.remove(), 300);
       }
     }
+
+    function toggleTeachingModeFields() {
+      const mode = document.getElementById('teaching_mode').value;
+      const onlineFields = document.getElementById('online-fields');
+      const offlineFields = document.getElementById('offline-fields');
+      const maxParticipants = document.getElementById('max-participants-field');
+      const sessionsSection = document.getElementById('sessions-section');
+
+      // Hide all first
+      onlineFields.style.display = 'none';
+      offlineFields.style.display = 'none';
+      maxParticipants.style.display = 'none';
+      sessionsSection.style.display = 'none';
+
+      // Show based on mode
+      if (mode === 'online') {
+        onlineFields.style.display = 'block';
+        maxParticipants.style.display = 'block';
+        sessionsSection.style.display = 'block';
+      } else if (mode === 'offline') {
+        offlineFields.style.display = 'block';
+        maxParticipants.style.display = 'block';
+        sessionsSection.style.display = 'block';
+      } else if (mode === 'hybrid') {
+        onlineFields.style.display = 'block';
+        offlineFields.style.display = 'block';
+        maxParticipants.style.display = 'block';
+        sessionsSection.style.display = 'block';
+      }
+    }
+
+    let sessionIndex = 0;
+
+    function addSession() {
+      const container = document.getElementById('sessions-container');
+      const mode = document.getElementById('teaching_mode').value;
+      const sessionNum = sessionIndex + 1;
+
+      const sessionHtml = `
+        <div class="lesson-card" id="session-${sessionIndex}" style="margin-bottom: 1rem;">
+          <div class="lesson-header">
+            <div class="lesson-title">
+              <span class="lesson-number" style="background: #7c3aed;">${sessionNum}</span>
+              <span>Session ${sessionNum}</span>
+            </div>
+            <button type="button" class="btn-icon remove" onclick="removeSession(${sessionIndex})">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+          <div class="lesson-body">
+            <div class="lesson-grid">
+              <div class="full-width">
+                <label style="font-size: 0.75rem; color: #737373; margin-bottom: 0.5rem; display: block;">Session Title <span class="required">*</span></label>
+                <input type="text" name="sessions[${sessionIndex}][title]" class="lesson-input" required placeholder="e.g. Introduction & Setup">
+              </div>
+              <div>
+                <label style="font-size: 0.75rem; color: #737373; margin-bottom: 0.5rem; display: block;">Start Date & Time <span class="required">*</span></label>
+                <input type="datetime-local" name="sessions[${sessionIndex}][start_time]" class="lesson-input" required>
+              </div>
+              <div>
+                <label style="font-size: 0.75rem; color: #737373; margin-bottom: 0.5rem; display: block;">End Date & Time <span class="required">*</span></label>
+                <input type="datetime-local" name="sessions[${sessionIndex}][end_time]" class="lesson-input" required>
+              </div>
+              <div class="full-width">
+                <label style="font-size: 0.75rem; color: #737373; margin-bottom: 0.5rem; display: block;">Session Type</label>
+                <select name="sessions[${sessionIndex}][session_type]" class="lesson-input">
+                  <option value="online" ${mode === 'online' ? 'selected' : ''}>Online</option>
+                  <option value="offline" ${mode === 'offline' ? 'selected' : ''}>Offline</option>
+                </select>
+              </div>
+              <div class="full-width">
+                <label style="font-size: 0.75rem; color: #737373; margin-bottom: 0.5rem; display: block;">Meeting Link (for online) / Location Notes</label>
+                <input type="text" name="sessions[${sessionIndex}][meeting_link]" class="lesson-input" placeholder="https://zoom.us/j/... or additional location details">
+              </div>
+              <div class="full-width">
+                <label style="font-size: 0.75rem; color: #737373; margin-bottom: 0.5rem; display: block;">Description (optional)</label>
+                <textarea name="sessions[${sessionIndex}][description]" class="lesson-input" rows="2" placeholder="What will be covered in this session..."></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      container.insertAdjacentHTML('beforeend', sessionHtml);
+      sessionIndex++;
+    }
+
+    function removeSession(index) {
+      const element = document.getElementById(`session-${index}`);
+      if (element) {
+        element.style.transition = 'all 0.3s';
+        element.style.opacity = '0';
+        element.style.transform = 'translateX(-20px)';
+        setTimeout(() => element.remove(), 300);
+      }
+    }
+
+    // Initialize teaching mode fields on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      toggleTeachingModeFields();
+    });
 
     function updateFileName(input, targetId) {
       const target = document.getElementById(targetId);

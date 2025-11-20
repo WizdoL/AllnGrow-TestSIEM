@@ -328,6 +328,37 @@
       border: 1px solid #166534;
     }
 
+    /* Teaching Mode Badges */
+    .teaching-mode-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .teaching-mode-static {
+      background: #1e3a5f;
+      color: #60a5fa;
+    }
+
+    .teaching-mode-online {
+      background: #3b0764;
+      color: #c084fc;
+    }
+
+    .teaching-mode-offline {
+      background: #052e16;
+      color: #4ade80;
+    }
+
+    .teaching-mode-hybrid {
+      background: #422006;
+      color: #fbbf24;
+    }
+
     @media (max-width: 768px) {
       .course-content {
         grid-template-columns: 1fr;
@@ -456,6 +487,71 @@
               <p class="course-description">
                 {{ $course->description ?? 'Tidak ada deskripsi tersedia untuk course ini.' }}
               </p>
+            </div>
+
+            <!-- Teaching Mode & Location -->
+            <div class="course-section">
+              <h3><i class="fas fa-chalkboard-teacher"></i> Mode Pembelajaran</h3>
+
+              <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                <div class="teaching-mode-badge teaching-mode-{{ $course->teaching_mode ?? 'static' }}">
+                  <i class="fas {{ $course->teaching_mode_icon ?? 'fa-play-circle' }}"></i>
+                  {{ $course->teaching_mode_label ?? 'Self-Paced' }}
+                </div>
+              </div>
+
+              @if($course->teaching_mode === 'static')
+                <p style="color: #a3a3a3; font-size: 0.9rem; margin: 0;">
+                  <i class="fas fa-info-circle" style="color: #60a5fa;"></i>
+                  Course ini berisi video pembelajaran yang dapat diakses kapan saja sesuai waktu Anda.
+                </p>
+              @endif
+
+              @if($course->is_online)
+                <div style="background: #0c1929; border: 1px solid #1e3a5f; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                  <h4 style="font-size: 0.9rem; font-weight: 600; color: #60a5fa; margin: 0 0 0.75rem 0; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-video"></i> Live Online Sessions
+                  </h4>
+                  @if($course->meeting_platform)
+                    <p style="font-size: 0.85rem; color: #d4d4d4; margin: 0 0 0.5rem 0;">
+                      <strong>Platform:</strong> {{ ucfirst(str_replace('_', ' ', $course->meeting_platform)) }}
+                    </p>
+                  @endif
+                  <p style="font-size: 0.8rem; color: #a3a3a3; margin: 0;">
+                    Anda akan mendapat link meeting saat sesi dimulai.
+                  </p>
+                </div>
+              @endif
+
+              @if($course->is_offline)
+                <div style="background: #052e16; border: 1px solid #166534; border-radius: 8px; padding: 1rem;">
+                  <h4 style="font-size: 0.9rem; font-weight: 600; color: #4ade80; margin: 0 0 0.75rem 0; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-map-marker-alt"></i> Lokasi Tatap Muka
+                  </h4>
+                  @if($course->location_name)
+                    <p style="font-size: 0.9rem; color: #fff; margin: 0 0 0.25rem 0; font-weight: 600;">
+                      {{ $course->location_name }}
+                    </p>
+                  @endif
+                  @if($course->location_city)
+                    <p style="font-size: 0.85rem; color: #d4d4d4; margin: 0 0 0.5rem 0;">
+                      <i class="fas fa-city" style="width: 16px;"></i> {{ $course->location_city }}
+                    </p>
+                  @endif
+                  @if($course->location_address)
+                    <p style="font-size: 0.8rem; color: #a3a3a3; margin: 0; line-height: 1.5;">
+                      <i class="fas fa-map-pin" style="width: 16px;"></i> {{ $course->location_address }}
+                    </p>
+                  @endif
+                </div>
+              @endif
+
+              @if($course->max_participants)
+                <p style="font-size: 0.85rem; color: #fbbf24; margin: 1rem 0 0 0; display: flex; align-items: center; gap: 0.5rem;">
+                  <i class="fas fa-users"></i>
+                  Maksimal {{ $course->max_participants }} peserta per sesi
+                </p>
+              @endif
             </div>
 
             <!-- Curriculum -->

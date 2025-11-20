@@ -7,6 +7,43 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="{{ asset('css/dashboardSiswa/dashboardSiswa.css') }}">
+  <style>
+    /* Teaching Mode Badges */
+    .teaching-mode-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin: 0.5rem 0;
+    }
+
+    .teaching-mode-static {
+      background: rgba(163, 163, 163, 0.15);
+      color: #a3a3a3;
+      border: 1px solid rgba(163, 163, 163, 0.3);
+    }
+
+    .teaching-mode-online {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .teaching-mode-offline {
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .teaching-mode-hybrid {
+      background: rgba(168, 85, 247, 0.15);
+      color: #c084fc;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+  </style>
 </head>
 <body>
   <div class="app">
@@ -108,6 +145,10 @@
                 <div class="course-body">
                   <h3>{{ $course->title }}</h3>
                   <p class="meta">{{ $course->instructor->name ?? $course->instructor->email }}</p>
+                  <div class="teaching-mode-badge teaching-mode-{{ $course->teaching_mode ?? 'static' }}">
+                    <i class="fas {{ $course->teaching_mode_icon ?? 'fa-play-circle' }}"></i>
+                    {{ $course->teaching_mode_label ?? 'Self-Paced' }}
+                  </div>
                   <div class="progress">
                     <div class="progress-bar">
                       <div style="width: {{ $course->pivot->completion }}%; background: #4ade80;"></div>

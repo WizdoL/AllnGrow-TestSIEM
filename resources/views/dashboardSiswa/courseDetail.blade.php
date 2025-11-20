@@ -263,7 +263,46 @@
             {{ $course->formatted_duration }}
           </span>
           @endif
+          <span>
+            <i class="fas {{ $course->teaching_mode_icon }}"></i>
+            {{ $course->teaching_mode_label }}
+          </span>
         </div>
+
+        @if($course->has_live_sessions)
+          <div style="margin-top: 1.5rem; padding: 1rem; background: #111; border-radius: 8px; border: 1px solid #262626;">
+            <h3 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+              <i class="fas {{ $course->is_online ? 'fa-video' : 'fa-map-marker-alt' }}" style="color: #3b82f6;"></i>
+              {{ $course->teaching_mode_label }} Course Info
+            </h3>
+
+            @if($course->is_online && $course->default_meeting_link)
+              <p style="font-size: 0.85rem; color: #a3a3a3; margin-bottom: 0.5rem;">
+                <strong>Platform:</strong> {{ ucfirst(str_replace('_', ' ', $course->meeting_platform ?? 'Online')) }}
+              </p>
+            @endif
+
+            @if($course->is_offline && $course->location_name)
+              <p style="font-size: 0.85rem; color: #a3a3a3; margin-bottom: 0.5rem;">
+                <strong>Location:</strong> {{ $course->location_name }}
+                @if($course->location_city)
+                  , {{ $course->location_city }}
+                @endif
+              </p>
+              @if($course->location_address)
+                <p style="font-size: 0.8rem; color: #737373;">
+                  {{ $course->location_address }}
+                </p>
+              @endif
+            @endif
+
+            @if($course->max_participants)
+              <p style="font-size: 0.85rem; color: #a3a3a3; margin-top: 0.5rem;">
+                <strong>Max Participants:</strong> {{ $course->max_participants }}
+              </p>
+            @endif
+          </div>
+        @endif
       </div>
 
       <!-- Progress Section -->

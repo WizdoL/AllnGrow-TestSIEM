@@ -283,6 +283,42 @@
       border-color: #ffffff;
       box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
     }
+
+    /* Teaching Mode Badges */
+    .teaching-mode-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .teaching-mode-static {
+      background: rgba(163, 163, 163, 0.15);
+      color: #a3a3a3;
+      border: 1px solid rgba(163, 163, 163, 0.3);
+    }
+
+    .teaching-mode-online {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .teaching-mode-offline {
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .teaching-mode-hybrid {
+      background: rgba(168, 85, 247, 0.15);
+      color: #c084fc;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+    }
   </style>
 </head>
 <body>
@@ -498,9 +534,13 @@
                       <i class="fas fa-user-circle"></i>
                       {{ $course->instructor->detail->fullname ?? $course->instructor->name ?? $course->instructor->email ?? 'Instructor' }}
                     </p>
-                    <div style="display: flex; gap: 1rem; font-size: 0.85rem; color: #a3a3a3; margin-bottom: 1rem;">
+                    <div style="display: flex; gap: 1rem; font-size: 0.85rem; color: #a3a3a3; margin-bottom: 0.75rem;">
                       <span><i class="fas fa-book"></i> {{ $course->chapters->count() }} Bab</span>
                       <span><i class="fas fa-users"></i> {{ $course->students->count() }} Siswa</span>
+                    </div>
+                    <div class="teaching-mode-badge teaching-mode-{{ $course->teaching_mode ?? 'static' }}">
+                      <i class="fas {{ $course->teaching_mode_icon ?? 'fa-play-circle' }}"></i>
+                      {{ $course->teaching_mode_label ?? 'Self-Paced' }}
                     </div>
                     <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 1rem; border-top: 1px solid #262626;">
                       <div style="font-size: 1.25rem; font-weight: 700; color: #f5f5f5;">
