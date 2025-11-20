@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Student;
 use App\Models\Course;
 use App\Models\Category;
+use App\Models\StudentLessonCompletion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -244,6 +245,165 @@ class StudentDashboardController extends Controller
         } catch (\Exception $e) {
             Log::error('Failed to load course detail: ' . $e->getMessage());
             return redirect()->route('student.my-courses')->with('error', 'Failed to load course.');
+        }
+    }
+
+    /**
+     * Display lesson in LMS-style viewer
+     */
+    public function viewLesson($courseId, $lessonId)
+    {
+        try {
+            $student = Auth::guard('student')->user();
+            $student->load('detail');
+
+            // Check if student is enrolled
+            $enrollment = $student->courses()
+                ->wherePivot('courseID', $courseId)
+                ->withPivot(['completion', 'completed', 'payment_status'])
+                ->first();
+
+            if (!$enrollment) {
+                return redirect()->route('student.my-courses')->with('error', 'You are not enrolled in this course.');
+            }
+
+            if ($enrollment->pivot->payment_status === 'pending') {
+                return redirect()->route('student.my-courses')->with('error', 'Please wait for payment confirmation.');
+            }
+
+            // Load course with all data
+            $course = Course::with(['instructor.detail', 'chapters.lessons' => function($query) {
+                $query->orderBy('order', 'asc');
+            }])->findOrFail($courseId);
+
+            // Get the lesson
+            $lesson = \App\Models\Lesson::where('id', $lessonId)
+                ->where('course_id', $courseId)
+                ->firstOrFail();
+
+            // Get all lessons flat for navigation
+            $allLessons = $course->chapters->flatMap->lessons->sortBy('order');
+            $lessonIds = $allLessons->pluck('id')->toArray();
+            $currentIndex = array_search($lessonId, $lessonIds);
+
+            // Get prev/next lessons
+            $prevLesson = $currentIndex > 0 ? $allLessons->values()[$currentIndex - 1] : null;
+            $nextLesson = $currentIndex < count($lessonIds) - 1 ? $allLessons->values()[$currentIndex + 1] : null;
+
+            // Get completed lessons for this student in this course
+            $allLessonIds = $allLessons->pluck('id')->toArray();
+            $completedLessonIds = StudentLessonCompletion::where('student_id', $student->id)
+                ->whereIn('lesson_id', $allLessonIds)
+                ->pluck('lesson_id')
+                ->toArray();
+
+            // Calculate progress stats
+            $totalLessons = $allLessons->count();
+            $completedLessons = count($completedLessonIds);
+
+            return view('dashboardSiswa.lessonView', compact(
+                'student',
+                'course',
+                'lesson',
+                'enrollment',
+                'prevLesson',
+                'nextLesson',
+                'totalLessons',
+                'completedLessons',
+                'completedLessonIds'
+            ));
+        } catch (\Exception $e) {
+            Log::error('Failed to load lesson: ' . $e->getMessage());
+            return redirect()->route('student.view-course', $courseId)->with('error', 'Failed to load lesson.');
+        }
+    }
+
+    /**
+     * Mark lesson as complete
+     */
+    public function markLessonComplete($courseId, $lessonId)
+    {
+        try {
+            $student = Auth::guard('student')->user();
+
+            // Check enrollment
+            $enrollment = $student->courses()
+                ->wherePivot('courseID', $courseId)
+                ->withPivot(['completion', 'completed', 'payment_status'])
+                ->first();
+
+            if (!$enrollment || $enrollment->pivot->payment_status === 'pending') {
+                return redirect()->back()->with('error', 'Cannot mark lesson as complete. Please wait for payment confirmation.');
+            }
+
+            // Check if lesson exists in this course
+            $lesson = \App\Models\Lesson::where('id', $lessonId)
+                ->where('course_id', $courseId)
+                ->firstOrFail();
+
+            // Check if already completed
+            $alreadyCompleted = StudentLessonCompletion::where('student_id', $student->id)
+                ->where('lesson_id', $lessonId)
+                ->exists();
+
+            if ($alreadyCompleted) {
+                return redirect()->back()->with('info', 'Lesson already marked as complete.');
+            }
+
+            // Mark lesson as complete
+            StudentLessonCompletion::create([
+                'student_id' => $student->id,
+                'lesson_id' => $lessonId,
+                'completed_at' => now()
+            ]);
+
+            // Calculate new completion percentage based on actual completed lessons
+            $course = Course::with('chapters.lessons')->findOrFail($courseId);
+            $allLessonIds = $course->chapters->flatMap->lessons->pluck('id')->toArray();
+            $totalLessons = count($allLessonIds);
+
+            $completedCount = StudentLessonCompletion::where('student_id', $student->id)
+                ->whereIn('lesson_id', $allLessonIds)
+                ->count();
+
+            $newCompletion = $totalLessons > 0 ? round(($completedCount / $totalLessons) * 100) : 0;
+
+            // Update enrollment
+            $student->courses()->updateExistingPivot($courseId, [
+                'completion' => $newCompletion,
+                'completed' => $newCompletion >= 100,
+                'updated_at' => now()
+            ]);
+
+            Log::info('Lesson marked as complete', [
+                'student_id' => $student->id,
+                'course_id' => $courseId,
+                'lesson_id' => $lessonId,
+                'new_completion' => $newCompletion
+            ]);
+
+            // Find next lesson for auto-advance
+            $allLessons = $course->chapters->flatMap->lessons->sortBy('order');
+            $lessonIdsArray = $allLessons->pluck('id')->toArray();
+            $currentIndex = array_search($lessonId, $lessonIdsArray);
+
+            // If there's a next lesson, redirect to it
+            if ($currentIndex !== false && $currentIndex < count($lessonIdsArray) - 1) {
+                $nextLessonId = $lessonIdsArray[$currentIndex + 1];
+                return redirect()->route('student.view-lesson', [$courseId, $nextLessonId])
+                    ->with('success', 'Lesson completed! Moving to next lesson.');
+            }
+
+            // No next lesson - stay on current or redirect to course
+            if ($newCompletion >= 100) {
+                return redirect()->route('student.view-course', $courseId)
+                    ->with('success', 'Congratulations! You have completed this course!');
+            }
+
+            return redirect()->back()->with('success', 'Lesson marked as complete!');
+        } catch (\Exception $e) {
+            Log::error('Failed to mark lesson complete: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to mark lesson as complete.');
         }
     }
 

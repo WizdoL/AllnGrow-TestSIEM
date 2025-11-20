@@ -307,7 +307,7 @@
               <div class="chapter-lessons" id="chapter-lessons-{{ $chapter->id }}">
                 @if($chapter->lessons->count() > 0)
                   @foreach($chapter->lessons as $lessonIndex => $lesson)
-                    <div class="lesson-item" onclick="openLesson({{ $lesson->id }})">
+                    <a href="{{ route('student.view-lesson', [$course->courseID, $lesson->id]) }}" class="lesson-item" style="text-decoration: none; color: inherit;">
                       <div class="lesson-number">{{ $lessonIndex + 1 }}</div>
                       <div class="lesson-content">
                         <div class="lesson-title">
@@ -329,7 +329,7 @@
                         </div>
                       </div>
                       <i class="fas fa-chevron-right" style="color: #737373;"></i>
-                    </div>
+                    </a>
                   @endforeach
                 @else
                   <div style="text-align: center; padding: 1.5rem; color: #737373; font-size: 0.9rem;">
@@ -347,27 +347,10 @@
         @endif
       </div>
 
-      <!-- Modal for Lesson Content -->
-      <div id="lessonModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center;">
-        <div style="background: #0d0d0d; border: 1px solid #262626; border-radius: 12px; width: 90%; max-width: 1200px; max-height: 90vh; overflow-y: auto;">
-          <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; border-bottom: 1px solid #262626;">
-            <h3 id="modalTitle" style="font-size: 1.5rem;">Lesson Title</h3>
-            <button onclick="closeModal()" style="background: none; border: none; color: #f5f5f5; font-size: 1.5rem; cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 8px; transition: all 0.2s;" onmouseover="this.style.background='#262626'" onmouseout="this.style.background='none'">
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-          <div id="modalContent" style="padding: 2rem;">
-            <!-- Content will be loaded here -->
-          </div>
-        </div>
-      </div>
     </main>
   </div>
 
   <script>
-    // Collect all lessons from all chapters
-    const lessons = @json($course->chapters->flatMap->lessons);
-
     function toggleChapter(chapterId) {
       const lessons = document.getElementById('chapter-lessons-' + chapterId);
       const icon = document.getElementById('chapter-icon-' + chapterId);
@@ -375,86 +358,6 @@
       icon.classList.toggle('fa-chevron-down');
       icon.classList.toggle('fa-chevron-up');
     }
-
-    function openLesson(lessonId) {
-      const lesson = lessons.find(l => l.id === lessonId);
-      if (!lesson) return;
-
-      document.getElementById('modalTitle').textContent = lesson.title;
-
-      let content = '';
-
-      // Video content
-      if (lesson.video_url) {
-        const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-        const match = lesson.video_url.match(youtubeRegex);
-
-        if (match) {
-          const videoId = match[1];
-          content += `
-            <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px;">
-              <iframe
-                src="https://www.youtube.com/embed/${videoId}"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen
-                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
-              </iframe>
-            </div>
-          `;
-        } else {
-          content += `
-            <video controls style="width: 100%; border-radius: 8px;">
-              <source src="${lesson.video_url}" type="video/mp4">
-              Your browser does not support the video tag.
-            </video>
-          `;
-        }
-      }
-
-      // Text content
-      if (lesson.content) {
-        content += `
-          <div style="margin-top: 1.5rem; line-height: 1.8; color: #d4d4d4;">
-            ${lesson.content}
-          </div>
-        `;
-      }
-
-      // File download
-      if (lesson.file_upload) {
-        content += `
-          <div style="margin-top: 1.5rem; padding: 1rem; background: #000; border: 1px solid #262626; border-radius: 8px;">
-            <a href="/storage/${lesson.file_upload}" target="_blank" style="color: #4ade80; text-decoration: none; display: flex; align-items: center; gap: 0.5rem;">
-              <i class="fas fa-download"></i> Download Attachment
-            </a>
-          </div>
-        `;
-      }
-
-      if (!lesson.video_url && !lesson.content) {
-        content = `
-          <div style="text-align: center; padding: 3rem; color: #737373;">
-            <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
-            <p>Content not available yet.</p>
-          </div>
-        `;
-      }
-
-      document.getElementById('modalContent').innerHTML = content;
-      document.getElementById('lessonModal').style.display = 'flex';
-    }
-
-    function closeModal() {
-      document.getElementById('lessonModal').style.display = 'none';
-    }
-
-    // Close modal when clicking outside
-    document.getElementById('lessonModal').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeModal();
-      }
-    });
 
     // Expand first chapter by default
     document.addEventListener('DOMContentLoaded', function() {

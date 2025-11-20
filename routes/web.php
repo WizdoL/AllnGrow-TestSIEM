@@ -91,6 +91,12 @@ Route::middleware(['web', 'auth.student'])->group(function () {
     // View Course Detail
     Route::get('/student/course/{courseId}', [StudentDashboardController::class, 'viewCourse'])->name('student.view-course');
 
+    // View Lesson (LMS-style)
+    Route::get('/student/course/{courseId}/lesson/{lessonId}', [StudentDashboardController::class, 'viewLesson'])->name('student.view-lesson');
+
+    // Mark Lesson as Complete
+    Route::post('/student/course/{courseId}/lesson/{lessonId}/complete', [StudentDashboardController::class, 'markLessonComplete'])->name('student.mark-lesson-complete');
+
     // Course Overview (preview before enrolling)
     Route::get('/student/course-overview/{courseId}', [StudentDashboardController::class, 'courseOverview'])->name('student.course-overview');
 
