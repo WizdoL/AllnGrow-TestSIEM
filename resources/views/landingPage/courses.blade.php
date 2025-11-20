@@ -214,8 +214,10 @@
   </section>
 
   <!-- COURSES SECTION -->
-  <section class="courses-section mt-4">
-    <!-- RESULT GRID (Explore Courses) -->
+  <section class="courses-section mt-5">
+    <h2 class="text-center mb-5 fade-up" style="color: #fff; font-size: 2rem; font-weight: 600;">Top Popular Page</h2>
+
+    <!-- RESULT GRID (Most Enrolled Courses) -->
     <div class="courses-result-wrapper">
       @if($courses->count() > 0)
         <div class="courses-result-grid stagger-children">
@@ -235,9 +237,18 @@
       @endif
     </div>
 
-    <!-- Pagination -->
-    <div class="d-flex justify-content-center mt-4">
-      {{ $courses->links() }}
+    <!-- Call to Action -->
+    <div style="text-align: center; margin-top: 3rem; padding: 2rem 1rem;">
+      <p style="color: #d4d4d4; font-size: 1rem; margin-bottom: 1.5rem;">
+        Interested in exploring more courses?
+      </p>
+      <a href="{{ route('get-started') }}"
+         style="display: inline-flex; align-items: center; gap: 0.75rem; padding: 1rem 2rem; background: #fff; color: #000; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 1rem; transition: all 0.3s; box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);"
+         onmouseover="this.style.background='#f5f5f5'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 30px rgba(255, 255, 255, 0.15)';"
+         onmouseout="this.style.background='#fff'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 20px rgba(255, 255, 255, 0.1)';">
+        <i class="fas fa-rocket"></i>
+        Get Started with Learning
+      </a>
     </div>
 
   </section>

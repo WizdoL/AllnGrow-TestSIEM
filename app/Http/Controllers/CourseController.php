@@ -13,17 +13,28 @@ class CourseController extends Controller
     //
     function course_page() {
 
+        // Get top 3 popular courses based on enrolled students count (for main section)
         $courses = Course::where('status', 'approved')
             ->with(['category', 'instructor', 'chapters.lessons', 'students'])
             ->withCount(['chapters', 'lessons', 'students'])
-            ->latest()
-            ->simplePaginate(9);
+            ->orderBy('students_count', 'desc')
+            ->limit(3)
+            ->get();
+
+        // Get top 5 popular courses based on enrolled students count (for horizontal scroll)
+        $topCourses = Course::where('status', 'approved')
+            ->withCount('students')
+            ->with(['instructor.detail', 'category'])
+            ->orderBy('students_count', 'desc')
+            ->limit(5)
+            ->get();
 
         $categories = Category::orderBy('name')->get();
         $partners = Partner::orderBy('name')->get();
 
         return view('landingPage.courses',
         ['courses' => $courses,
+        'topCourses' => $topCourses,
         'categories' => $categories,
         'partners' => $partners,
         'category' => null,
@@ -71,12 +82,22 @@ class CourseController extends Controller
             }
         }
 
-        $courses = $query->latest()->simplePaginate(9)->withQueryString();
+        $courses = $query->latest()->simplePaginate(3)->withQueryString();
+
+        // Get top 5 popular courses based on enrolled students count
+        $topCourses = Course::where('status', 'approved')
+            ->withCount('students')
+            ->with(['instructor.detail', 'category'])
+            ->orderBy('students_count', 'desc')
+            ->limit(5)
+            ->get();
+
         $categories = Category::orderBy('name')->get();
         $partners = Partner::orderBy('name')->get();
 
         return view('landingPage.courses',
             ['courses' => $courses,
+            'topCourses' => $topCourses,
             'category' => $category,
             'categories' => $categories,
             'partner' => $partner,
