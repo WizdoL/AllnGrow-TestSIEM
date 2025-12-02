@@ -14,6 +14,10 @@ use App\Http\Controllers\InstructorCourseController;
 use App\Http\Controllers\StudentDashboardController;
 use App\Http\Controllers\StudentPasswordResetController;
 use App\Http\Controllers\InstructorPasswordResetController;
+use App\Http\Controllers\MetricsController;
+
+// Metrics endpoint for Prometheus (no authentication required)
+Route::get('/metrics', [MetricsController::class, 'index'])->name('metrics');
 
 Route::middleware('web')->group(function () {
     // landing page

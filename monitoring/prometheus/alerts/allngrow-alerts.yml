@@ -1,0 +1,133 @@
+groups:
+  - name: allngrow_alerts
+    interval: 30s
+    rules:
+      # Instance Down Alert
+      - alert: InstanceDown
+        expr: up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Instance {{ $labels.instance }} down"
+          description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 2 minutes."
+
+      # High CPU Usage
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is above 80% (current value: {{ $value }}%)"
+
+      # High Memory Usage
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is above 85% (current value: {{ $value }}%)"
+
+      # Disk Space Low
+      - alert: DiskSpaceLow
+        expr: (node_filesystem_avail_bytes{fstype!~"tmpfs|fuse.lxcfs"} / node_filesystem_size_bytes{fstype!~"tmpfs|fuse.lxcfs"}) * 100 < 15
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low disk space on {{ $labels.instance }}"
+          description: "Disk space is below 15% on {{ $labels.mountpoint }} (current value: {{ $value }}%)"
+
+      # MySQL Down
+      - alert: MySQLDown
+        expr: mysql_up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "MySQL is down"
+          description: "MySQL database is not responding"
+
+      # High MySQL Connections
+      - alert: HighMySQLConnections
+        expr: (mysql_global_status_threads_connected / mysql_global_variables_max_connections) * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High MySQL connections"
+          description: "MySQL connection usage is above 80% (current value: {{ $value }}%)"
+
+      # Redis Down
+      - alert: RedisDown
+        expr: redis_up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Redis is down"
+          description: "Redis server is not responding"
+
+      # High Redis Memory Usage
+      - alert: HighRedisMemoryUsage
+        expr: (redis_memory_used_bytes / redis_memory_max_bytes) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High Redis memory usage"
+          description: "Redis memory usage is above 85% (current value: {{ $value }}%)"
+
+      # Container Down
+      - alert: ContainerDown
+        expr: absent(container_last_seen{name=~"allngrow.*"})
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Container {{ $labels.name }} is down"
+          description: "AllnGrow container has been down for more than 2 minutes"
+
+      # High Container CPU Usage
+      - alert: HighContainerCPUUsage
+        expr: rate(container_cpu_usage_seconds_total{name=~"allngrow.*"}[5m]) * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage in container {{ $labels.name }}"
+          description: "Container CPU usage is above 80% (current value: {{ $value }}%)"
+
+      # High Container Memory Usage
+      - alert: HighContainerMemoryUsage
+        expr: (container_memory_usage_bytes{name=~"allngrow.*"} / container_spec_memory_limit_bytes{name=~"allngrow.*"}) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage in container {{ $labels.name }}"
+          description: "Container memory usage is above 85% (current value: {{ $value }}%)"
+
+      # Nginx High Response Time
+      - alert: NginxHighResponseTime
+        expr: nginx_http_request_duration_seconds_bucket > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High Nginx response time"
+          description: "Nginx response time is above 2 seconds"
+
+      # Laravel Queue Jobs Failing
+      - alert: LaravelQueueJobsFailing
+        expr: rate(laravel_queue_failed_jobs_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Laravel queue jobs are failing"
+          description: "Queue job failure rate is above 0.1 per second"

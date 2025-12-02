@@ -1,0 +1,130 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+  log_level: info
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  # Laravel Application Logs
+  - job_name: laravel
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: laravel
+          app: allngrow
+          environment: production
+          __path__: /var/log/laravel/*.log
+
+    pipeline_stages:
+      # Parse Laravel log format
+      - regex:
+          expression: '^\[(?P<timestamp>.*?)\] (?P<environment>\w+)\.(?P<level>\w+): (?P<message>.*?)( (?P<context>\{.*\}))?$'
+
+      # Extract log level
+      - labels:
+          level:
+          environment:
+
+      # Parse timestamp
+      - timestamp:
+          source: timestamp
+          format: '2006-01-02 15:04:05'
+
+      # Add additional metadata
+      - static_labels:
+          source: laravel_log
+
+  # Laravel Queue Worker Logs
+  - job_name: laravel-queue
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: laravel-queue
+          app: allngrow
+          environment: production
+          __path__: /var/log/laravel/queue-worker.log
+
+    pipeline_stages:
+      - regex:
+          expression: '^\[(?P<timestamp>.*?)\] (?P<level>\w+): (?P<message>.*?)$'
+
+      - labels:
+          level:
+
+      - timestamp:
+          source: timestamp
+          format: '2006-01-02 15:04:05'
+
+      - static_labels:
+          source: queue_worker
+
+  # Nginx Access Logs
+  - job_name: nginx-access
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: nginx-access
+          app: allngrow
+          __path__: /var/log/host/nginx/access.log
+
+    pipeline_stages:
+      - regex:
+          expression: '^(?P<remote_addr>[\w\.]+) - (?P<remote_user>[^ ]*) \[(?P<time_local>.*?)\] "(?P<method>\w+) (?P<request>.*?) (?P<protocol>.*?)" (?P<status>\d+) (?P<body_bytes_sent>\d+) "(?P<http_referer>.*?)" "(?P<http_user_agent>.*?)"'
+
+      - labels:
+          method:
+          status:
+
+      - timestamp:
+          source: time_local
+          format: '02/Jan/2006:15:04:05 -0700'
+
+  # Nginx Error Logs
+  - job_name: nginx-error
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: nginx-error
+          app: allngrow
+          __path__: /var/log/host/nginx/error.log
+
+    pipeline_stages:
+      - regex:
+          expression: '^(?P<timestamp>\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}) \[(?P<level>\w+)\] (?P<message>.*?)$'
+
+      - labels:
+          level:
+
+      - timestamp:
+          source: timestamp
+          format: '2006/01/02 15:04:05'
+
+  # System Logs (Optional - if available)
+  - job_name: system
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: system
+          app: allngrow
+          __path__: /var/log/host/syslog
+
+    pipeline_stages:
+      - regex:
+          expression: '^(?P<timestamp>\w+ \d+ \d{2}:\d{2}:\d{2}) (?P<hostname>\S+) (?P<service>\S+): (?P<message>.*?)$'
+
+      - labels:
+          service:
+
+      - timestamp:
+          source: timestamp
+          format: 'Jan 02 15:04:05'

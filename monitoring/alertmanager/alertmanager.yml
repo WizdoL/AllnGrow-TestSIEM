@@ -1,0 +1,109 @@
+global:
+  resolve_timeout: 5m
+  smtp_from: 'alertmanager@allngrow.com'
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_auth_username: 'your-email@gmail.com'
+  smtp_auth_password: 'your-app-password'
+  smtp_require_tls: true
+
+# Templates for notifications
+templates:
+  - '/etc/alertmanager/templates/*.tmpl'
+
+# Route configuration
+route:
+  group_by: ['alertname', 'cluster', 'service']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 12h
+  receiver: 'default-receiver'
+
+  routes:
+    # Critical alerts - immediate notification
+    - match:
+        severity: critical
+      receiver: 'critical-receiver'
+      continue: true
+      repeat_interval: 5m
+
+    # Warning alerts - batched notification
+    - match:
+        severity: warning
+      receiver: 'warning-receiver'
+      continue: true
+      repeat_interval: 30m
+
+    # Database alerts
+    - match:
+        service: mysql
+      receiver: 'database-team'
+      continue: true
+
+    # Cache/Queue alerts
+    - match:
+        service: redis
+      receiver: 'backend-team'
+      continue: true
+
+# Inhibition rules
+inhibit_rules:
+  # Inhibit warning if critical is firing
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'instance']
+
+  # Inhibit specific alerts when instance is down
+  - source_match:
+      alertname: 'InstanceDown'
+    target_match_re:
+      alertname: '.*'
+    equal: ['instance']
+
+# Receivers configuration
+receivers:
+  # Default receiver
+  - name: 'default-receiver'
+    email_configs:
+      - to: 'team@allngrow.com'
+        send_resolved: true
+        headers:
+          Subject: '[AllnGrow] {{ .GroupLabels.alertname }}'
+
+  # Critical alerts receiver
+  - name: 'critical-receiver'
+    email_configs:
+      - to: 'oncall@allngrow.com, admin@allngrow.com'
+        send_resolved: true
+        headers:
+          Subject: '[CRITICAL] AllnGrow Alert: {{ .GroupLabels.alertname }}'
+          Priority: 'urgent'
+    # Webhook for Slack/Discord/Teams integration
+    webhook_configs:
+      - url: 'http://your-webhook-url/alerts'
+        send_resolved: true
+
+  # Warning alerts receiver
+  - name: 'warning-receiver'
+    email_configs:
+      - to: 'team@allngrow.com'
+        send_resolved: true
+        headers:
+          Subject: '[WARNING] AllnGrow Alert: {{ .GroupLabels.alertname }}'
+
+  # Database team receiver
+  - name: 'database-team'
+    email_configs:
+      - to: 'dba@allngrow.com'
+        send_resolved: true
+        headers:
+          Subject: '[DB Alert] {{ .GroupLabels.alertname }}'
+
+  # Backend team receiver
+  - name: 'backend-team'
+    email_configs:
+      - to: 'backend@allngrow.com'
+        send_resolved: true
+        headers:
+          Subject: '[Backend Alert] {{ .GroupLabels.alertname }}'
